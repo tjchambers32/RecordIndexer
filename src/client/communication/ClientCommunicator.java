@@ -5,15 +5,40 @@
 
 package client.communication;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import shared.communication.*;
 
 public class ClientCommunicator {
 
+	private String URL_PREFIX;
+	private static final String HTTP_GET = "GET";
+	private static final String HTTP_POST = "POST";
+	
+	public ClientCommunicator() {
+		setURL_PREFIX("http://localhost:8080");
+	}
 
-	ClientCommunicator() {
-		
+	public ClientCommunicator(String host, int port) {
+		String prefix = "http://" + host + ":" + port;
+		setURL_PREFIX(prefix);
 	}
 	
+	public String getURL_PREFIX() {
+		return URL_PREFIX;
+	}
+
+
+	public void setURL_PREFIX(String uRL_PREFIX) {
+		URL_PREFIX = uRL_PREFIX;
+	}
+
+
 	/**
 	* Validates the user.
 	* <p>If successful, returns a string including these lines:</p>
@@ -196,6 +221,36 @@ public class ClientCommunicator {
 	public Search_Result search(Search_Params params) {
 		
 		return null;
+	}
+	
+	public Object doPost(String command, Object postData) {
+		
+		XStream xmlStream = new XStream(new DomDriver());
+		Object result = null;
+		
+		try {
+			URL url = new URL(URL_PREFIX + command);
+			HttpURLConnection connection = null;
+			try {
+				connection = (HttpURLConnection) url.openConnection();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			connection.setRequestMethod(HTTP_POST);
+			connection.setDoOutput(true);
+			connection.connect();
+			xmlStream.toXML(postData, connection.getOutputStream());
+			
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (ProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return result;
 	}
 	
 	
