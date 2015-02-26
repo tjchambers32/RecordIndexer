@@ -40,7 +40,7 @@ public class Database {
 	/**
 	 * Initializes all of the DAO classes
 	 */
-	Database() {
+	public Database() {
 		fieldDAO = new FieldDAO(this);
 		imageDAO = new ImageDAO(this);
 		projectDAO = new ProjectDAO(this);

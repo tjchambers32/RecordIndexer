@@ -27,7 +27,7 @@ public class Field {
 	 * @param knownData relative path to the knownData subdirectory
 	 * @param projectID the id of the project this field belongs to
 	 */
-	Field(int id, int fieldNumber, String title, int xCoord,
+	public Field(int id, int fieldNumber, String title, int xCoord,
 			int width, String helpHTML, String knownData, int projectID) {
 		
 		setId(id);
