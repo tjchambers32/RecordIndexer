@@ -241,7 +241,8 @@ public class ClientCommunicator {
 			xmlStream.toXML(postData, connection.getOutputStream());
 			connection.getOutputStream().close();
 			
-			//TODO: result = xmlStream.fromXML.....
+			//TODO: read in xstream and check for success
+			//result = xmlStream.fromXML.....
 			
 		} catch (IOException e) {
 			e.printStackTrace();
