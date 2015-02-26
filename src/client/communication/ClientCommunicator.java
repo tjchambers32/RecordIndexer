@@ -10,9 +10,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+
+import shared.communication.*;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import shared.communication.*;
+
 
 public class ClientCommunicator {
 
@@ -231,24 +234,18 @@ public class ClientCommunicator {
 		try {
 			URL url = new URL(URL_PREFIX + command);
 			HttpURLConnection connection = null;
-			try {
-				connection = (HttpURLConnection) url.openConnection();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod(HTTP_POST);
 			connection.setDoOutput(true);
 			connection.connect();
 			xmlStream.toXML(postData, connection.getOutputStream());
+			connection.getOutputStream().close();
 			
+			//TODO: result = xmlStream.fromXML.....
 			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (ProtocolException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		
 		return result;
 	}
