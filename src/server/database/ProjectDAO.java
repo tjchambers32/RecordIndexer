@@ -11,7 +11,15 @@ import shared.model.Project;
  */
 public class ProjectDAO {
 
+	private Database db;
 	
+	/**
+	 * @param database
+	 */
+	public ProjectDAO(Database database) {
+		this.setDb(database);
+	}
+
 	public void add(Project project) {
 		
 	}
@@ -22,6 +30,14 @@ public class ProjectDAO {
 	
 	public void delete(Project project) {
 		
+	}
+
+	public Database getDb() {
+		return db;
+	}
+
+	public void setDb(Database db) {
+		this.db = db;
 	}
 
 }

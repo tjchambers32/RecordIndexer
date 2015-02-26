@@ -14,6 +14,11 @@ import shared.model.Field;
  */
 public class FieldDAO {
 
+	private Database db;
+	
+	FieldDAO(Database database) {
+		this.setDb(database);
+	}
 	
 	public void add(Field field) {
 		
@@ -37,5 +42,13 @@ public class FieldDAO {
 		ArrayList<Field> result = null;
 		
 		return result;
+	}
+
+	public Database getDb() {
+		return db;
+	}
+
+	public void setDb(Database db) {
+		this.db = db;
 	}
 }

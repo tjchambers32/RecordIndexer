@@ -11,7 +11,14 @@ import shared.model.Image;
  */
 public class ImageDAO {
 
-	
+	private Database db;
+	/**
+	 * @param database
+	 */
+	public ImageDAO(Database database) {
+		this.setDb(database);
+	}
+
 	public void add(Image image) {
 		
 	}
@@ -52,6 +59,14 @@ public class ImageDAO {
 		int result = 0;
 		
 		return result;
+	}
+
+	public Database getDb() {
+		return db;
+	}
+
+	public void setDb(Database db) {
+		this.db = db;
 	}
 	
 	
