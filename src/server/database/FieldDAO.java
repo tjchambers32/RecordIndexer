@@ -11,76 +11,83 @@ import shared.model.Field;
 
 /**
  * @author tchambs
- *
+ * 
  */
 public class FieldDAO {
 
 	private Database db;
-	
+
 	FieldDAO(Database database) {
 		this.setDb(database);
 	}
-	
+
 	public void add(Field field) {
-		
+		// TODO implement
 	}
-	
+
 	public void update(Field field) {
-		
+		// TODO implement
 	}
-	
+
 	public void delete(Field field) {
-		
+		// TODO implement
 	}
-	
-	public ArrayList<Search_Result> search(ArrayList<Integer> fields, ArrayList<String> search_values ) throws DatabaseException {
-		
-		ArrayList<Search_Result> result = new ArrayList<Search_Result>();	
+
+	public ArrayList<Search_Result> search(ArrayList<Integer> fields,
+			ArrayList<String> search_values) throws DatabaseException {
+
+		ArrayList<Search_Result> result = new ArrayList<Search_Result>();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		
+
 		try {
 			for (int id : fields) {
 				for (String value : search_values) {
-					String query = "SELECT records.imageID, image.filepath, records.rowNumber, fields.id " +
-							"FROM images, records, fields " +
-							"WHERE images.imageID = records.imageID " +
-							"AND images.projectID = fields.projectID " + 
-							"AND fields.fieldNumber = records.fieldNumber " +
-							"AND fields.ID = ? " +
-							"AND records.value = ? ";
-					
+					String query = "SELECT records.imageID, image.filepath, records.rowNumber, fields.id "
+							+ "FROM images, records, fields "
+							+ "WHERE images.imageID = records.imageID "
+							+ "AND images.projectID = fields.projectID "
+							+ "AND fields.fieldNumber = records.fieldNumber "
+							+ "AND fields.ID = ? " + "AND records.value = ? ";
+
 					stmt = db.getConnection().prepareStatement(query);
 					stmt.setInt(1, id);
 					stmt.setString(2, value);
 					rs = stmt.executeQuery();
-					while(rs.next()) {
-						//TODO: PICK UP HERE!!
-						//return an arraylist of search_results. Each find should be a search_result
+					while (rs.next()) {
+						int imageID = rs.getInt(1);
+						String imageURL = rs.getString(2);
+						int rowNumber = rs.getInt(3);
+						int fieldID = rs.getInt(4);
+
+						// add new search result to list
+						result.add(new Search_Result(imageID, imageURL,
+								rowNumber, fieldID));
 					}
 				}
 			}
 		} catch (Exception e) {
 			throw new DatabaseException(e.getMessage(), e);
 		}
-		
+
+		// return a list of type Search_Result
 		return result;
 	}
-	
+
 	public ArrayList<Field> getFields(int projectID) throws DatabaseException {
-		
+
 		ArrayList<Field> result = new ArrayList<Field>();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		
+
 		try {
 			String query = "select * from fields where fields.projectID = ?";
 			stmt = db.getConnection().prepareStatement(query);
-			
+
 			stmt.setInt(1, projectID);
-			
+
 			rs = stmt.executeQuery();
-			while(rs.next()) {
+			while (rs.next()) {
 				int id = rs.getInt(1);
 				int fieldNumber = rs.getInt(2);
 				String title = rs.getString(3);
@@ -90,13 +97,14 @@ public class FieldDAO {
 				String knownData = rs.getString(7);
 				int projID = rs.getInt(8);
 
-				result.add(new Field(id, fieldNumber, title, xCoord, width, helpHTML, knownData, projID));
+				result.add(new Field(id, fieldNumber, title, xCoord, width,
+						helpHTML, knownData, projID));
 			}
-			
+
 		} catch (Exception e) {
 			throw new DatabaseException(e.getMessage(), e);
 		}
-		
+
 		return result;
 	}
 
@@ -110,16 +118,16 @@ public class FieldDAO {
 
 	/**
 	 * @return
-	 * @throws DatabaseException 
+	 * @throws DatabaseException
 	 */
 	public List<Field> getAll() throws DatabaseException {
-		
+
 		ArrayList<Field> result = new ArrayList<Field>();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		
+
 		try {
-			String query = "select id, fieldNumber, title, xCoord, width, helpHTML, knownData, projectID from field";
+			String query = "select id, fieldNumber, title, xCoord, width, helpHTML, knownData, projectID from fields";
 			stmt = db.getConnection().prepareStatement(query);
 
 			rs = stmt.executeQuery();
@@ -133,17 +141,17 @@ public class FieldDAO {
 				String knownData = rs.getString(7);
 				int projectID = rs.getInt(8);
 
-				result.add(new Field(id, fieldNumber, title, xCoord, width, helpHTML, knownData, projectID));
+				result.add(new Field(id, fieldNumber, title, xCoord, width,
+						helpHTML, knownData, projectID));
 			}
-		}
-		catch (SQLException e) {
-			DatabaseException serverEx = new DatabaseException(e.getMessage(), e);
+		} catch (SQLException e) {
+			DatabaseException serverEx = new DatabaseException(e.getMessage(),
+					e);
 			throw serverEx;
-		}		
-		finally {
+		} finally {
 			Database.safeClose(rs);
 			Database.safeClose(stmt);
-		}		
-		return result;	
+		}
+		return result;
 	}
 }

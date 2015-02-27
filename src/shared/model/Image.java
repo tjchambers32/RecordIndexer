@@ -20,7 +20,7 @@ public class Image {
 	 * @param filepath the relative filepath to the image
 	 * @param availability an integer representing whether the image is checked out, available, or submitted
 	 */
-	Image(int id, int projectID, String filepath, int availability) {
+	public Image(int id, int projectID, String filepath, int availability) {
 		setId(id);
 		setProjectID(projectID);
 		setFilepath(filepath);

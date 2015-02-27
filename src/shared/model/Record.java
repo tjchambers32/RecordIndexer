@@ -20,7 +20,7 @@ public class Record {
 	 * @param rowNumber which row this record is associated with on the image (y-coord)
 	 * @param fieldNumber which field this record is associated with on the image (x-coord)
 	 */
-	Record(int id, int imageID, int rowNumber, int fieldNumber) {
+	public Record(int id, int imageID, int rowNumber, int fieldNumber) {
 		setId(id);
 		setImageID(imageID);
 		setRowNumber(rowNumber);

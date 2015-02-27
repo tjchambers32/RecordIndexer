@@ -20,7 +20,7 @@ public class Project {
 	 * @param firstYCoord the top of the first record of the project's images, in pixels
 	 * @param recordHeight the height of each record, in pixels
 	 */
-	Project(int id, String title, int recordsPerImage, int firstYCoord, int recordHeight) {
+	public Project(int id, String title, int recordsPerImage, int firstYCoord, int recordHeight) {
 		setId(id);
 		setTitle(title);
 		setRecordsPerImage(recordsPerImage);

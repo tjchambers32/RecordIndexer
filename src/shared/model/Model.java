@@ -77,4 +77,20 @@ public class Model {
 		}
 	}
 
+	/**
+	 * 
+	 */
+	public static void clear() {
+		
+		Database db = new Database();
+		try {
+			db.startTransaction();
+			db.clear();
+			db.endTransaction(true);
+		} catch (DatabaseException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
 }

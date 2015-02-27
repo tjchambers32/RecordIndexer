@@ -8,26 +8,26 @@ import java.sql.*;
 
 /**
  * @author tchambs
- *
+ * 
  */
 public class Database {
 
 	private static final String DATABASE_DIRECTORY = "database";
 	private static final String DATABASE_FILE = "contactmanager.sqlite";
-	private static final String DATABASE_URL = "jdbc:sqlite:" + DATABASE_DIRECTORY +
-												File.separator + DATABASE_FILE;
-	
+	private static final String DATABASE_URL = "jdbc:sqlite:"
+			+ DATABASE_DIRECTORY + File.separator + DATABASE_FILE;
+
 	public static void initialize() throws DatabaseException {
 		try {
 			final String driver = "org.sqlite.JDBC";
 			Class.forName(driver);
-		}
-		catch(ClassNotFoundException e) {
-			DatabaseException serverEx = new DatabaseException("Could not load database driver", e);
-			throw serverEx; 
+		} catch (ClassNotFoundException e) {
+			DatabaseException serverEx = new DatabaseException(
+					"Could not load database driver", e);
+			throw serverEx;
 		}
 	}
-	
+
 	private static Database db;
 	private FieldDAO fieldDAO;
 	private ImageDAO imageDAO;
@@ -36,7 +36,7 @@ public class Database {
 	private UserDAO userDAO;
 	private ValueDAO valueDAO;
 	private Connection connection;
-	
+
 	/**
 	 * Initializes all of the DAO classes
 	 */
@@ -49,85 +49,80 @@ public class Database {
 		valueDAO = new ValueDAO(this);
 		connection = null;
 	}
-	
+
 	public void startTransaction() throws DatabaseException {
 		try {
-			assert (connection == null);			
+			assert (connection == null);
 			connection = DriverManager.getConnection(DATABASE_URL);
 			connection.setAutoCommit(false);
-			
-		}
-		catch (SQLException e) {
-			throw new DatabaseException("Could not connect to database. Make sure " + 
-				DATABASE_FILE + " is available in ./" + DATABASE_DIRECTORY, e);
+
+		} catch (SQLException e) {
+			throw new DatabaseException(
+					"Could not connect to database. Make sure " + DATABASE_FILE
+							+ " is available in ./" + DATABASE_DIRECTORY, e);
 		}
 	}
-	
+
 	public void endTransaction(boolean commit) throws DatabaseException {
-		if (connection != null) {		
+		if (connection != null) {
 			try {
 				if (commit) {
 					connection.commit();
-				}
-				else {
+				} else {
 					connection.rollback();
 				}
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				System.out.println("Could not end transaction");
 				e.printStackTrace();
-			}
-			finally {
+			} finally {
 				safeClose(connection);
 				connection = null;
 			}
 		}
 	}
-	
+
 	public static void safeClose(Connection conn) throws DatabaseException {
 		if (conn != null) {
 			try {
 				conn.close();
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				throw new DatabaseException("Could not close connection", e);
 			}
 		}
 	}
-	
-	public static void safeClose(Statement stmt) throws DatabaseException{
+
+	public static void safeClose(Statement stmt) throws DatabaseException {
 		if (stmt != null) {
 			try {
 				stmt.close();
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				throw new DatabaseException("Could not close statement", e);
 			}
 		}
 	}
-	
-	public static void safeClose(PreparedStatement stmt) throws DatabaseException{
+
+	public static void safeClose(PreparedStatement stmt)
+			throws DatabaseException {
 		if (stmt != null) {
 			try {
 				stmt.close();
-			}
-			catch (SQLException e) {
-				throw new DatabaseException("Could not close prepared statement", e);
+			} catch (SQLException e) {
+				throw new DatabaseException(
+						"Could not close prepared statement", e);
 			}
 		}
 	}
-	
-	public static void safeClose(ResultSet rs) throws DatabaseException{
+
+	public static void safeClose(ResultSet rs) throws DatabaseException {
 		if (rs != null) {
 			try {
 				rs.close();
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				throw new DatabaseException("Could not close ResultSet", e);
 			}
 		}
 	}
-	
+
 	public static Database getDb() {
 		return db;
 	}
@@ -191,7 +186,12 @@ public class Database {
 	public void setConnection(Connection connection) {
 		this.connection = connection;
 	}
-	
-	
-	
+
+	/**
+	 * 
+	 */
+	public void clear() {
+
+	}
+
 }

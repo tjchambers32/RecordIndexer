@@ -27,7 +27,7 @@ public class User {
 	 * @param recordsIndexed the number of records the user has indexed
 	 * @param selectedImage id of the image the user has checked out
 	 */
-	User(int id, String username, String password, String firstName, String lastName, 
+	public User(int id, String username, String password, String firstName, String lastName, 
 			String email, int recordsIndexed, int selectedImage) {
 		setId(id);
 		setUsername(username);
@@ -39,6 +39,16 @@ public class User {
 		setSelectedImage(selectedImage);
 	}
 	
+	/**
+	 * 
+	 */
+	public User(String username, String password) {
+		
+		setUsername(username);
+		setPassword(password);
+		
+	}
+
 	public int getId() {
 		return id;
 	}

@@ -5,10 +5,10 @@ package server.database;
 
 /**
  * @author tchambs
- *
+ * 
  */
 @SuppressWarnings("serial")
-public class DatabaseException extends Exception{
+public class DatabaseException extends Exception {
 
 	/**
 	 * @param string
@@ -18,6 +18,4 @@ public class DatabaseException extends Exception{
 		super(message, cause);
 	}
 
-	
-	
 }

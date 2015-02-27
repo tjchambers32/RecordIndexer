@@ -19,7 +19,7 @@ public class Value {
 	 * @param recordID the recordID the value belongs to
 	 * @param value the actual text
 	 */
-	Value(int id, int recordID, String value) {
+	public Value(int id, int recordID, String value) {
 		setId(id);
 		setRecordID(recordID);
 		setValue(value);

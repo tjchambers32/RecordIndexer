@@ -21,7 +21,7 @@ public class Search_Result {
 	 * @param rowNumber the row number (y-coord) of the result
 	 * @param fieldID the fieldID (x-coord) of the result
 	 */
-	Search_Result(int imageID, String imageURL, int rowNumber, int fieldID) {
+	public Search_Result(int imageID, String imageURL, int rowNumber, int fieldID) {
 		setImageID(imageID);
 		setImageURL(imageURL);
 		setRowNumber(rowNumber);
