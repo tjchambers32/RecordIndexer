@@ -1,109 +1,142 @@
-/**
- * 
- */
 package server;
-
-/**
- * @author tchambs
- *
- */
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
+import java.util.logging.*;
+
+import com.sun.net.httpserver.*;
+
+import server.database.*;
 
 public class Server {
-	
-	private int port;
-	
-	public Server(int port) {
-		this.port = port;
-	}
-	
-	public void run() {
-		ServerSocket listenSocket = null;
-		byte[] buffer = new byte[1024];
-		
+
+	private static final int SERVER_PORT_NUMBER = 8080;
+	private static final int MAX_WAITING_CONNECTIONS = 10;
+
+	private static Logger logger;
+
+	static {
 		try {
-			listenSocket = new ServerSocket(port);
-			
-			while (true) {
-				Socket clientSocket = listenSocket.accept();
-				
-				try {
-					Scanner input = new Scanner(clientSocket.getInputStream());
-					PrintWriter output = new PrintWriter(clientSocket.getOutputStream());
-					
-					String command = input.nextLine();
-					
-					if (command.startsWith("exit")) {
-						return;
-					}
-					else if (command.startsWith("get")) {
-						String filePath = command.substring("get ".length());
-						InputStream file = null;
-						
-						try {
-							file = new BufferedInputStream(new FileInputStream(filePath));
-						}
-						catch (IOException e) {
-							output.print("error " + e.getMessage() + "\n");
-							output.flush();
-						}
-						
-						if (file != null) {
-							try {
-								output.print("ok\n");
-								output.flush();
-	
-								int bytes;
-								while ((bytes = file.read(buffer)) >= 0) {
-									clientSocket.getOutputStream().write(buffer, 0, bytes);
-								}
-							}
-							catch (IOException e) {
-								// Reading the file failed, so give up
-							}
-							finally {
-								IOUtils.safeClose(file);
-							}
-						}
-					}
-				}
-				finally {
-					IOUtils.safeClose(clientSocket);
-				}
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		finally {
-			IOUtils.safeClose(listenSocket);
+			initLog();
+		} catch (IOException e) {
+			System.out.println("Could not initialize log: " + e.getMessage());
 		}
 	}
 
-	public static void main(String[] args) {
-		
-		int port = -1;
-		
-		if (args.length == 1) {
-			try {
-				port = Integer.parseInt(args[0]);
-			}
-			catch (NumberFormatException e) {
-				// Ignore
-			}
-		}
-		
-		if (port >= 0 && port <= 65535) {
-			Server server = new Server(port);
-			server.run();
-		}
-		else {
-			System.out.println("USAGE: java Server <port>");
+	private static void initLog() throws IOException {
+
+		Level logLevel = Level.FINE;
+
+		logger = Logger.getLogger("contactmanager");
+		logger.setLevel(logLevel);
+		logger.setUseParentHandlers(false);
+
+		Handler consoleHandler = new ConsoleHandler();
+		consoleHandler.setLevel(logLevel);
+		consoleHandler.setFormatter(new SimpleFormatter());
+		logger.addHandler(consoleHandler);
+
+		FileHandler fileHandler = new FileHandler("log.txt", false);
+		fileHandler.setLevel(logLevel);
+		fileHandler.setFormatter(new SimpleFormatter());
+		logger.addHandler(fileHandler);
+	}
+
+	private HttpServer server;
+
+	private Server() {
+		return;
+	}
+
+	private void run() throws DatabaseException {
+
+		logger.info("Initializing Database");
+
+		Database.initialize();
+
+		logger.info("Initializing HTTP Server");
+
+		try {
+			server = HttpServer.create(
+					new InetSocketAddress(SERVER_PORT_NUMBER),
+					MAX_WAITING_CONNECTIONS);
+		} catch (IOException e) {
+
+			// System.out.println("Could not create HTTP server: " +
+			// e.getMessage());
+			// e.printStackTrace();
+
+			logger.log(Level.SEVERE, e.getMessage(), e);
+
+			return;
 		}
 
+		server.setExecutor(null); // use the default executor
+
+		server.createContext("/GetAllContacts", getAllContactsHandler);
+		server.createContext("/AddContact", addContactHandler);
+		server.createContext("/UpdateContact", updateContactHandler);
+		server.createContext("/DeleteContact", deleteContactHandler);
+
+		logger.info("Starting HTTP Server");
+
+		server.start();
+	}
+
+	private HttpHandler getAllContactsHandler = new HttpHandler() {
+
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			// Process GetAllContacts request
+
+			// Database db = new Database();
+			// db.startTransaction();
+			// ...
+			// db.endTransaction();
+		}
+	};
+
+	private HttpHandler addContactHandler = new HttpHandler() {
+
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			// Process AddContact request
+
+			// Database db = new Database();
+			// db.startTransaction();
+			// ...
+			// db.endTransaction();
+		}
+	};
+
+	private HttpHandler updateContactHandler = new HttpHandler() {
+
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			// Process UpdateContact request
+
+			// Database db = new Database();
+			// db.startTransaction();
+			// ...
+			// db.endTransaction();
+		}
+	};
+
+	private HttpHandler deleteContactHandler = new HttpHandler() {
+
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			// Process DeleteContact request
+
+			// Database db = new Database();
+			// db.startTransaction();
+			// ...
+			// db.endTransaction();
+		}
+	};
+
+	public static void main(String[] args) throws DatabaseException {
+		new Server().run();
 	}
 
 }
