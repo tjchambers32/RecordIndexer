@@ -14,12 +14,12 @@ import shared.model.User;
  */
 public class UserDAO {
 
-	private Database db;
+	private ServerFacade db;
 
 	/**
 	 * @param database
 	 */
-	public UserDAO(Database database) {
+	public UserDAO(ServerFacade database) {
 		this.setDb(database);
 	}
 
@@ -37,11 +37,12 @@ public class UserDAO {
 
 	/**
 	 * 
-	 * @param user pass in a user object (contains username and password)
+	 * @param user
+	 *            pass in a user object (contains username and password)
 	 * @return user object if found, otherwise null
-	 * @throws DatabaseException
+	 * @throws ServerFacadeException
 	 */
-	public User validateUser(User user) throws DatabaseException {
+	public User validateUser(User user) throws ServerFacadeException {
 		User result = null;
 
 		PreparedStatement stmt = null;
@@ -70,10 +71,10 @@ public class UserDAO {
 			}
 
 		} catch (Exception e) {
-			throw new DatabaseException(e.getMessage(), e);
+			throw new ServerFacadeException(e.getMessage(), e);
 		} finally {
-			Database.safeClose(rs);
-			Database.safeClose(stmt);
+			ServerFacade.safeClose(rs);
+			ServerFacade.safeClose(stmt);
 		}
 
 		return result;
@@ -82,9 +83,9 @@ public class UserDAO {
 	/**
 	 * 
 	 * @return
-	 * @throws DatabaseException
+	 * @throws ServerFacadeException
 	 */
-	public List<User> getAll() throws DatabaseException {
+	public List<User> getAll() throws ServerFacadeException {
 
 		ArrayList<User> result = new ArrayList<User>();
 		PreparedStatement stmt = null;
@@ -109,21 +110,21 @@ public class UserDAO {
 						lastName, email, recordsIndexed, selectedImage));
 			}
 		} catch (SQLException e) {
-			DatabaseException serverEx = new DatabaseException(e.getMessage(),
-					e);
+			ServerFacadeException serverEx = new ServerFacadeException(
+					e.getMessage(), e);
 			throw serverEx;
 		} finally {
-			Database.safeClose(rs);
-			Database.safeClose(stmt);
+			ServerFacade.safeClose(rs);
+			ServerFacade.safeClose(stmt);
 		}
 		return result;
 	}
 
-	public Database getDb() {
+	public ServerFacade getDb() {
 		return db;
 	}
 
-	public void setDb(Database db) {
+	public void setDb(ServerFacade db) {
 		this.db = db;
 	}
 }

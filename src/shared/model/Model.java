@@ -10,15 +10,15 @@ public class Model {
 
 	public static void initialize() throws ModelException {		
 		try {
-			Database.initialize();		
+			ServerFacade.initialize();		
 		}
-		catch (DatabaseException e) {
+		catch (ServerFacadeException e) {
 			throw new ModelException(e.getMessage(), e);
 		}		
 	}
 	
-	public ValidateUser_Result validateUser(ValidateUser_Params params) throws ModelException, DatabaseException {
-		Database db = new Database();
+	public ValidateUser_Result validateUser(ValidateUser_Params params) throws ModelException, ServerFacadeException {
+		ServerFacade db = new ServerFacade();
 		User user = params.getParams();
 
 		User returnUser = null;
@@ -27,7 +27,7 @@ public class Model {
 			returnUser = db.getUserDAO().validateUser(user);
 			db.endTransaction(true);
 		}
-		catch (DatabaseException e) {
+		catch (ServerFacadeException e) {
 			db.endTransaction(false);
 			throw new ModelException(e.getMessage(), e);
 		}
@@ -36,9 +36,30 @@ public class Model {
 		return result;
 	}
 	
-	public static List<Field> getAllFields() throws ModelException, DatabaseException {	
+	public GetProjects_Result getProjects(GetProjects_Params params) throws ModelException, ServerFacadeException {
+		ServerFacade db = new ServerFacade();
+		User user = params.getParams();
+		
+		//TODO: check if user is valid??
+		
+		List<Project> returnProjects = null;
+		try {
+			db.startTransaction();
+			returnProjects = db.getProjectDAO().getAll();
+			db.endTransaction(true);
+		}
+		catch (ServerFacadeException e) {
+			db.endTransaction(false);
+			throw new ModelException(e.getMessage(), e);
+		}
+				
+		GetProjects_Result result = new GetProjects_Result(returnProjects);
+		return result;
+	}
+	
+	public static List<Field> getAllFields() throws ModelException, ServerFacadeException {	
 
-		Database db = new Database();
+		ServerFacade db = new ServerFacade();
 		
 		try {
 			db.startTransaction();
@@ -46,52 +67,52 @@ public class Model {
 			db.endTransaction(true);
 			return fields;
 		}
-		catch (DatabaseException e) {
+		catch (ServerFacadeException e) {
 			db.endTransaction(false);
 			throw new ModelException(e.getMessage(), e);
 		}
 	}
 	
-	public static void addField(Field field) throws ModelException, DatabaseException {
+	public static void addField(Field field) throws ModelException, ServerFacadeException {
 
-		Database db = new Database();
+		ServerFacade db = new ServerFacade();
 		
 		try {
 			db.startTransaction();
 			db.getFieldDAO().add(field);
 			db.endTransaction(true);
 		}
-		catch (DatabaseException e) {
+		catch (ServerFacadeException e) {
 			db.endTransaction(false);
 			throw new ModelException(e.getMessage(), e);
 		}
 	}
 	
-	public static void updateField(Field field) throws ModelException, DatabaseException {
+	public static void updateField(Field field) throws ModelException, ServerFacadeException {
 
-		Database db = new Database();
+		ServerFacade db = new ServerFacade();
 		
 		try {
 			db.startTransaction();
 			db.getFieldDAO().update(field);
 			db.endTransaction(true);
 		}
-		catch (DatabaseException e) {
+		catch (ServerFacadeException e) {
 			db.endTransaction(false);
 			throw new ModelException(e.getMessage(), e);
 		}
 	}
 	
-	public static void deleteField(Field field) throws ModelException, DatabaseException {
+	public static void deleteField(Field field) throws ModelException, ServerFacadeException {
 
-		Database db = new Database();
+		ServerFacade db = new ServerFacade();
 		
 		try {
 			db.startTransaction();
 			db.getFieldDAO().delete(field);
 			db.endTransaction(true);
 		}
-		catch (DatabaseException e) {
+		catch (ServerFacadeException e) {
 			db.endTransaction(false);
 			throw new ModelException(e.getMessage(), e);
 		}
@@ -99,12 +120,12 @@ public class Model {
 
 	public static void clear() {
 		
-		Database db = new Database();
+		ServerFacade db = new ServerFacade();
 		try {
 			db.startTransaction();
 			db.clear();
 			db.endTransaction(true);
-		} catch (DatabaseException e) {
+		} catch (ServerFacadeException e) {
 			e.printStackTrace();
 		}
 		

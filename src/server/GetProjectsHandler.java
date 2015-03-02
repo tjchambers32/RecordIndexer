@@ -1,23 +1,27 @@
 /**
  * 
- * @author tchambs
  */
 package server;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.sun.net.httpserver.*;
+import server.database.DatabaseException;
+import shared.communication.*;
+import shared.model.*;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import server.database.DatabaseException;
-import shared.model.*;
-import shared.communication.*;
-//import server.facade.*;
-
-public class ValidateUserHandler implements HttpHandler {
+/**
+ * @author tchambs
+ *
+ */
+public class GetProjectsHandler implements HttpHandler {
 
 	private Logger logger = Logger.getLogger("recordindexer"); 
 	private XStream xmlStream = new XStream(new DomDriver());	
@@ -26,14 +30,16 @@ public class ValidateUserHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		
-		ValidateUser_Params params = (ValidateUser_Params)xmlStream.fromXML(exchange.getRequestBody());
+		GetProjects_Params params = (GetProjects_Params)xmlStream.fromXML(exchange.getRequestBody());
 		
-		ValidateUser_Result result = null;
+		//TODO: check if user is valid?
+		
+		GetProjects_Result result = null;
 		
 		try {
-			result = model.validateUser(params);
+			result = model.getProjects(params);
 		}
-		catch (ModelException | DatabaseException e) {
+		catch (ModelException| ServerFacadeException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, -1);
 			return;
@@ -43,4 +49,5 @@ public class ValidateUserHandler implements HttpHandler {
 		xmlStream.toXML(result, exchange.getResponseBody());
 		exchange.getResponseBody().close();
 	}
+
 }

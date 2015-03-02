@@ -1,9 +1,6 @@
-/**
- * 
- */
 package shared.communication;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import shared.model.Project;
 
@@ -13,21 +10,21 @@ import shared.model.Project;
  */
 public class GetProjects_Result {
 
-		private ArrayList<Project> projects;
+		private List<Project> projects;
 
 		/**
 		 * 
-		 * @param projects a list of each project object
+		 * @param returnProjects a list of each project object
 		 */
-		GetProjects_Result(ArrayList<Project> projects) {
-			setProjects(projects);
+		public GetProjects_Result(List<Project> returnProjects) {
+			setProjects(returnProjects);
 		}
 		
-		public ArrayList<Project> getProjects() {
+		public List<Project> getProjects() {
 			return projects;
 		}
 
-		public void setProjects(ArrayList<Project> projects) {
+		public void setProjects(List<Project> projects) {
 			this.projects = projects;
 		}
 		

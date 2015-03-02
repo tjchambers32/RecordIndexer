@@ -48,11 +48,11 @@ public class Server {
 		return;
 	}
 
-	private void run() throws DatabaseException {
+	private void run() throws ServerFacadeException {
 
 		logger.info("Initializing Database");
 
-		Database.initialize();
+		ServerFacade.initialize();
 
 		logger.info("Initializing HTTP Server");
 
@@ -88,20 +88,8 @@ public class Server {
 	}
 	
 	private HttpHandler validateUserHandler = new ValidateUserHandler();
-
-	private HttpHandler getProjectsHandler = new HttpHandler() {
-
-		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			// Process AddContact request
-
-			// Database db = new Database();
-			// db.startTransaction();
-			// ...
-			// db.endTransaction();
-		}
-	};
-
+	private HttpHandler getProjectsHandler = new GetProjectsHandler();
+	
 	private HttpHandler getSampleImageHandler = new HttpHandler() {
 
 		@Override
@@ -180,7 +168,7 @@ public class Server {
 		}
 	};
 	
-	public static void main(String[] args) throws DatabaseException {
+	public static void main(String[] args) throws ServerFacadeException {
 		new Server().run();
 	}
 
