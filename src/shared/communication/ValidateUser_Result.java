@@ -17,7 +17,7 @@ public class ValidateUser_Result {
 	 * 
 	 * @param result a user object containing the user's information
 	 */
-	ValidateUser_Result(User result) {
+	public ValidateUser_Result(User result) {
 		setResult(result);
 	}
 

@@ -76,9 +76,6 @@ public class UserDAO {
 			Database.safeClose(stmt);
 		}
 
-		if (result.getUsername() == null)
-			result = null;
-
 		return result;
 	}
 

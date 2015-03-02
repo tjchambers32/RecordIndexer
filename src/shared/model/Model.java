@@ -3,6 +3,7 @@ package shared.model;
 import java.util.*;
 
 import server.database.*;
+import shared.communication.*;
 
 
 public class Model {
@@ -14,6 +15,25 @@ public class Model {
 		catch (DatabaseException e) {
 			throw new ModelException(e.getMessage(), e);
 		}		
+	}
+	
+	public ValidateUser_Result validateUser(ValidateUser_Params params) throws ModelException, DatabaseException {
+		Database db = new Database();
+		User user = params.getParams();
+
+		User returnUser = null;
+		try {
+			db.startTransaction();
+			returnUser = db.getUserDAO().validateUser(user);
+			db.endTransaction(true);
+		}
+		catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new ModelException(e.getMessage(), e);
+		}
+		
+		ValidateUser_Result result = new ValidateUser_Result(returnUser);
+		return result;
 	}
 	
 	public static List<Field> getAllFields() throws ModelException, DatabaseException {	
@@ -77,9 +97,6 @@ public class Model {
 		}
 	}
 
-	/**
-	 * 
-	 */
 	public static void clear() {
 		
 		Database db = new Database();
