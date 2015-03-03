@@ -7,8 +7,11 @@ import shared.communication.*;
 
 
 public class Model {
-
+	
+	Database db = new Database();
+	
 	public static void initialize() throws ModelException {		
+
 		try {
 			Database.initialize();		
 		}
@@ -18,7 +21,7 @@ public class Model {
 	}
 	
 	public ValidateUser_Result validateUser(ValidateUser_Params params) throws ModelException, DatabaseException {
-		Database db = new Database();
+
 		User user = params.getParams();
 
 		User returnUser = null;
@@ -37,7 +40,7 @@ public class Model {
 	}
 	
 	public GetProjects_Result getProjects(GetProjects_Params params) throws ModelException, DatabaseException {
-		Database db = new Database();
+
 		User user = params.getParams();
 		//TODO: check if user is valid??
 		
@@ -56,9 +59,7 @@ public class Model {
 		return result;
 	}
 	
-	public static List<Field> getAllFields() throws ModelException, DatabaseException {	
-
-		Database db = new Database();
+	public List<Field> getAllFields() throws ModelException, DatabaseException {	
 		
 		try {
 			db.startTransaction();
@@ -72,9 +73,7 @@ public class Model {
 		}
 	}
 	
-	public static void addField(Field field) throws ModelException, DatabaseException {
-
-		Database db = new Database();
+	public void addField(Field field) throws ModelException, DatabaseException {
 		
 		try {
 			db.startTransaction();
@@ -87,9 +86,7 @@ public class Model {
 		}
 	}
 	
-	public static void updateField(Field field) throws ModelException, DatabaseException {
-
-		Database db = new Database();
+	public void updateField(Field field) throws ModelException, DatabaseException {
 		
 		try {
 			db.startTransaction();
@@ -102,9 +99,7 @@ public class Model {
 		}
 	}
 	
-	public static void deleteField(Field field) throws ModelException, DatabaseException {
-
-		Database db = new Database();
+	public void deleteField(Field field) throws ModelException, DatabaseException {
 		
 		try {
 			db.startTransaction();
@@ -116,10 +111,12 @@ public class Model {
 			throw new ModelException(e.getMessage(), e);
 		}
 	}
-
-	public static void clear() {
+	
+	/**
+	 * 
+	 */
+	public void clear() {
 		
-		Database db = new Database();
 		try {
 			db.startTransaction();
 			db.clear();
@@ -135,7 +132,7 @@ public class Model {
 	 * @throws DatabaseException 
 	 * @throws ModelException 
 	 */
-	public static void addUser(User user) throws DatabaseException, ModelException {
+	public void addUser(User user) throws DatabaseException, ModelException {
 		Database db = new Database();
 		
 		try {
@@ -155,7 +152,7 @@ public class Model {
 	 * @throws DatabaseException 
 	 * @throws ModelException 
 	 */
-	public static void addProject(Project project) throws DatabaseException, ModelException {
+	public void addProject(Project project) throws DatabaseException, ModelException {
 		Database db = new Database();
 		
 		try {
@@ -175,7 +172,7 @@ public class Model {
 	 * @throws DatabaseException 
 	 * @throws ModelException 
 	 */
-	public static void addImage(Image image) throws DatabaseException, ModelException {
+	public void addImage(Image image) throws DatabaseException, ModelException {
 		Database db = new Database();
 		
 		try {
@@ -195,7 +192,7 @@ public class Model {
 	 * @throws DatabaseException 
 	 * @throws ModelException 
 	 */
-	public static void addRecord(Record record) throws DatabaseException, ModelException {
+	public void addRecord(Record record) throws DatabaseException, ModelException {
 		Database db = new Database();
 		
 		try {
@@ -214,7 +211,7 @@ public class Model {
 	 * @throws ModelException 
 	 * @throws DatabaseException 
 	 */
-	public static void addValue(Value value) throws ModelException, DatabaseException {
+	public void addValue(Value value) throws ModelException, DatabaseException {
 		Database db = new Database();
 		
 		try {

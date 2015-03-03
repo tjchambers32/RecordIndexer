@@ -9,9 +9,9 @@ public class Record {
 	private int id;
 	private int imageID;
 	private int rowNumber;
-	
+	private int fieldNumber;
 	/**
-	 * 
+	 * Constructor WITH recordID
 	 * @param id the id of the record;
 	 * @param imageID the id of the image the record belongs to
 	 * @param rowNumber which row this record is associated with on the image (y-coord)
@@ -21,6 +21,19 @@ public class Record {
 		setId(id);
 		setImageID(imageID);
 		setRowNumber(rowNumber);
+		setFieldNumber(fieldNumber);
+	}
+	
+	/**
+	 * Constructor WITHOUT recordID
+	 * @param imageID the id of the image the record belongs to
+	 * @param rowNumber which row this record is associated with on the image (y-coord)
+	 * @param fieldNumber which field this record is associated with on the image (x-coord)
+	 */
+	public Record(int imageID, int rowNumber, int fieldNumber) {
+		setImageID(imageID);
+		setRowNumber(rowNumber);
+		setFieldNumber(fieldNumber);
 	}
 	
 	public int getId() {
@@ -42,6 +55,14 @@ public class Record {
 
 	public void setRowNumber(int rowNumber) {
 		this.rowNumber = rowNumber;
+	}
+
+	public int getFieldNumber() {
+		return fieldNumber;
+	}
+
+	public void setFieldNumber(int fieldNumber) {
+		this.fieldNumber = fieldNumber;
 	}	
 	
 }

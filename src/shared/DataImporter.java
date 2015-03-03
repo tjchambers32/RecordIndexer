@@ -22,14 +22,18 @@ import org.w3c.dom.*;
 public class DataImporter {
 
 	private static final String databasePath = "database";
-
+	
+	static DataImporter di = new DataImporter();
+	
+	private Model model = new Model();
+	
 	public static void main(String[] args) throws Exception {
 
 		if (args.length != 1) {
 			System.out.println("USAGE: DataImporter [filepath]");
 		}
 
-		DataImporter di = new DataImporter();
+		
 
 		di.doImport(args[0]);
 
@@ -43,16 +47,16 @@ public class DataImporter {
 
 		Model.initialize();
 
-		Model.clear();
+		model.clear();
 
-		deleteFiles(filepath);
+		di.deleteFiles(filepath);
 
-		addNewFiles(filepath, databasePath);
+		di.addNewFiles(filepath, databasePath);
 		
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document doc = builder.parse(new File(filepath));
 		
-		parse(doc);
+		di.parse(doc);
 	}
 
 	/**
@@ -99,8 +103,8 @@ public class DataImporter {
 	}
 	
 	private void parse(Document doc) throws DatabaseException, ModelException {
-		parseUsers(doc);
-		parseProjects(doc);
+		di.parseUsers(doc);
+		di.parseProjects(doc);
 		
 	}
 
@@ -126,7 +130,7 @@ public class DataImporter {
 			int recordsIndexed = Integer.parseInt(recordsIndexedElem.getTextContent());
 			
 			//TODO: Ask TA how I should do ID?
-			Model.addUser(new User(0, username, password, firstName, lastName, email, recordsIndexed, 0));
+			model.addUser(new User(0, username, password, firstName, lastName, email, recordsIndexed, 0));
 		}
 	}
 	
@@ -148,11 +152,12 @@ public class DataImporter {
 			
 			//TODO: ASK TA -- how to autoincrement projectID here. Should I just increment a local int?
 			Project project = new Project(0, title, recordsPerImage, firstYCoord, recordHeight);
-			Model.addProject(project);
+			model.addProject(project);
 			
-			parseFields(doc, project.getId(), projectElem);
 			
-			parseImages(doc, project.getId(), projectElem);
+			di.parseFields(doc, project.getId(), projectElem);
+			di.parseImages(doc, project.getId(), projectElem);
+
 		}
 	}
 
@@ -165,26 +170,26 @@ public class DataImporter {
 	private void parseFields(Document doc, int projectID, Element projectElem) throws DatabaseException, ModelException {
 		NodeList fieldList = projectElem.getElementsByTagName("field");
 		
-		for (int fieldID = 0; fieldID < fieldList.getLength(); fieldID++) {
+		for (int fieldNumber = 0; fieldNumber < fieldList.getLength(); fieldNumber++) {
 			
-			Element fieldElem = (Element)fieldList.item(fieldID);
+			Element fieldElem = (Element)fieldList.item(fieldNumber);
 			
-			Element fieldNumberElem = (Element) fieldElem.getElementsByTagName("fieldnumber").item(0);
 			Element titleElem = (Element) fieldElem.getElementsByTagName("title").item(0);
 			Element xCoordElem = (Element) fieldElem.getElementsByTagName("xcoord").item(0);
 			Element widthElem = (Element) fieldElem.getElementsByTagName("width").item(0);
 			Element helpHTMLElem = (Element) fieldElem.getElementsByTagName("helphtml").item(0);
 			Element knownDataElem = (Element) fieldElem.getElementsByTagName("knowndata").item(0);
 			
-			int fieldNumber = Integer.parseInt(fieldNumberElem.getTextContent());
 			String title = titleElem.getTextContent();
 			int xCoord = Integer.parseInt(xCoordElem.getTextContent());
 			int width = Integer.parseInt(widthElem.getTextContent());
 			String helpHTML = helpHTMLElem.getTextContent();
-			String knownData = knownDataElem.getTextContent();
+			String knownData = "";
+			if (knownDataElem != null)
+				knownData = knownDataElem.getTextContent();
 			
 			//TODO: ASK TA what ID I should put in??
-			Model.addField(new Field(0, fieldNumber, title, xCoord, width, helpHTML, knownData, projectID));
+			model.addField(new Field(fieldNumber+1, title, xCoord, width, helpHTML, knownData, projectID));
 			
 			
 		}
@@ -205,13 +210,14 @@ public class DataImporter {
 			
 			Element filepathElem = (Element) imageElem.getElementsByTagName("filepath").item(0);
 			
+			//TODO: FIGURE OUT WHAT IS BREAKING HERE!!
 			String filepath = filepathElem.getTextContent();
 			
 			//TODO: ASK TA what ID I should put in??
-			Image image = new Image(0, projectID, filepath, -1); //-1 = available
-			Model.addImage(image);
+			Image image = new Image(projectID, filepath, -1); //-1 = available
+			model.addImage(image);
 			
-			parseRecords(doc, image.getId(), imageElem);
+			di.parseRecords(doc, image.getId(), imageElem);
 		}
 	}
 
@@ -241,9 +247,9 @@ public class DataImporter {
 			
 			//TODO: ASK TA what ID I should put in??
 			Record record = new Record(0, imageID, rowNumber, fieldNumber);
-			Model.addRecord(record); 
+			model.addRecord(record); 
 			
-			parseValues(doc, record.getId(), recordElem);
+			di.parseValues(doc, record.getId(), recordElem);
 
 		}
 		
@@ -269,7 +275,7 @@ public class DataImporter {
 			String text = textElem.getTextContent();
 			
 			Value value = new Value(0, recordID, text, fieldID);
-			Model.addValue(value);
+			model.addValue(value);
 		}
 	}
 }

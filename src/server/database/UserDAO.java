@@ -30,7 +30,7 @@ public class UserDAO {
 		ResultSet keyRS = null;
 		try {
 			String query = "INSERT INTO users"
-					+ "(username, password, firstName, lastName, email, recordsIndexed, batchID) "
+					+ "(username, password, firstName, lastName, email, recordsIndexed, imageID) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 			stmt = db.getConnection().prepareStatement(query);

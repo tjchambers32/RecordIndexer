@@ -34,7 +34,7 @@ public class ValueDAO {
 		ResultSet rs = null;
 
 		try {
-			String query = "SELECT id, recordID, value, fieldID FROM values";
+			String query = "SELECT id, recordID, value, fieldID FROM value";
 			stmt = db.getConnection().prepareStatement(query);
 
 			rs = stmt.executeQuery();
@@ -75,7 +75,7 @@ public class ValueDAO {
 		Statement keyStmt = null;
 		ResultSet keyRS = null;
 		try {
-			String query = "INSERT INTO values"
+			String query = "INSERT INTO value"
 					+ "(recordID, text, fieldID) "
 					+ "VALUES (?, ?, ?)";
 

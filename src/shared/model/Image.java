@@ -14,7 +14,7 @@ public class Image {
 
 	
 	/**
-	 * 
+	 * Constructor WITH imageID
 	 * @param id the image id
 	 * @param projectID the projectID the image belongs to
 	 * @param filepath the relative filepath to the image
@@ -22,6 +22,19 @@ public class Image {
 	 */
 	public Image(int id, int projectID, String filepath, int availability) {
 		setId(id);
+		setProjectID(projectID);
+		setFilepath(filepath);
+		setAvailability(availability);
+	}
+	
+	/**
+	 * Constructor WITHOUT imageID
+	 * @param id the image id
+	 * @param projectID the projectID the image belongs to
+	 * @param filepath the relative filepath to the image
+	 * @param availability an integer representing whether the image is checked out, available, or submitted
+	 */
+	public Image(int projectID, String filepath, int availability) {
 		setProjectID(projectID);
 		setFilepath(filepath);
 		setAvailability(availability);

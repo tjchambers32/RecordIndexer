@@ -56,6 +56,7 @@ public class Database {
 		try {
 			assert (connection == null);
 			connection = DriverManager.getConnection(DATABASE_URL);
+			System.out.println("Starting transaction" + DATABASE_URL);
 			connection.setAutoCommit(false);
 
 		} catch (SQLException e) {
@@ -68,6 +69,7 @@ public class Database {
 	public void endTransaction(boolean commit) throws DatabaseException {
 		if (connection != null) {
 			try {
+				System.out.println("Ending transaction" + DATABASE_URL);
 				if (commit) {
 					connection.commit();
 				} else {
@@ -206,13 +208,14 @@ public class Database {
 		}
 		
 		PreparedStatement stmt = null;
-		scanner.useDelimiter(";");
+		scanner.useDelimiter("!!");
 		
 		while (scanner.hasNext()) {
 			String query = scanner.next();
 			
 			try {
 				stmt = this.getConnection().prepareStatement(query);
+				stmt.executeUpdate();
 			} catch (SQLException e) {
 				throw new DatabaseException("Could not execute query:  " + query);
 			} finally {

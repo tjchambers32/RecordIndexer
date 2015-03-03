@@ -27,17 +27,16 @@ public class FieldDAO {
 		ResultSet keyRS = null;
 		try {
 			String query = "INSERT INTO fields"
-				+ "(fieldNumber, title, xCoord, width, helpHTML, knownData, projectID) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
+				+ "(title, xCoord, width, helpHTML, knownData, projectID) "
+				+ "VALUES (?, ?, ?, ?, ?, ?)";
 			stmt = db.getConnection().prepareStatement(query);
 			
-			stmt.setInt(1, field.getFieldNumber());
-			stmt.setString(2, field.getTitle());
-			stmt.setInt(3, field.getxCoord());
-			stmt.setInt(4, field.getWidth());
-			stmt.setString(5, field.getHelpHTML());
-			stmt.setString(6, field.getKnownData());
-			stmt.setInt(7, field.getProjectID());
+			stmt.setString(1, field.getTitle());
+			stmt.setInt(2, field.getxCoord());
+			stmt.setInt(3, field.getWidth());
+			stmt.setString(4, field.getHelpHTML());
+			stmt.setString(5, field.getKnownData());
+			stmt.setInt(6, field.getProjectID());
 			
 			if (stmt.executeUpdate() == 1) {
 				keyStmt = db.getConnection().createStatement();
