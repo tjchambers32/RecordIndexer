@@ -27,8 +27,39 @@ public class ProjectDAO {
 		this.setDb(database);
 	}
 
-	public void add(Project project) {
-		//TODO: Implement this and ALL add functions in my DAOs
+	public void add(Project project) throws DatabaseException {
+		PreparedStatement stmt = null;
+		Statement keyStmt = null;
+		ResultSet keyRS = null;
+		try {
+			String query = "INSERT INTO projects"
+					+ "(title, recordsPerImage, firstYCoord, recordHeight) "
+					+ "VALUES (?, ?, ?, ?)";
+
+			stmt = db.getConnection().prepareStatement(query);
+
+			stmt.setString(1, project.getTitle());
+			stmt.setInt(2, project.getRecordsPerImage());
+			stmt.setInt(3, project.getFirstYCoord());
+			stmt.setInt(4, project.getRecordHeight());
+			
+			if (stmt.executeUpdate() == 1) {
+				keyStmt = db.getConnection().createStatement();
+				keyRS = keyStmt.executeQuery("SELECT last_insert_rowid()");
+				keyRS.next();
+				int id = keyRS.getInt(1); // ID of the new User from the
+											// auto-incrementing table
+				project.setId(id);
+			} else {
+				throw new DatabaseException("Could not insert project");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+			Database.safeClose(keyStmt);
+			Database.safeClose(keyRS);
+		}
 	}
 
 	public void update(Project project) {

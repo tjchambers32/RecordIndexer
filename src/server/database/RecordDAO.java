@@ -6,6 +6,7 @@ package server.database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +27,37 @@ public class RecordDAO {
 		this.setDb(database);
 	}
 
-	public void add(Record record) {
+	public void add(Record record) throws DatabaseException {
+		PreparedStatement stmt = null;
+		Statement keyStmt = null;
+		ResultSet keyRS = null;
+		try {
+			String query = "INSERT INTO records"
+					+ "(imageID, rowNumber) "
+					+ "VALUES (?, ?)";
 
+			stmt = db.getConnection().prepareStatement(query);
+
+			stmt.setInt(1, record.getImageID());
+			stmt.setInt(2, record.getRowNumber());
+
+			if (stmt.executeUpdate() == 1) {
+				keyStmt = db.getConnection().createStatement();
+				keyRS = keyStmt.executeQuery("SELECT last_insert_rowid()");
+				keyRS.next();
+				int id = keyRS.getInt(1); // ID of the new User from the
+											// auto-incrementing table
+				record.setId(id);
+			} else {
+				throw new DatabaseException("Could not insert record");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+			Database.safeClose(keyStmt);
+			Database.safeClose(keyRS);
+		}
 	}
 
 	public void update(Record record) {

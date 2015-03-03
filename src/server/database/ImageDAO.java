@@ -6,10 +6,10 @@ package server.database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import shared.model.Field;
 import shared.model.Image;
 
 /**
@@ -27,8 +27,38 @@ public class ImageDAO {
 		this.setDb(database);
 	}
 
-	public void add(Image image) {
-		//TODO: Implement this and ALL add functions in my DAOs
+	public void add(Image image) throws DatabaseException {
+		PreparedStatement stmt = null;
+		Statement keyStmt = null;
+		ResultSet keyRS = null;
+		try {
+			String query = "INSERT INTO images"
+					+ "(projectID, filepath, availability) "
+					+ "VALUES (?, ?, ?)";
+
+			stmt = db.getConnection().prepareStatement(query);
+
+			stmt.setInt(1, image.getProjectID());
+			stmt.setString(2, image.getFilepath());
+			stmt.setInt(3, image.getAvailability());
+
+			if (stmt.executeUpdate() == 1) {
+				keyStmt = db.getConnection().createStatement();
+				keyRS = keyStmt.executeQuery("SELECT last_insert_rowid()");
+				keyRS.next();
+				int id = keyRS.getInt(1); // ID of the new User from the
+											// auto-incrementing table
+				image.setId(id);
+			} else {
+				throw new DatabaseException("Could not insert image");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+			Database.safeClose(keyStmt);
+			Database.safeClose(keyRS);
+		}
 	}
 
 	public void update(Image image) {

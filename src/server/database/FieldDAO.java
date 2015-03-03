@@ -21,8 +21,40 @@ public class FieldDAO {
 		this.setDb(database);
 	}
 
-	public void add(Field field) {
-		// TODO implement
+	public void add(Field field) throws DatabaseException {
+		PreparedStatement stmt = null;
+		Statement keyStmt = null;
+		ResultSet keyRS = null;
+		try {
+			String query = "INSERT INTO fields"
+				+ "(fieldNumber, title, xCoord, width, helpHTML, knownData, projectID) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
+			stmt = db.getConnection().prepareStatement(query);
+			
+			stmt.setInt(1, field.getFieldNumber());
+			stmt.setString(2, field.getTitle());
+			stmt.setInt(3, field.getxCoord());
+			stmt.setInt(4, field.getWidth());
+			stmt.setString(5, field.getHelpHTML());
+			stmt.setString(6, field.getKnownData());
+			stmt.setInt(7, field.getProjectID());
+			
+			if (stmt.executeUpdate() == 1) {
+				keyStmt = db.getConnection().createStatement();
+				keyRS = keyStmt.executeQuery("SELECT last_insert_rowid()");
+				keyRS.next();
+				int id = keyRS.getInt(1);
+				field.setId(id);
+			} else {
+				throw new DatabaseException("Could not insert field");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+			Database.safeClose(keyStmt);
+			Database.safeClose(keyRS);
+		}
 	}
 
 	public void update(Field field) {
