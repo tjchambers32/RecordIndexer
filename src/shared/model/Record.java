@@ -3,15 +3,12 @@ package shared.model;
 /**
  * @author tchambs
  * 
- * 
- * 
  */
 public class Record {
 
 	private int id;
 	private int imageID;
 	private int rowNumber;
-	private int fieldNumber;
 	
 	/**
 	 * 
@@ -24,7 +21,6 @@ public class Record {
 		setId(id);
 		setImageID(imageID);
 		setRowNumber(rowNumber);
-		setFieldNumber(fieldNumber);
 	}
 	
 	public int getId() {
@@ -46,14 +42,6 @@ public class Record {
 
 	public void setRowNumber(int rowNumber) {
 		this.rowNumber = rowNumber;
-	}
-
-	public int getFieldNumber() {
-		return fieldNumber;
-	}
-	public void setFieldNumber(int fieldNumber) {
-		this.fieldNumber = fieldNumber;
-	}
-	
+	}	
 	
 }

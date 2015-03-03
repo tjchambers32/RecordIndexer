@@ -39,9 +39,10 @@ public class ValueDAO {
 			while (rs.next()) {
 				int id = rs.getInt(1);
 				int recordID = rs.getInt(2);
-				String value = rs.getString(3);
+				int columnID = rs.getInt(3);
+				String value = rs.getString(4);
 
-				result.add(new Value(id, recordID, value));
+				result.add(new Value(id, recordID, columnID, value));
 			}
 		} catch (SQLException e) {
 			DatabaseException serverEx = new DatabaseException(e.getMessage(),
@@ -60,6 +61,14 @@ public class ValueDAO {
 
 	public void setDb(Database db) {
 		this.db = db;
+	}
+
+	/**
+	 * @param value
+	 */
+	public void add(Value value) {
+		//TODO: Implement this and ALL add functions in my DAOs
+		
 	}
 
 }

@@ -11,18 +11,20 @@ public class Value {
 
 	private int id;
 	private int recordID;
-	private String value;
+	private int column;
+	private String text;
 	
 	/**
 	 * 
 	 * @param id the id of the value
 	 * @param recordID the recordID the value belongs to
-	 * @param value the actual text
+	 * @param text the actual text
 	 */
-	public Value(int id, int recordID, String value) {
+	public Value(int id, int recordID, int column, String text) {
 		setId(id);
 		setRecordID(recordID);
-		setValue(value);
+		setColumn(column);
+		setText(text);
 	}
 	
 	
@@ -38,12 +40,16 @@ public class Value {
 	public void setRecordID(int recordID) {
 		this.recordID = recordID;
 	}
-	public String getValue() {
-		return value;
+	public String getText() {
+		return text;
 	}
-	public void setValue(String value) {
-		this.value = value;
+	public void setText(String text) {
+		this.text = text;
 	}
-	
-	
+	public int getColumn() {
+		return column;
+	}
+	public void setColumn(int column) {
+		this.column = column;
+	}
 }

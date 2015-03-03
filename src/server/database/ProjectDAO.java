@@ -28,7 +28,7 @@ public class ProjectDAO {
 	}
 
 	public void add(Project project) {
-		
+		//TODO: Implement this and ALL add functions in my DAOs
 	}
 
 	public void update(Project project) {

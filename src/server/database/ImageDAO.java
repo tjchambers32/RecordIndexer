@@ -28,7 +28,7 @@ public class ImageDAO {
 	}
 
 	public void add(Image image) {
-
+		//TODO: Implement this and ALL add functions in my DAOs
 	}
 
 	public void update(Image image) {

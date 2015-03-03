@@ -189,6 +189,44 @@ public class Model {
 		}
 		
 	}
+
+	/**
+	 * @param record
+	 * @throws DatabaseException 
+	 * @throws ModelException 
+	 */
+	public static void addRecord(Record record) throws DatabaseException, ModelException {
+		Database db = new Database();
+		
+		try {
+			db.startTransaction();
+			db.getRecordDAO().add(record);
+			db.endTransaction(true);
+		}
+		catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new ModelException(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * @param value
+	 * @throws ModelException 
+	 * @throws DatabaseException 
+	 */
+	public static void addValue(Value value) throws ModelException, DatabaseException {
+		Database db = new Database();
+		
+		try {
+			db.startTransaction();
+			db.getValueDAO().add(value);
+			db.endTransaction(true);
+		}
+		catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new ModelException(e.getMessage(), e);
+		}		
+	}
 	
 	
 	

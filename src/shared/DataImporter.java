@@ -150,29 +150,31 @@ public class DataImporter {
 			Project project = new Project(projectID+1, title, recordsPerImage, firstYCoord, recordHeight);
 			Model.addProject(project);
 			
-			parseFields(doc, project.getId());
+			parseFields(doc, project.getId(), projectElem);
 			
-			parseImages(doc, project.getId());
+			parseImages(doc, project.getId(), projectElem);
 		}
 	}
 
 	/**
 	 * @param doc
+	 * @param projectElem 
 	 * @throws ModelException 
 	 * @throws DatabaseException 
 	 */
-	private void parseFields(Document doc, int projectID) throws DatabaseException, ModelException {
-		NodeList fieldList = doc.getElementsByTagName("field");
+	private void parseFields(Document doc, int projectID, Element projectElem) throws DatabaseException, ModelException {
+		NodeList fieldList = projectElem.getElementsByTagName("field");
+		
 		for (int fieldID = 0; fieldID < fieldList.getLength(); fieldID++) {
 			
-			Element projectElem = (Element)fieldList.item(fieldID);
+			Element fieldElem = (Element)fieldList.item(fieldID);
 			
-			Element fieldNumberElem = (Element) projectElem.getElementsByTagName("fieldnumber").item(0);
-			Element titleElem = (Element) projectElem.getElementsByTagName("title").item(0);
-			Element xCoordElem = (Element) projectElem.getElementsByTagName("xcoord").item(0);
-			Element widthElem = (Element) projectElem.getElementsByTagName("width").item(0);
-			Element helpHTMLElem = (Element) projectElem.getElementsByTagName("helphtml").item(0);
-			Element knownDataElem = (Element) projectElem.getElementsByTagName("knowndata").item(0);
+			Element fieldNumberElem = (Element) fieldElem.getElementsByTagName("fieldnumber").item(0);
+			Element titleElem = (Element) fieldElem.getElementsByTagName("title").item(0);
+			Element xCoordElem = (Element) fieldElem.getElementsByTagName("xcoord").item(0);
+			Element widthElem = (Element) fieldElem.getElementsByTagName("width").item(0);
+			Element helpHTMLElem = (Element) fieldElem.getElementsByTagName("helphtml").item(0);
+			Element knownDataElem = (Element) fieldElem.getElementsByTagName("knowndata").item(0);
 			
 			int fieldNumber = Integer.parseInt(fieldNumberElem.getTextContent());
 			String title = titleElem.getTextContent();
@@ -190,22 +192,85 @@ public class DataImporter {
 	
 	/**
 	 * @param doc
+	 * @param projectElem 
 	 * @param id
 	 * @throws DatabaseException 
 	 * @throws ModelException 
 	 */
-	private void parseImages(Document doc, int projectID) throws ModelException, DatabaseException {
-		NodeList imageList = doc.getElementsByTagName("image");
+	private void parseImages(Document doc, int projectID, Element projectElem) throws ModelException, DatabaseException {
+		NodeList imageList = projectElem.getElementsByTagName("image");
 		for (int imageID = 0; imageID < imageList.getLength(); imageID++) {
 			
-			Element projectElem = (Element)imageList.item(imageID);
+			Element imageElem = (Element)imageList.item(imageID);
 			
-			Element filepathElem = (Element) projectElem.getElementsByTagName("filepath").item(0);
+			Element filepathElem = (Element) imageElem.getElementsByTagName("filepath").item(0);
 			
 			String filepath = filepathElem.getTextContent();
 			
 			//TODO: ASK TA what ID I should put in??
-			Model.addImage(new Image(imageID+1, projectID, filepath, -1));
+			Image image = new Image(imageID+1, projectID, filepath, -1); //-1 = available
+			Model.addImage(image);
+			
+			parseRecords(doc, image.getId(), imageElem);
+		}
+	}
+
+	/**
+	 * @param doc
+	 * @param imageElem 
+	 * @param i
+	 * @throws ModelException 
+	 * @throws DatabaseException 
+	 */
+	private void parseRecords(Document doc, int imageID, Element imageElem) throws DatabaseException, ModelException {
+		NodeList recordList = imageElem.getElementsByTagName("record");
+		
+		if (recordList == null)
+			return;
+		
+		for (int recordID = 0; recordID < recordList.getLength(); recordID++) {
+			
+			Element recordElem = (Element)recordList.item(recordID);
+			
+			Element rowNumberElem = (Element) recordElem.getElementsByTagName("rownumber").item(0);
+			Element fieldNumberElem = (Element) recordElem.getElementsByTagName("fieldnumber").item(0);
+			
+			int rowNumber = Integer.parseInt(rowNumberElem.getTextContent());
+			int fieldNumber = Integer.parseInt(fieldNumberElem.getTextContent());
+			
+			
+			//TODO: ASK TA what ID I should put in??
+			Record record = new Record(recordID+1, imageID, rowNumber, fieldNumber);
+			Model.addRecord(record); 
+			
+			parseValues(doc, record.getId(), recordElem);
+
+		}
+		
+	}
+
+	/**
+	 * @param doc
+	 * @param id
+	 * @param recordElem
+	 * @throws DatabaseException 
+	 * @throws ModelException 
+	 */
+	private void parseValues(Document doc, int recordID, Element recordElem) throws ModelException, DatabaseException {
+		NodeList valueList = recordElem.getElementsByTagName("record");
+		
+		if (valueList == null)
+				return;
+		
+		for (int columnID = 0; columnID < valueList.getLength(); columnID++) {
+			Element valueElem = (Element)valueList.item(columnID);
+			
+			Element textElem = (Element)valueElem.getElementsByTagName("value").item(0);
+			
+			String text = textElem.getTextContent();
+			
+			Value value = new Value(columnID+1, recordID, columnID, text);
+			Model.addValue(value);
 		}
 	}
 }
