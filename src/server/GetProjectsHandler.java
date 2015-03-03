@@ -9,8 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import server.database.DatabaseException;
+import server.facade.*;
 import shared.communication.*;
-import shared.model.*;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -25,7 +25,7 @@ public class GetProjectsHandler implements HttpHandler {
 
 	private Logger logger = Logger.getLogger("recordindexer"); 
 	private XStream xmlStream = new XStream(new DomDriver());	
-	private Model model = new Model();
+	private ServerFacade facade = new ServerFacade();
 	
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
@@ -37,9 +37,9 @@ public class GetProjectsHandler implements HttpHandler {
 		GetProjects_Result result = null;
 		
 		try {
-			result = model.getProjects(params);
+			result = facade.getProjects(params);
 		}
-		catch (ModelException| DatabaseException e) {
+		catch (ServerFacadeException | DatabaseException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, -1);
 			return;

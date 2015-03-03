@@ -3,6 +3,7 @@ package server.database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,42 @@ public class UserDAO {
 		this.setDb(database);
 	}
 
-	public void add(User user) {
+	public void add(User user) throws DatabaseException {
+		PreparedStatement stmt = null;
+		Statement keyStmt = null;
+		ResultSet keyRS = null;
+		try {
+			String query = "INSERT INTO users"
+					+ "(username, password, firstName, lastName, email, recordsIndexed, batchID) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
+			stmt = db.getConnection().prepareStatement(query);
+
+			stmt.setString(1, user.getUsername());
+			stmt.setString(2, user.getPassword());
+			stmt.setString(3, user.getFirstName());
+			stmt.setString(4, user.getLastName());
+			stmt.setString(5, user.getEmail());
+			stmt.setInt(6, user.getRecordsIndexed());
+			stmt.setInt(7, user.getSelectedImage());
+
+			if (stmt.executeUpdate() == 1) {
+				keyStmt = db.getConnection().createStatement();
+				keyRS = keyStmt.executeQuery("SELECT last_insert_rowid()");
+				keyRS.next();
+				int id = keyRS.getInt(1); // ID of the new User from the
+											// auto-incrementing table
+				user.setId(id);
+			} else {
+				throw new DatabaseException("Could not insert user");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+			Database.safeClose(keyStmt);
+			Database.safeClose(keyRS);
+		}
 	}
 
 	public void update(User user) {
@@ -110,8 +145,8 @@ public class UserDAO {
 						lastName, email, recordsIndexed, selectedImage));
 			}
 		} catch (SQLException e) {
-			DatabaseException serverEx = new DatabaseException(
-					e.getMessage(), e);
+			DatabaseException serverEx = new DatabaseException(e.getMessage(),
+					e);
 			throw serverEx;
 		} finally {
 			Database.safeClose(rs);

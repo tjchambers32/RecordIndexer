@@ -3,12 +3,11 @@
  */
 package shared.model;
 
-import server.database.DatabaseException;
-
 /**
  * @author tchambs
  *
  */
+@SuppressWarnings("serial")
 public class ModelException extends Exception {
 
 	/**

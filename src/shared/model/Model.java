@@ -39,7 +39,6 @@ public class Model {
 	public GetProjects_Result getProjects(GetProjects_Params params) throws ModelException, DatabaseException {
 		Database db = new Database();
 		User user = params.getParams();
-		
 		//TODO: check if user is valid??
 		
 		List<Project> returnProjects = null;
@@ -131,4 +130,66 @@ public class Model {
 		
 	}
 
+	/**
+	 * @param user
+	 * @throws DatabaseException 
+	 * @throws ModelException 
+	 */
+	public static void addUser(User user) throws DatabaseException, ModelException {
+		Database db = new Database();
+		
+		try {
+			db.startTransaction();
+			db.getUserDAO().add(user);
+			db.endTransaction(true);
+		}
+		catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new ModelException(e.getMessage(), e);
+		}
+		
+	}
+
+	/**
+	 * @param project
+	 * @throws DatabaseException 
+	 * @throws ModelException 
+	 */
+	public static void addProject(Project project) throws DatabaseException, ModelException {
+		Database db = new Database();
+		
+		try {
+			db.startTransaction();
+			db.getProjectDAO().add(project);
+			db.endTransaction(true);
+		}
+		catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new ModelException(e.getMessage(), e);
+		}
+		
+	}
+
+	/**
+	 * @param image
+	 * @throws DatabaseException 
+	 * @throws ModelException 
+	 */
+	public static void addImage(Image image) throws DatabaseException, ModelException {
+		Database db = new Database();
+		
+		try {
+			db.startTransaction();
+			db.getImageDAO().add(image);
+			db.endTransaction(true);
+		}
+		catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new ModelException(e.getMessage(), e);
+		}
+		
+	}
+	
+	
+	
 }

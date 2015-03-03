@@ -18,4 +18,11 @@ public class DatabaseException extends Exception {
 		super(message, cause);
 	}
 
+	/**
+	 * @param string
+	 */
+	public DatabaseException(String message) {
+		super(message);
+	}
+
 }

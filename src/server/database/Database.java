@@ -41,7 +41,6 @@ public class Database {
 	 * Initializes all of the DAO classes
 	 */
 	public Database() {
-		//TODO: FIX ALL DAO classes with Database instead of Database
 		fieldDAO = new FieldDAO(this);
 		imageDAO = new ImageDAO(this);
 		projectDAO = new ProjectDAO(this);
