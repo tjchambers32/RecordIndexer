@@ -147,7 +147,7 @@ public class DataImporter {
 			int recordHeight = Integer.parseInt(recordHeightElem.getTextContent());
 			
 			//TODO: ASK TA -- how to autoincrement projectID here. Should I just increment a local int?
-			Project project = new Project(projectID+1, title, recordsPerImage, firstYCoord, recordHeight);
+			Project project = new Project(0, title, recordsPerImage, firstYCoord, recordHeight);
 			Model.addProject(project);
 			
 			parseFields(doc, project.getId(), projectElem);
@@ -184,7 +184,7 @@ public class DataImporter {
 			String knownData = knownDataElem.getTextContent();
 			
 			//TODO: ASK TA what ID I should put in??
-			Model.addField(new Field(fieldID+1, fieldNumber, title, xCoord, width, helpHTML, knownData, projectID));
+			Model.addField(new Field(0, fieldNumber, title, xCoord, width, helpHTML, knownData, projectID));
 			
 			
 		}
@@ -208,7 +208,7 @@ public class DataImporter {
 			String filepath = filepathElem.getTextContent();
 			
 			//TODO: ASK TA what ID I should put in??
-			Image image = new Image(imageID+1, projectID, filepath, -1); //-1 = available
+			Image image = new Image(0, projectID, filepath, -1); //-1 = available
 			Model.addImage(image);
 			
 			parseRecords(doc, image.getId(), imageElem);
@@ -240,7 +240,7 @@ public class DataImporter {
 			
 			
 			//TODO: ASK TA what ID I should put in??
-			Record record = new Record(recordID+1, imageID, rowNumber, fieldNumber);
+			Record record = new Record(0, imageID, rowNumber, fieldNumber);
 			Model.addRecord(record); 
 			
 			parseValues(doc, record.getId(), recordElem);
@@ -262,14 +262,13 @@ public class DataImporter {
 		if (valueList == null)
 				return;
 		
-		for (int columnID = 0; columnID < valueList.getLength(); columnID++) {
-			Element valueElem = (Element)valueList.item(columnID);
+		for (int fieldID = 0; fieldID < valueList.getLength(); fieldID++) {
+			Element valueElem = (Element)valueList.item(fieldID);
 			
 			Element textElem = (Element)valueElem.getElementsByTagName("value").item(0);
-			
 			String text = textElem.getTextContent();
 			
-			Value value = new Value(columnID+1, recordID, columnID, text);
+			Value value = new Value(0, recordID, text, fieldID);
 			Model.addValue(value);
 		}
 	}

@@ -4,7 +4,9 @@
 package server.database;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.*;
+import java.util.Scanner;
 
 /**
  * @author tchambs
@@ -13,7 +15,7 @@ import java.sql.*;
 public class Database {
 
 	private static final String DATABASE_DIRECTORY = "database";
-	private static final String DATABASE_FILE = "contactmanager.sqlite";
+	private static final String DATABASE_FILE = "database.sqlite";
 	private static final String DATABASE_URL = "jdbc:sqlite:"
 			+ DATABASE_DIRECTORY + File.separator + DATABASE_FILE;
 
@@ -188,10 +190,35 @@ public class Database {
 	}
 
 	/**
+	 * @throws DatabaseException 
 	 * 
 	 */
-	public void clear() {
-
+	public void clear() throws DatabaseException {
+		//empty and recreate the database
+		
+		File sqlStatements = new File("SQLStatements.txt");
+		Scanner scanner = null;
+		
+		try {
+			scanner = new Scanner(sqlStatements);
+		} catch (FileNotFoundException e) {
+			System.out.println("Could not open SQLStatements.txt File");
+		}
+		
+		PreparedStatement stmt = null;
+		scanner.useDelimiter(";");
+		
+		while (scanner.hasNext()) {
+			String query = scanner.next();
+			
+			try {
+				stmt = this.getConnection().prepareStatement(query);
+			} catch (SQLException e) {
+				throw new DatabaseException("Could not execute query:  " + query);
+			} finally {
+				Database.safeClose(stmt);
+			}
+		}
 	}
 
 }

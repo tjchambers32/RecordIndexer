@@ -11,8 +11,9 @@ public class Value {
 
 	private int id;
 	private int recordID;
-	private int column;
 	private String text;
+	private int fieldID;
+
 	
 	/**
 	 * 
@@ -20,11 +21,11 @@ public class Value {
 	 * @param recordID the recordID the value belongs to
 	 * @param text the actual text
 	 */
-	public Value(int id, int recordID, int column, String text) {
+	public Value(int id, int recordID, String text, int fieldID) {
 		setId(id);
 		setRecordID(recordID);
-		setColumn(column);
 		setText(text);
+		setFieldID(fieldID);
 	}
 	
 	
@@ -46,10 +47,10 @@ public class Value {
 	public void setText(String text) {
 		this.text = text;
 	}
-	public int getColumn() {
-		return column;
+	public int getFieldID() {
+		return fieldID;
 	}
-	public void setColumn(int column) {
-		this.column = column;
+	public void setFieldID(int fieldID) {
+		this.fieldID = fieldID;
 	}
 }

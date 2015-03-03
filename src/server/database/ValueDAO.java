@@ -34,17 +34,18 @@ public class ValueDAO {
 		ResultSet rs = null;
 
 		try {
-			String query = "SELECT id, recordID, value FROM values";
+			String query = "SELECT id, recordID, value, fieldID FROM values";
 			stmt = db.getConnection().prepareStatement(query);
 
 			rs = stmt.executeQuery();
 			while (rs.next()) {
 				int id = rs.getInt(1);
 				int recordID = rs.getInt(2);
-				int columnID = rs.getInt(3);
-				String value = rs.getString(4);
+				String value = rs.getString(3);
+				int fieldID = rs.getInt(4);
 
-				result.add(new Value(id, recordID, columnID, value));
+
+				result.add(new Value(id, recordID, value, fieldID));
 			}
 		} catch (SQLException e) {
 			DatabaseException serverEx = new DatabaseException(e.getMessage(),
@@ -75,14 +76,14 @@ public class ValueDAO {
 		ResultSet keyRS = null;
 		try {
 			String query = "INSERT INTO values"
-					+ "(recordID, column, text) "
+					+ "(recordID, text, fieldID) "
 					+ "VALUES (?, ?, ?)";
 
 			stmt = db.getConnection().prepareStatement(query);
 
 			stmt.setInt(1, value.getRecordID());
-			stmt.setInt(2, value.getColumn());
-			stmt.setString(3, value.getText());
+			stmt.setString(2, value.getText());
+			stmt.setInt(3, value.getFieldID());
 
 			if (stmt.executeUpdate() == 1) {
 				keyStmt = db.getConnection().createStatement();
