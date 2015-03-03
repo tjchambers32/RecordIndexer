@@ -132,9 +132,9 @@ public class DataImporter {
 	
 	private void parseProjects(Document doc) throws DatabaseException, ModelException {
 		NodeList projectList = doc.getElementsByTagName("project");
-		for (int i = 0; i < projectList.getLength(); i++) {
+		for (int projectID = 0; projectID < projectList.getLength(); projectID++) {
 			
-			Element projectElem = (Element)projectList.item(i);
+			Element projectElem = (Element)projectList.item(projectID);
 			
 			Element titleElem = (Element) projectElem.getElementsByTagName("title").item(0);
 			Element recordsPerImageElem = (Element) projectElem.getElementsByTagName("recordsperimage").item(0);
@@ -147,7 +147,7 @@ public class DataImporter {
 			int recordHeight = Integer.parseInt(recordHeightElem.getTextContent());
 			
 			//TODO: ASK TA -- how to autoincrement projectID here. Should I just increment a local int?
-			Project project = new Project(-1, title, recordsPerImage, firstYCoord, recordHeight);
+			Project project = new Project(projectID+1, title, recordsPerImage, firstYCoord, recordHeight);
 			Model.addProject(project);
 			
 			parseFields(doc, project.getId());
@@ -163,9 +163,9 @@ public class DataImporter {
 	 */
 	private void parseFields(Document doc, int projectID) throws DatabaseException, ModelException {
 		NodeList fieldList = doc.getElementsByTagName("field");
-		for (int i = 0; i < fieldList.getLength(); i++) {
+		for (int fieldID = 0; fieldID < fieldList.getLength(); fieldID++) {
 			
-			Element projectElem = (Element)fieldList.item(i);
+			Element projectElem = (Element)fieldList.item(fieldID);
 			
 			Element fieldNumberElem = (Element) projectElem.getElementsByTagName("fieldnumber").item(0);
 			Element titleElem = (Element) projectElem.getElementsByTagName("title").item(0);
@@ -182,7 +182,7 @@ public class DataImporter {
 			String knownData = knownDataElem.getTextContent();
 			
 			//TODO: ASK TA what ID I should put in??
-			Model.addField(new Field(-1, fieldNumber, title, xCoord, width, helpHTML, knownData, projectID));
+			Model.addField(new Field(fieldID+1, fieldNumber, title, xCoord, width, helpHTML, knownData, projectID));
 			
 			
 		}
@@ -196,16 +196,16 @@ public class DataImporter {
 	 */
 	private void parseImages(Document doc, int projectID) throws ModelException, DatabaseException {
 		NodeList imageList = doc.getElementsByTagName("image");
-		for (int i = 0; i < imageList.getLength(); i++) {
+		for (int imageID = 0; imageID < imageList.getLength(); imageID++) {
 			
-			Element projectElem = (Element)imageList.item(i);
+			Element projectElem = (Element)imageList.item(imageID);
 			
 			Element filepathElem = (Element) projectElem.getElementsByTagName("filepath").item(0);
 			
 			String filepath = filepathElem.getTextContent();
 			
 			//TODO: ASK TA what ID I should put in??
-			Model.addImage(new Image(0, projectID, filepath, -1));
+			Model.addImage(new Image(imageID+1, projectID, filepath, -1));
 		}
 	}
 }
