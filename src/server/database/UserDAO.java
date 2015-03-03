@@ -14,12 +14,12 @@ import shared.model.User;
  */
 public class UserDAO {
 
-	private ServerFacade db;
+	private Database db;
 
 	/**
 	 * @param database
 	 */
-	public UserDAO(ServerFacade database) {
+	public UserDAO(Database database) {
 		this.setDb(database);
 	}
 
@@ -40,9 +40,9 @@ public class UserDAO {
 	 * @param user
 	 *            pass in a user object (contains username and password)
 	 * @return user object if found, otherwise null
-	 * @throws ServerFacadeException
+	 * @throws DatabaseException
 	 */
-	public User validateUser(User user) throws ServerFacadeException {
+	public User validateUser(User user) throws DatabaseException {
 		User result = null;
 
 		PreparedStatement stmt = null;
@@ -71,10 +71,10 @@ public class UserDAO {
 			}
 
 		} catch (Exception e) {
-			throw new ServerFacadeException(e.getMessage(), e);
+			throw new DatabaseException(e.getMessage(), e);
 		} finally {
-			ServerFacade.safeClose(rs);
-			ServerFacade.safeClose(stmt);
+			Database.safeClose(rs);
+			Database.safeClose(stmt);
 		}
 
 		return result;
@@ -83,9 +83,9 @@ public class UserDAO {
 	/**
 	 * 
 	 * @return
-	 * @throws ServerFacadeException
+	 * @throws DatabaseException
 	 */
-	public List<User> getAll() throws ServerFacadeException {
+	public List<User> getAll() throws DatabaseException {
 
 		ArrayList<User> result = new ArrayList<User>();
 		PreparedStatement stmt = null;
@@ -110,21 +110,21 @@ public class UserDAO {
 						lastName, email, recordsIndexed, selectedImage));
 			}
 		} catch (SQLException e) {
-			ServerFacadeException serverEx = new ServerFacadeException(
+			DatabaseException serverEx = new DatabaseException(
 					e.getMessage(), e);
 			throw serverEx;
 		} finally {
-			ServerFacade.safeClose(rs);
-			ServerFacade.safeClose(stmt);
+			Database.safeClose(rs);
+			Database.safeClose(stmt);
 		}
 		return result;
 	}
 
-	public ServerFacade getDb() {
+	public Database getDb() {
 		return db;
 	}
 
-	public void setDb(ServerFacade db) {
+	public void setDb(Database db) {
 		this.db = db;
 	}
 }

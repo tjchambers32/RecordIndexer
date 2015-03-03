@@ -10,15 +10,15 @@ public class Model {
 
 	public static void initialize() throws ModelException {		
 		try {
-			ServerFacade.initialize();		
+			Database.initialize();		
 		}
-		catch (ServerFacadeException e) {
+		catch (DatabaseException e) {
 			throw new ModelException(e.getMessage(), e);
 		}		
 	}
 	
-	public ValidateUser_Result validateUser(ValidateUser_Params params) throws ModelException, ServerFacadeException {
-		ServerFacade db = new ServerFacade();
+	public ValidateUser_Result validateUser(ValidateUser_Params params) throws ModelException, DatabaseException {
+		Database db = new Database();
 		User user = params.getParams();
 
 		User returnUser = null;
@@ -27,7 +27,7 @@ public class Model {
 			returnUser = db.getUserDAO().validateUser(user);
 			db.endTransaction(true);
 		}
-		catch (ServerFacadeException e) {
+		catch (DatabaseException e) {
 			db.endTransaction(false);
 			throw new ModelException(e.getMessage(), e);
 		}
@@ -36,8 +36,8 @@ public class Model {
 		return result;
 	}
 	
-	public GetProjects_Result getProjects(GetProjects_Params params) throws ModelException, ServerFacadeException {
-		ServerFacade db = new ServerFacade();
+	public GetProjects_Result getProjects(GetProjects_Params params) throws ModelException, DatabaseException {
+		Database db = new Database();
 		User user = params.getParams();
 		
 		//TODO: check if user is valid??
@@ -48,7 +48,7 @@ public class Model {
 			returnProjects = db.getProjectDAO().getAll();
 			db.endTransaction(true);
 		}
-		catch (ServerFacadeException e) {
+		catch (DatabaseException e) {
 			db.endTransaction(false);
 			throw new ModelException(e.getMessage(), e);
 		}
@@ -57,9 +57,9 @@ public class Model {
 		return result;
 	}
 	
-	public static List<Field> getAllFields() throws ModelException, ServerFacadeException {	
+	public static List<Field> getAllFields() throws ModelException, DatabaseException {	
 
-		ServerFacade db = new ServerFacade();
+		Database db = new Database();
 		
 		try {
 			db.startTransaction();
@@ -67,52 +67,52 @@ public class Model {
 			db.endTransaction(true);
 			return fields;
 		}
-		catch (ServerFacadeException e) {
+		catch (DatabaseException e) {
 			db.endTransaction(false);
 			throw new ModelException(e.getMessage(), e);
 		}
 	}
 	
-	public static void addField(Field field) throws ModelException, ServerFacadeException {
+	public static void addField(Field field) throws ModelException, DatabaseException {
 
-		ServerFacade db = new ServerFacade();
+		Database db = new Database();
 		
 		try {
 			db.startTransaction();
 			db.getFieldDAO().add(field);
 			db.endTransaction(true);
 		}
-		catch (ServerFacadeException e) {
+		catch (DatabaseException e) {
 			db.endTransaction(false);
 			throw new ModelException(e.getMessage(), e);
 		}
 	}
 	
-	public static void updateField(Field field) throws ModelException, ServerFacadeException {
+	public static void updateField(Field field) throws ModelException, DatabaseException {
 
-		ServerFacade db = new ServerFacade();
+		Database db = new Database();
 		
 		try {
 			db.startTransaction();
 			db.getFieldDAO().update(field);
 			db.endTransaction(true);
 		}
-		catch (ServerFacadeException e) {
+		catch (DatabaseException e) {
 			db.endTransaction(false);
 			throw new ModelException(e.getMessage(), e);
 		}
 	}
 	
-	public static void deleteField(Field field) throws ModelException, ServerFacadeException {
+	public static void deleteField(Field field) throws ModelException, DatabaseException {
 
-		ServerFacade db = new ServerFacade();
+		Database db = new Database();
 		
 		try {
 			db.startTransaction();
 			db.getFieldDAO().delete(field);
 			db.endTransaction(true);
 		}
-		catch (ServerFacadeException e) {
+		catch (DatabaseException e) {
 			db.endTransaction(false);
 			throw new ModelException(e.getMessage(), e);
 		}
@@ -120,12 +120,12 @@ public class Model {
 
 	public static void clear() {
 		
-		ServerFacade db = new ServerFacade();
+		Database db = new Database();
 		try {
 			db.startTransaction();
 			db.clear();
 			db.endTransaction(true);
-		} catch (ServerFacadeException e) {
+		} catch (DatabaseException e) {
 			e.printStackTrace();
 		}
 		

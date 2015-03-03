@@ -39,7 +39,7 @@ public class GetProjectsHandler implements HttpHandler {
 		try {
 			result = model.getProjects(params);
 		}
-		catch (ModelException| ServerFacadeException e) {
+		catch (ModelException| DatabaseException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, -1);
 			return;

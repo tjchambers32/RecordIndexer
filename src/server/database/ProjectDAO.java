@@ -17,12 +17,12 @@ import shared.model.Project;
  */
 public class ProjectDAO {
 
-	private ServerFacade db;
+	private Database db;
 
 	/**
 	 * @param database
 	 */
-	public ProjectDAO(ServerFacade database) {
+	public ProjectDAO(Database database) {
 		this.setDb(database);
 	}
 
@@ -38,7 +38,7 @@ public class ProjectDAO {
 
 	}
 
-	public List<Project> getAll() throws ServerFacadeException {
+	public List<Project> getAll() throws DatabaseException {
 
 		List<Project> result = new ArrayList<Project>();
 		PreparedStatement stmt = null;
@@ -60,21 +60,21 @@ public class ProjectDAO {
 						recordHeight));
 			}
 		} catch (SQLException e) {
-			ServerFacadeException serverEx = new ServerFacadeException(e.getMessage(),
+			DatabaseException serverEx = new DatabaseException(e.getMessage(),
 					e);
 			throw serverEx;
 		} finally {
-			ServerFacade.safeClose(rs);
-			ServerFacade.safeClose(stmt);
+			Database.safeClose(rs);
+			Database.safeClose(stmt);
 		}
 		return result;
 	}
 
-	public ServerFacade getDb() {
+	public Database getDb() {
 		return db;
 	}
 
-	public void setDb(ServerFacade db) {
+	public void setDb(Database db) {
 		this.db = db;
 	}
 

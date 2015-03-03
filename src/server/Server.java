@@ -48,11 +48,11 @@ public class Server {
 		return;
 	}
 
-	private void run() throws ServerFacadeException {
+	private void run() throws DatabaseException {
 
 		logger.info("Initializing Database");
 
-		ServerFacade.initialize();
+		Database.initialize();
 
 		logger.info("Initializing HTTP Server");
 
@@ -168,7 +168,7 @@ public class Server {
 		}
 	};
 	
-	public static void main(String[] args) throws ServerFacadeException {
+	public static void main(String[] args) throws DatabaseException {
 		new Server().run();
 	}
 
