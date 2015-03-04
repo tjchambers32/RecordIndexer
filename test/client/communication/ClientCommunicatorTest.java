@@ -1,7 +1,7 @@
 /**
  * 
  */
-package test.client.communication;
+package client.communication;
 
 import static org.junit.Assert.*;
 

@@ -42,7 +42,7 @@ public class ProjectDAO {
 			stmt.setInt(2, project.getRecordsPerImage());
 			stmt.setInt(3, project.getFirstYCoord());
 			stmt.setInt(4, project.getRecordHeight());
-			
+
 			if (stmt.executeUpdate() == 1) {
 				keyStmt = db.getConnection().createStatement();
 				keyRS = keyStmt.executeQuery("SELECT last_insert_rowid()");
@@ -62,12 +62,45 @@ public class ProjectDAO {
 		}
 	}
 
-	public void update(Project project) {
+	public void update(Project project) throws DatabaseException {
+		PreparedStatement stmt = null;
+		try {
+			String query = "UPDATE projects "
+					+ "SET title=?, recordsPerImage=? firstYCoord=?, recordHeight=?"
+					+ "WHERE id=?";
+			stmt = db.getConnection().prepareStatement(query);
 
+			stmt.setString(1, project.getTitle());
+			stmt.setInt(2, project.getRecordsPerImage());
+			stmt.setInt(3, project.getFirstYCoord());
+			stmt.setInt(4, project.getRecordHeight());
+			stmt.setInt(5, project.getId());
+			
+			if (stmt.executeUpdate() != 1) {
+				throw new DatabaseException("Could not update project");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+		}
 	}
 
-	public void delete(Project project) {
+	public void delete(Project project) throws DatabaseException {
+		PreparedStatement stmt = null;
+		try {
+			String query = "DELETE FROM projects " + "WHERE id = ?";
+			stmt = db.getConnection().prepareStatement(query);
+			stmt.setInt(1, project.getId());
 
+			if (stmt.executeUpdate() != 1) {
+				throw new DatabaseException("Could not delete project");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+		}
 	}
 
 	public List<Project> getAll() throws DatabaseException {

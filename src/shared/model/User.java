@@ -14,7 +14,7 @@ public class User {
 	private String lastName;
 	private String email;
 	private int recordsIndexed;
-	private int selectedImage; //image that the user has checked out
+	private int imageID; //image that the user has checked out
 	
 	/**
 	 * 
@@ -25,10 +25,10 @@ public class User {
 	 * @param lastName user's last name
 	 * @param email user's email
 	 * @param recordsIndexed the number of records the user has indexed
-	 * @param selectedImage id of the image the user has checked out
+	 * @param imageID id of the image the user has checked out
 	 */
 	public User(int id, String username, String password, String firstName, String lastName, 
-			String email, int recordsIndexed, int selectedImage) {
+			String email, int recordsIndexed, int imageID) {
 		setId(id);
 		setUsername(username);
 		setPassword(password);
@@ -36,7 +36,7 @@ public class User {
 		setLastName(lastName);
 		setEmail(email);
 		setRecordsIndexed(recordsIndexed);
-		setSelectedImage(selectedImage);
+		setImageID(imageID);
 	}
 	
 	/**
@@ -91,11 +91,11 @@ public class User {
 	public void setRecordsIndexed(int recordsIndexed) {
 		this.recordsIndexed = recordsIndexed;
 	}
-	public int getSelectedImage() {
-		return selectedImage;
+	public int getImageID() {
+		return imageID;
 	}
-	public void setSelectedImage(int selectedImage) {
-		this.selectedImage = selectedImage;
+	public void setImageID(int imageID) {
+		this.imageID = imageID;
 	}
 	
 	

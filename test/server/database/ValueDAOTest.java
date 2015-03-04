@@ -17,7 +17,7 @@ import java.util.*;
  * @author tchambs
  *
  */
-public class RecordDAOTest {
+public class ValueDAOTest {
 
 	/**
 	 * @throws java.lang.Exception
@@ -48,7 +48,39 @@ public class RecordDAOTest {
 	}
 
 	/**
-	 * Test method for {@link server.database.RecordDAO#add(shared.model.Record)}.
+	 * Test method for {@link server.database.ValueDAO#ValueDAO(server.database.Database)}.
+	 */
+	@Test
+	public void testValueDAO() {
+		fail("Not yet implemented"); // TODO
+	}
+
+	/**
+	 * Test method for {@link server.database.ValueDAO#getAll()}.
+	 */
+	@Test
+	public void testGetAll() {
+		fail("Not yet implemented"); // TODO
+	}
+
+	/**
+	 * Test method for {@link server.database.ValueDAO#getDb()}.
+	 */
+	@Test
+	public void testGetDb() {
+		fail("Not yet implemented"); // TODO
+	}
+
+	/**
+	 * Test method for {@link server.database.ValueDAO#setDb(server.database.Database)}.
+	 */
+	@Test
+	public void testSetDb() {
+		fail("Not yet implemented"); // TODO
+	}
+
+	/**
+	 * Test method for {@link server.database.ValueDAO#add(shared.model.Value)}.
 	 */
 	@Test
 	public void testAdd() {
@@ -56,7 +88,7 @@ public class RecordDAOTest {
 	}
 
 	/**
-	 * Test method for {@link server.database.RecordDAO#update(shared.model.Record)}.
+	 * Test method for {@link server.database.ValueDAO#update(shared.model.Value)}.
 	 */
 	@Test
 	public void testUpdate() {
@@ -64,7 +96,7 @@ public class RecordDAOTest {
 	}
 
 	/**
-	 * Test method for {@link server.database.RecordDAO#delete(shared.model.Record)}.
+	 * Test method for {@link server.database.ValueDAO#delete(shared.model.Value)}.
 	 */
 	@Test
 	public void testDelete() {

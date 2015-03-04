@@ -13,7 +13,7 @@ public class Project {
 	private int recordHeight;
 	
 	/**
-	 * 
+	 * Constructor WITH id
 	 * @param id the project id
 	 * @param title the title of the project
 	 * @param recordsPerImage the number of records in each image in this project
@@ -27,7 +27,19 @@ public class Project {
 		setFirstYCoord(firstYCoord);
 		setRecordHeight(recordHeight);
 	}
-	
+	/**
+	 * Constructor WITHOUT id
+	 * @param title the title of the project
+	 * @param recordsPerImage the number of records in each image in this project
+	 * @param firstYCoord the top of the first record of the project's images, in pixels
+	 * @param recordHeight the height of each record, in pixels
+	 */
+	public Project(String title, int recordsPerImage, int firstYCoord, int recordHeight) {
+		setTitle(title);
+		setRecordsPerImage(recordsPerImage);
+		setFirstYCoord(firstYCoord);
+		setRecordHeight(recordHeight);
+	}
 	
 	public int getId() {
 		return id;

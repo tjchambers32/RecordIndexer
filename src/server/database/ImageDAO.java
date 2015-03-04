@@ -61,12 +61,44 @@ public class ImageDAO {
 		}
 	}
 
-	public void update(Image image) {
+	public void update(Image image) throws DatabaseException {
+		PreparedStatement stmt = null;
+		try {
+			String query = "UPDATE images "
+					+ "SET projectID=?, filepath=? availability=?"
+					+ "WHERE id=?";
+			stmt = db.getConnection().prepareStatement(query);
 
+			stmt.setInt(1, image.getProjectID());
+			stmt.setString(2, image.getFilepath());
+			stmt.setInt(3, image.getAvailability());
+			stmt.setInt(4, image.getId());
+			
+			if (stmt.executeUpdate() != 1) {
+				throw new DatabaseException("Could not update project");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+		}
 	}
 
-	public void delete(Image image) {
+	public void delete(Image image) throws DatabaseException {
+		PreparedStatement stmt = null;
+		try {
+			String query = "DELETE FROM images " + "WHERE id = ?";
+			stmt = db.getConnection().prepareStatement(query);
+			stmt.setInt(1, image.getId());
 
+			if (stmt.executeUpdate() != 1) {
+				throw new DatabaseException("Could not delete image");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+		}
 	}
 
 	public Image getImage(int imageID) throws DatabaseException {

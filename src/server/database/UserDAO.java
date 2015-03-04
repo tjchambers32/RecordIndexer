@@ -41,7 +41,7 @@ public class UserDAO {
 			stmt.setString(4, user.getLastName());
 			stmt.setString(5, user.getEmail());
 			stmt.setInt(6, user.getRecordsIndexed());
-			stmt.setInt(7, user.getSelectedImage());
+			stmt.setInt(7, user.getImageID());
 
 			if (stmt.executeUpdate() == 1) {
 				keyStmt = db.getConnection().createStatement();
@@ -62,12 +62,47 @@ public class UserDAO {
 		}
 	}
 
-	public void update(User user) {
+	public void update(User user) throws DatabaseException {
+		PreparedStatement stmt = null;
+		try {
+			String query = "UPDATE users "
+					+ "SET username=?, password=?, firstName=?, lastName=?, "
+					+ "email=?, recordsIndexed=?, imageID=? " + "WHERE id=?";
+			stmt = db.getConnection().prepareStatement(query);
+			stmt.setString(1, user.getUsername());
+			stmt.setString(2, user.getPassword());
+			stmt.setString(3, user.getFirstName());
+			stmt.setString(4, user.getLastName());
+			stmt.setString(5, user.getEmail());
+			stmt.setInt(6, user.getRecordsIndexed());
+			stmt.setInt(7, user.getImageID());
+			stmt.setInt(8, user.getId());
 
+			if (stmt.executeUpdate() != 1) {
+				throw new DatabaseException("Could not update user");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+		}
 	}
 
-	public void delete(User user) {
+	public void delete(User user) throws DatabaseException {
+		PreparedStatement stmt = null;
+		try {
+			String query = "DELETE FROM users " + "WHERE id = ?";
+			stmt = db.getConnection().prepareStatement(query);
+			stmt.setInt(1, user.getId());
 
+			if (stmt.executeUpdate() != 1) {
+				throw new DatabaseException("Could not delete user");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+		}
 	}
 
 	/**
@@ -127,7 +162,7 @@ public class UserDAO {
 		ResultSet rs = null;
 
 		try {
-			String query = "SELECT id, username, password, firstName, lastName, email, recordsIndexed, selectedImage FROM users";
+			String query = "SELECT id, username, password, firstName, lastName, email, recordsIndexed, imageID FROM users";
 			stmt = db.getConnection().prepareStatement(query);
 
 			rs = stmt.executeQuery();

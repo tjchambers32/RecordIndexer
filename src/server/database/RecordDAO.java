@@ -60,12 +60,43 @@ public class RecordDAO {
 		}
 	}
 
-	public void update(Record record) {
+	public void update(Record record) throws DatabaseException {
+		PreparedStatement stmt = null;
+		try {
+			String query = "UPDATE records "
+					+ "SET imageID=?, rowNumber=? "
+					+ "WHERE id=?";
+			stmt = db.getConnection().prepareStatement(query);
 
+			stmt.setInt(1, record.getImageID());
+			stmt.setInt(2, record.getRowNumber());
+			stmt.setInt(3, record.getId());
+
+			if (stmt.executeUpdate() != 1) {
+				throw new DatabaseException("Could not update record");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+		}
 	}
 
-	public void delete(Record record) {
+	public void delete(Record record) throws DatabaseException {
+		PreparedStatement stmt = null;
+		try {
+			String query = "DELETE FROM records " + "WHERE id = ?";
+			stmt = db.getConnection().prepareStatement(query);
+			stmt.setInt(1, record.getId());
 
+			if (stmt.executeUpdate() != 1) {
+				throw new DatabaseException("Could not delete record");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+		}
 	}
 
 	public List<Record> getAll() throws DatabaseException {

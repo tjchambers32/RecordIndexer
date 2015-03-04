@@ -56,12 +56,47 @@ public class FieldDAO {
 		}
 	}
 
-	public void update(Field field) {
-		// TODO implement
+	public void update(Field field) throws DatabaseException {
+		PreparedStatement stmt = null;
+		try {
+			String query = "UPDATE fields "
+					+ "SET title=?, xCoord=?, width=?, helpHTML=?, knownData=?, projectID=?"
+					+ "WHERE id=?";
+			stmt = db.getConnection().prepareStatement(query);
+
+			stmt.setString(1, field.getTitle());
+			stmt.setInt(2, field.getxCoord());
+			stmt.setInt(3, field.getWidth());
+			stmt.setString(4, field.getHelpHTML());
+			stmt.setString(5, field.getKnownData());
+			stmt.setInt(6, field.getProjectID());
+			stmt.setInt(7, field.getId());
+			
+			if (stmt.executeUpdate() != 1) {
+				throw new DatabaseException("Could not update field");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+		}
 	}
 
-	public void delete(Field field) {
-		// TODO implement
+	public void delete(Field field) throws DatabaseException {
+		PreparedStatement stmt = null;
+		try {
+			String query = "DELETE FROM fields " + "WHERE id = ?";
+			stmt = db.getConnection().prepareStatement(query);
+			stmt.setInt(1, field.getId());
+
+			if (stmt.executeUpdate() != 1) {
+				throw new DatabaseException("Could not delete field");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+		}
 	}
 
 	public ArrayList<Search_Result> search(ArrayList<Integer> fields,

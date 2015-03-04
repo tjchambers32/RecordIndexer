@@ -103,5 +103,44 @@ public class ValueDAO {
 			Database.safeClose(keyRS);
 		}
 	}
+	public void update(Value value) throws DatabaseException {
+		PreparedStatement stmt = null;
+		try {
+			String query = "UPDATE value "
+					+ "SET recordID=?, text=?, fieldID=?"
+					+ "WHERE id=?";
+			stmt = db.getConnection().prepareStatement(query);
+
+			stmt.setInt(1, value.getRecordID());
+			stmt.setString(2, value.getText());
+			stmt.setInt(3, value.getFieldID());
+			stmt.setInt(4, value.getId());
+			
+			if (stmt.executeUpdate() != 1) {
+				throw new DatabaseException("Could not update value");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+		}
+	}
+	
+	public void delete(Value value) throws DatabaseException {
+		PreparedStatement stmt = null;
+		try {
+			String query = "DELETE FROM value " + "WHERE id = ?";
+			stmt = db.getConnection().prepareStatement(query);
+			stmt.setInt(1, value.getId());
+
+			if (stmt.executeUpdate() != 1) {
+				throw new DatabaseException("Could not delete value");
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		} finally {
+			Database.safeClose(stmt);
+		}
+	}
 
 }
