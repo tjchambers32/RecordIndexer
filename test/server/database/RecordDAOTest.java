@@ -97,8 +97,47 @@ public class RecordDAOTest {
 	 * Test method for {@link server.database.RecordDAO#update(shared.model.Record)}.
 	 */
 	@Test
-	public void testUpdate() {
-		fail("Not yet implemented"); // TODO
+	public void testUpdate() throws DatabaseException {
+		Record ten = new Record(10, 10, 10);
+		Record twenty = new Record(20, 20, 20);
+		Record thirty = new Record(30, 30, 30);
+
+		dbRecords.add(ten);
+		dbRecords.add(twenty);
+		dbRecords.add(thirty);
+
+		ten.setImageID(100);
+		ten.setRowNumber(100);
+		
+		twenty.setImageID(200);
+		twenty.setRowNumber(200);
+		
+		thirty.setImageID(300);
+		thirty.setRowNumber(300);
+		
+		dbRecords.update(ten);
+		dbRecords.update(twenty);
+		dbRecords.update(thirty);
+
+		
+		boolean foundTen = false;
+		boolean foundTwenty = false;
+		boolean foundThirty = false;
+		List<Record> all = dbRecords.getAll();
+		for (Record p : all) {
+			
+			if (!foundTen) {
+				foundTen = areEqual(p, ten, false);
+			}		
+			if (!foundTwenty) {
+				foundTwenty = areEqual(p, twenty, false);
+			}
+			if (!foundThirty) {
+				foundThirty = areEqual(p, twenty, false);
+			}
+		}
+		
+		assertTrue(foundTen && foundTwenty && foundThirty);
 	}
 
 	/**
@@ -108,5 +147,26 @@ public class RecordDAOTest {
 	public void testDelete() {
 		fail("Not yet implemented"); // TODO
 	}
+	private boolean areEqual(Record a, Record b, boolean compareIDs) {
+		if (compareIDs) {
+			if (a.getId() != b.getId()) {
+				return false;
+			}
+		}
 
+		//TODO: FIX THESE
+		return (safeEquals(a.getTitle(), b.getTitle())
+				&& safeEquals(a.getRecordsPerImage(), b.getRecordsPerImage())
+				&& safeEquals(a.getFirstYCoord(), b.getFirstYCoord())
+				&& safeEquals(a.getRecordHeight(), b.getRecordHeight()));
+
+	}
+
+	private boolean safeEquals(Object a, Object b) {
+		if (a == null || b == null) {
+			return (a == null && b == null);
+		} else {
+			return a.equals(b);
+		}
+	}
 }
