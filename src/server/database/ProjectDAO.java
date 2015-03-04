@@ -66,7 +66,7 @@ public class ProjectDAO {
 		PreparedStatement stmt = null;
 		try {
 			String query = "UPDATE projects "
-					+ "SET title=?, recordsPerImage=? firstYCoord=?, recordHeight=?"
+					+ "SET title=?, recordsPerImage=?, firstYCoord=?, recordHeight=?"
 					+ "WHERE id=?";
 			stmt = db.getConnection().prepareStatement(query);
 

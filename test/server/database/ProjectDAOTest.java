@@ -56,7 +56,7 @@ public class ProjectDAOTest {
 		}
 		db.endTransaction(true);
 		
-		// Prepare database for test case
+		// Prepare database for test cases
 		db = new Database();
 		db.startTransaction();
 		dbProjects = db.getProjectDAO();
@@ -92,15 +92,18 @@ public class ProjectDAOTest {
 		boolean foundSpain = false;
 		boolean foundAmerica = false;
 		boolean foundCanada = false;
+		
 		for (Project p : allProjects) {
 			if (!foundSpain) {
 				foundSpain = areEqual(p, spain, false);
 			}
+			
 			if (!foundAmerica) {
 				foundAmerica = areEqual(p, america, false);
 			}
+			
 			if (!foundCanada) {
-				foundAmerica = areEqual(p, canada, false);
+				foundCanada = areEqual(p, canada, false);
 			}
 		}
 		assertTrue(foundSpain && foundAmerica && foundCanada);
@@ -109,18 +112,79 @@ public class ProjectDAOTest {
 
 	/**
 	 * Test method for {@link server.database.ProjectDAO#update(shared.model.Project)}.
+	 * @throws DatabaseException 
 	 */
 	@Test
-	public void testUpdate() {
-		fail("Not yet implemented"); // TODO
+	public void testUpdate() throws DatabaseException {
+		
+		Project spain = new Project("spain", 3, 10, 5);
+		Project america = new Project("america", 1, 1, 1);
+		
+		dbProjects.add(spain);
+		dbProjects.add(america);
+		
+		spain.setTitle("spanish");
+		spain.setRecordsPerImage(50);
+		spain.setFirstYCoord(50);
+		spain.setRecordHeight(50);
+
+
+		america.setTitle("american");
+		america.setRecordsPerImage(2);
+		america.setFirstYCoord(2);
+		america.setRecordHeight(2);
+		
+		
+		dbProjects.update(spain);
+		dbProjects.update(america);
+		
+		List<Project> all = dbProjects.getAll();
+		assertEquals(2, all.size());
+		
+		boolean foundSpain = false;
+		boolean foundAmerica = false;
+		
+		for (Project p : all) {
+			
+			if (!foundSpain) {
+				foundSpain = areEqual(p, spain, false);
+			}		
+			if (!foundAmerica) {
+				foundAmerica = areEqual(p, america, false);
+			}
+		}
+		
+		assertTrue(foundSpain && foundAmerica);
 	}
 
 	/**
 	 * Test method for {@link server.database.ProjectDAO#delete(shared.model.Project)}.
+	 * @throws DatabaseException 
 	 */
 	@Test
-	public void testDelete() {
-		fail("Not yet implemented"); // TODO
+	public void testDelete() throws DatabaseException {
+		
+		Project spain = new Project("spain", 3, 10, 5);
+		Project america = new Project("america", 1, 1, 1);
+		Project canada = new Project("canada", 5, 10, 40);
+		Project mexico = new Project("mexico", 100, 100, 100);
+		
+		dbProjects.add(spain);
+		dbProjects.add(america);
+		dbProjects.add(canada);
+		dbProjects.add(mexico);
+		
+		List<Project> allProjects = dbProjects.getAll();
+
+		assertEquals(4, allProjects.size());
+	
+		dbProjects.delete(spain);
+		dbProjects.delete(canada);
+		dbProjects.delete(mexico);
+		dbProjects.delete(america);
+		
+		allProjects = dbProjects.getAll();
+		assertEquals(0, allProjects.size());
 	}
 	
 	

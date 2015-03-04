@@ -106,7 +106,7 @@ public class RecordDAO {
 		ResultSet rs = null;
 
 		try {
-			String query = "SELECT id, imageID, rowNumber, fieldNumber FROM records";
+			String query = "SELECT id, imageID, rowNumber FROM records";
 			stmt = db.getConnection().prepareStatement(query);
 
 			rs = stmt.executeQuery();
@@ -114,9 +114,8 @@ public class RecordDAO {
 				int id = rs.getInt(1);
 				int imageID = rs.getInt(2);
 				int rowNumber = rs.getInt(3);
-				int fieldNumber = rs.getInt(4);
 
-				result.add(new Record(id, imageID, rowNumber, fieldNumber));
+				result.add(new Record(id, imageID, rowNumber));
 			}
 		} catch (SQLException e) {
 			DatabaseException serverEx = new DatabaseException(e.getMessage(),
