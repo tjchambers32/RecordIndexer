@@ -36,6 +36,17 @@ public class Record {
 		setFieldNumber(fieldNumber);
 	}
 	
+	/**
+	 * Constructor WITHOUT recordID
+	 * @param imageID the id of the image the record belongs to
+	 * @param rowNumber which row this record is associated with on the image (y-coord)
+	 * @param fieldNumber which field this record is associated with on the image (x-coord)
+	 */
+	public Record(int imageID, int rowNumber) {
+		setImageID(imageID);
+		setRowNumber(rowNumber);
+	}
+	
 	public int getId() {
 		return id;
 	}

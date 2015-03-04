@@ -29,7 +29,7 @@ create table projects
 create table images
 (
 	id Integer not null primary key autoincrement unique,
-	file text not null,
+	filepath text not null,
 	projectID Integer not null,
 	availability Integer not null
 ); !!
@@ -49,7 +49,7 @@ create table records
 (
 	id Integer not null primary key autoincrement unique,
 	imageID Integer not null,
-	recordNumber Integer not null
+	rowNumber Integer not null
 ); !!
 
 create table value

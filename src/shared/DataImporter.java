@@ -44,19 +44,26 @@ public class DataImporter {
 	 * @throws ModelException
 	 */
 	private void doImport(String filepath) throws Exception {
-
+		
+		File newFile = new File(filepath);
+		
 		Model.initialize();
 
 		model.clear();
 
-		di.deleteFiles(filepath);
-
-		di.addNewFiles(filepath, databasePath);
+		System.out.println("Deleting Old Databases");
+		di.deleteFiles(databasePath);
+		
+		System.out.println("Copying Files from new filepath");
+		di.addNewFiles(newFile.getParent(), databasePath);
 		
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		Document doc = builder.parse(new File(filepath));
+		Document doc = builder.parse(newFile);
 		
+		System.out.println("Parsing XML and addding to Database");
 		di.parse(doc);
+		
+		System.out.println("Import Complete");
 	}
 
 	/**
@@ -208,7 +215,7 @@ public class DataImporter {
 			
 			Element imageElem = (Element)imageList.item(imageID);
 			
-			Element filepathElem = (Element) imageElem.getElementsByTagName("filepath").item(0);
+			Element filepathElem = (Element) imageElem.getElementsByTagName("file").item(0);
 			
 			//TODO: FIGURE OUT WHAT IS BREAKING HERE!!
 			String filepath = filepathElem.getTextContent();
@@ -236,17 +243,10 @@ public class DataImporter {
 		
 		for (int recordID = 0; recordID < recordList.getLength(); recordID++) {
 			
-			Element recordElem = (Element)recordList.item(recordID);
-			
-			Element rowNumberElem = (Element) recordElem.getElementsByTagName("rownumber").item(0);
-			Element fieldNumberElem = (Element) recordElem.getElementsByTagName("fieldnumber").item(0);
-			
-			int rowNumber = Integer.parseInt(rowNumberElem.getTextContent());
-			int fieldNumber = Integer.parseInt(fieldNumberElem.getTextContent());
-			
+			Element recordElem = (Element)recordList.item(recordID);	
 			
 			//TODO: ASK TA what ID I should put in??
-			Record record = new Record(0, imageID, rowNumber, fieldNumber);
+			Record record = new Record(imageID, recordID+1);
 			model.addRecord(record); 
 			
 			di.parseValues(doc, record.getId(), recordElem);
