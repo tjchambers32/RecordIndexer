@@ -65,7 +65,7 @@ public class ImageDAO {
 		PreparedStatement stmt = null;
 		try {
 			String query = "UPDATE images "
-					+ "SET projectID=?, filepath=? availability=?"
+					+ "SET projectID=?, filepath=?, availability=?"
 					+ "WHERE id=?";
 			stmt = db.getConnection().prepareStatement(query);
 

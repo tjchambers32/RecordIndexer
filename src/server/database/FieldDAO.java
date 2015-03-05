@@ -70,7 +70,6 @@ public class FieldDAO {
 			stmt.setString(4, field.getHelpHTML());
 			stmt.setString(5, field.getKnownData());
 			stmt.setInt(6, field.getProjectID());
-			stmt.setInt(7, field.getId());
 			
 			if (stmt.executeUpdate() != 1) {
 				throw new DatabaseException("Could not update field");
@@ -85,7 +84,7 @@ public class FieldDAO {
 	public void delete(Field field) throws DatabaseException {
 		PreparedStatement stmt = null;
 		try {
-			String query = "DELETE FROM fields " + "WHERE id = ?";
+			String query = "DELETE FROM fields WHERE id = ?";
 			stmt = db.getConnection().prepareStatement(query);
 			stmt.setInt(1, field.getId());
 
@@ -155,15 +154,14 @@ public class FieldDAO {
 			rs = stmt.executeQuery();
 			while (rs.next()) {
 				int id = rs.getInt(1);
-				int fieldNumber = rs.getInt(2);
-				String title = rs.getString(3);
-				int xCoord = rs.getInt(4);
-				int width = rs.getInt(5);
-				String helpHTML = rs.getString(6);
-				String knownData = rs.getString(7);
-				int projID = rs.getInt(8);
+				String title = rs.getString(2);
+				int xCoord = rs.getInt(3);
+				int width = rs.getInt(4);
+				String helpHTML = rs.getString(5);
+				String knownData = rs.getString(6);
+				int projID = rs.getInt(7);
 
-				result.add(new Field(id, fieldNumber, title, xCoord, width,
+				result.add(new Field(id, title, xCoord, width,
 						helpHTML, knownData, projID));
 			}
 
@@ -193,21 +191,20 @@ public class FieldDAO {
 		ResultSet rs = null;
 
 		try {
-			String query = "select id, fieldNumber, title, xCoord, width, helpHTML, knownData, projectID from fields";
+			String query = "select id, title, xCoord, width, helpHTML, knownData, projectID from fields";
 			stmt = db.getConnection().prepareStatement(query);
 
 			rs = stmt.executeQuery();
 			while (rs.next()) {
 				int id = rs.getInt(1);
-				int fieldNumber = rs.getInt(2);
-				String title = rs.getString(3);
-				int xCoord = rs.getInt(4);
-				int width = rs.getInt(5);
-				String helpHTML = rs.getString(6);
-				String knownData = rs.getString(7);
-				int projectID = rs.getInt(8);
+				String title = rs.getString(2);
+				int xCoord = rs.getInt(3);
+				int width = rs.getInt(4);
+				String helpHTML = rs.getString(5);
+				String knownData = rs.getString(6);
+				int projectID = rs.getInt(7);
 
-				result.add(new Field(id, fieldNumber, title, xCoord, width,
+				result.add(new Field(id, title, xCoord, width,
 						helpHTML, knownData, projectID));
 			}
 		} catch (SQLException e) {

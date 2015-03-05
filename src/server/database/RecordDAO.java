@@ -45,7 +45,7 @@ public class RecordDAO {
 				keyStmt = db.getConnection().createStatement();
 				keyRS = keyStmt.executeQuery("SELECT last_insert_rowid()");
 				keyRS.next();
-				int id = keyRS.getInt(1); // ID of the new User from the
+				int id = keyRS.getInt(1); // ID of the new Record from the
 											// auto-incrementing table
 				record.setId(id);
 			} else {

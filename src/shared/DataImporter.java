@@ -195,7 +195,6 @@ public class DataImporter {
 			if (knownDataElem != null)
 				knownData = knownDataElem.getTextContent();
 			
-			//TODO: ASK TA what ID I should put in??
 			model.addField(new Field(fieldNumber+1, title, xCoord, width, helpHTML, knownData, projectID));
 			
 			

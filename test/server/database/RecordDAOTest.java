@@ -142,10 +142,30 @@ public class RecordDAOTest {
 
 	/**
 	 * Test method for {@link server.database.RecordDAO#delete(shared.model.Record)}.
+	 * @throws DatabaseException 
 	 */
 	@Test
-	public void testDelete() {
-		fail("Not yet implemented"); // TODO
+	public void testDelete() throws DatabaseException {
+		Record ten = new Record(10, 10, 10);
+		Record twenty = new Record(20, 20, 20);
+		Record thirty = new Record(30, 30, 30);
+
+		dbRecords.add(ten);
+		dbRecords.add(twenty);
+		dbRecords.add(thirty);
+		
+		List<Record> all = dbRecords.getAll();
+		
+		assertEquals(3, all.size());
+		
+		dbRecords.delete(ten);
+		dbRecords.delete(twenty);
+		dbRecords.delete(thirty);
+		
+		all = dbRecords.getAll();
+		
+		assertEquals(0, all.size());
+		
 	}
 	private boolean areEqual(Record a, Record b, boolean compareIDs) {
 		if (compareIDs) {
@@ -154,11 +174,8 @@ public class RecordDAOTest {
 			}
 		}
 
-		//TODO: FIX THESE
-		return (safeEquals(a.getTitle(), b.getTitle())
-				&& safeEquals(a.getRecordsPerImage(), b.getRecordsPerImage())
-				&& safeEquals(a.getFirstYCoord(), b.getFirstYCoord())
-				&& safeEquals(a.getRecordHeight(), b.getRecordHeight()));
+		return (safeEquals(a.getImageID(), b.getImageID())
+				&& safeEquals(a.getRowNumber(), b.getRowNumber()));
 
 	}
 
