@@ -1,6 +1,58 @@
-Mar 05, 2015 12:07:00 PM server.Server run
+Mar 05, 2015 3:53:19 PM server.Server run
 INFO: Initializing Database
-Mar 05, 2015 12:07:00 PM server.Server run
+Mar 05, 2015 3:53:19 PM server.Server run
 INFO: Initializing HTTP Server
-Mar 05, 2015 12:07:00 PM server.Server run
+Mar 05, 2015 3:53:19 PM server.Server run
 INFO: Starting HTTP Server
+Mar 05, 2015 3:53:44 PM server.ValidateUserHandler handle
+SEVERE: ResultSet closed
+server.facade.ServerFacadeException: ResultSet closed
+	at server.facade.ServerFacade.validateUser(ServerFacade.java:32)
+	at server.ValidateUserHandler.handle(ValidateUserHandler.java:35)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.AuthFilter.doFilter(AuthFilter.java:83)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:80)
+	at sun.net.httpserver.ServerImpl$Exchange$LinkHandler.handle(ServerImpl.java:677)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.ServerImpl$Exchange.run(ServerImpl.java:649)
+	at sun.net.httpserver.ServerImpl$DefaultExecutor.execute(ServerImpl.java:158)
+	at sun.net.httpserver.ServerImpl$Dispatcher.handle(ServerImpl.java:433)
+	at sun.net.httpserver.ServerImpl$Dispatcher.run(ServerImpl.java:398)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: server.database.DatabaseException: ResultSet closed
+	at server.database.UserDAO.validateUser(UserDAO.java:144)
+	at server.facade.ServerFacade.validateUser(ServerFacade.java:28)
+	... 11 more
+Caused by: java.sql.SQLException: ResultSet closed
+	at org.sqlite.RS.checkOpen(RS.java:63)
+	at org.sqlite.RS.markCol(RS.java:77)
+	at org.sqlite.RS.getInt(RS.java:289)
+	at server.database.UserDAO.validateUser(UserDAO.java:131)
+	... 12 more
+
+Mar 05, 2015 3:54:37 PM server.ValidateUserHandler handle
+SEVERE: ResultSet closed
+server.facade.ServerFacadeException: ResultSet closed
+	at server.facade.ServerFacade.validateUser(ServerFacade.java:32)
+	at server.ValidateUserHandler.handle(ValidateUserHandler.java:35)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.AuthFilter.doFilter(AuthFilter.java:83)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:80)
+	at sun.net.httpserver.ServerImpl$Exchange$LinkHandler.handle(ServerImpl.java:677)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.ServerImpl$Exchange.run(ServerImpl.java:649)
+	at sun.net.httpserver.ServerImpl$DefaultExecutor.execute(ServerImpl.java:158)
+	at sun.net.httpserver.ServerImpl$Dispatcher.handle(ServerImpl.java:433)
+	at sun.net.httpserver.ServerImpl$Dispatcher.run(ServerImpl.java:398)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: server.database.DatabaseException: ResultSet closed
+	at server.database.UserDAO.validateUser(UserDAO.java:144)
+	at server.facade.ServerFacade.validateUser(ServerFacade.java:28)
+	... 11 more
+Caused by: java.sql.SQLException: ResultSet closed
+	at org.sqlite.RS.checkOpen(RS.java:63)
+	at org.sqlite.RS.markCol(RS.java:77)
+	at org.sqlite.RS.getInt(RS.java:289)
+	at server.database.UserDAO.validateUser(UserDAO.java:131)
+	... 12 more
+

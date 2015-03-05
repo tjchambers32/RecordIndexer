@@ -117,6 +117,8 @@ public class Controller implements IController {
 			result = communicator.ValidateUser(params);
 		} 
 		catch (ClientException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
 			_view.setResponse("FAILED\n");
 			return;
 		}

@@ -7,10 +7,12 @@ import java.util.logging.*;
 import com.sun.net.httpserver.*;
 
 import server.database.*;
+import server.facade.ServerFacade;
+import server.facade.ServerFacadeException;
 
 public class Server {
 
-	private static final int DEFAULT_SERVER_PORT_NUMBER = 8080;
+	private static final int DEFAULT_SERVER_PORT_NUMBER = 39640;
 	private static final int MAX_WAITING_CONNECTIONS = 10;
 
 	private static Logger logger;
@@ -43,7 +45,15 @@ public class Server {
 	}
 
 	private HttpServer server;
-
+	private HttpHandler validateUserHandler = new ValidateUserHandler();
+	private HttpHandler getProjectsHandler = new GetProjectsHandler();
+	private HttpHandler getSampleImageHandler = new GetSampleImageHandler();
+	private HttpHandler downloadBatchHandler = new DownloadBatchHandler();	
+	private HttpHandler submitBatchHandler = new SubmitBatchHandler();	
+	private HttpHandler getFieldsHandler = new GetFieldsHandler();	
+	private HttpHandler searchHandler = new SearchHandler();
+	private HttpHandler downloadFileHandler = new DownloadFileHandler();
+	
 	private Server() {
 		return;
 	}
@@ -52,8 +62,11 @@ public class Server {
 
 		logger.info("Initializing Database");
 
-		Database.initialize();
-
+		try {
+			ServerFacade.initialize();
+		} catch (ServerFacadeException e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
 		logger.info("Initializing HTTP Server");
 
 		try {
@@ -86,15 +99,6 @@ public class Server {
 
 		server.start();
 	}
-	
-	private HttpHandler validateUserHandler = new ValidateUserHandler();
-	private HttpHandler getProjectsHandler = new GetProjectsHandler();
-	private HttpHandler getSampleImageHandler = new GetSampleImageHandler();
-	private HttpHandler downloadBatchHandler = new DownloadBatchHandler();	
-	private HttpHandler submitBatchHandler = new SubmitBatchHandler();	
-	private HttpHandler getFieldsHandler = new GetFieldsHandler();	
-	private HttpHandler searchHandler = new SearchHandler();
-	private HttpHandler downloadFileHandler = new DownloadFileHandler();
 	
 	
 	public static void main(String[] args) throws DatabaseException {

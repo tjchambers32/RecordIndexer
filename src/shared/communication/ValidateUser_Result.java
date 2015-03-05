@@ -28,4 +28,16 @@ public class ValidateUser_Result {
 	public void setResult(User result) {
 		this.result = result;
 	}
+	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		User user = this.result;
+		
+		result.append("TRUE\n");
+		result.append(user.getFirstName() + "\n");
+		result.append(user.getLastName() + "\n");
+		result.append(user.getRecordsIndexed() + "/n");
+		
+		return result.toString();
+	}
 }

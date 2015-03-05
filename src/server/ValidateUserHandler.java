@@ -39,7 +39,6 @@ public class ValidateUserHandler implements HttpHandler {
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, -1);
 			return;
 		}
-		
 		exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0); //0 means read until the end
 		xmlStream.toXML(result, exchange.getResponseBody());
 		exchange.getResponseBody().close();
