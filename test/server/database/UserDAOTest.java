@@ -3,7 +3,6 @@ package server.database;
 
 
 import static org.junit.Assert.*;
-import server.database.*;
 import shared.model.*;
 import java.util.*;
 import org.junit.After;
@@ -61,49 +60,113 @@ public class UserDAOTest {
 
 	@Test
 	public void testAdd() throws DatabaseException {
-		User bob = new User(-1, "bobUser", "Bob", "Smith", "bob@company.com",
-				"topsecret", 20, 8);
-		User jack = new User(-1, "jackie", "Jack", "Cooper",
-				"jack@company.com", "iLoveCheese", 43, 5);
-		User sue = new User(-1, "sueornottosue", "Sue", "Rodriguez",
-				"sue@company.com", "litigation", 3, 7);
+		User bob = new User("bob", "Bob", "White", "bob@white.org",
+				"http://www.white.org/bob", 20, 8);
+		User kels = new User("kchambers", "kelsey", "chambers",
+				"kelsey@chambers.com", "kels", 43, 5);
+		User rock = new User("rocky", "Rockwell", "Chambers",
+				"rocky@chambers.com", "rock", 3, 7);
 
 		dbUsers.add(bob);
-		dbUsers.add(jack);
-		dbUsers.add(sue);
+		dbUsers.add(kels);
+		dbUsers.add(rock);
 
 		List<User> allUsers = dbUsers.getAll();
 		assertEquals(3, allUsers.size());
 
 		boolean foundBob = false;
-		boolean foundJack = false;
-		boolean foundSue = false;
+		boolean foundKels = false;
+		boolean foundRock = false;
 
 		for (User u : allUsers) {
 			if (!foundBob) {
 				foundBob = areEqual(u, bob, false);
 			}
 
-			if (!foundSue) {
-				foundSue = areEqual(u, sue, false);
+			if (!foundKels) {
+				foundKels = areEqual(u, kels, false);
 			}
 
-			if (!foundJack) {
-				foundJack = areEqual(u, jack, false);
+			if (!foundRock) {
+				foundRock = areEqual(u, rock, false);
 			}
 		}
 
-		assertTrue(foundBob && foundSue && foundJack);
+		assertTrue(foundBob && foundKels && foundRock);
 	}
 
 	@Test
 	public void testUpdate() throws DatabaseException {
+		User bob = new User("bob", "Bob", "White", "bob@white.org",
+				"http://www.white.org/bob", 20, 8);
+		User kels = new User("kchambers", "kelsey", "chambers",
+				"kelsey@chambers.com", "kels", 43, 5);
+		User rock = new User("rocky", "Rockwell", "Chambers",
+				"rocky@chambers.com", "rock", 3, 7);
+
+		dbUsers.add(bob);
+		dbUsers.add(kels);
+		dbUsers.add(rock);
+
+		List<User> allUsers = dbUsers.getAll();
+		assertEquals(3, allUsers.size());
 		
+		bob.setEmail("bob@chambers");
+		bob.setFirstName("travis");
+		bob.setLastName("Chambers");
+		bob.setImageID(100);
+		bob.setPassword("letMeIN!");
+		bob.setRecordsIndexed(100000);
+
+		dbUsers.update(bob);
+		
+		allUsers = dbUsers.getAll();
+		assertEquals(3, allUsers.size());
+		
+		boolean foundBob = false;
+		boolean foundKels = false;
+		boolean foundRock = false;
+		
+		for (User u : allUsers) {
+			if (!foundBob) {
+				foundBob = areEqual(u, bob, false);
+			}
+
+			if (!foundKels) {
+				foundKels = areEqual(u, kels, false);
+			}
+
+			if (!foundRock) {
+				foundRock = areEqual(u, rock, false);
+			}
+		}
+
+		assertTrue(foundBob && foundKels && foundRock);
+
 	}
 
 	@Test
 	public void testDelete() throws DatabaseException {
+		User bob = new User("bob", "Bob", "White", "bob@white.org",
+				"http://www.white.org/bob", 20, 8);
+		User kels = new User("kchambers", "kelsey", "chambers",
+				"kelsey@chambers.com", "kels", 43, 5);
+		User rock = new User("rocky", "Rockwell", "Chambers",
+				"rocky@chambers.com", "rock", 3, 7);
 
+		dbUsers.add(bob);
+		dbUsers.add(kels);
+		dbUsers.add(rock);
+
+		List<User> allUsers = dbUsers.getAll();
+		assertEquals(3, allUsers.size());
+		
+		dbUsers.delete(bob);
+		dbUsers.delete(kels);
+		dbUsers.delete(rock);
+		
+		allUsers = dbUsers.getAll();
+		assertEquals(0, allUsers.size());
 	}
 
 	@Test(expected = DatabaseException.class)

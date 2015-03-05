@@ -60,7 +60,7 @@ public class FieldDAO {
 		PreparedStatement stmt = null;
 		try {
 			String query = "UPDATE fields "
-					+ "SET title=?, xCoord=?, width=?, helpHTML=?, knownData=?, projectID=?"
+					+ "SET title=?, xCoord=?, width=?, helpHTML=?, knownData=?, projectID=? "
 					+ "WHERE id=?";
 			stmt = db.getConnection().prepareStatement(query);
 
@@ -70,6 +70,7 @@ public class FieldDAO {
 			stmt.setString(4, field.getHelpHTML());
 			stmt.setString(5, field.getKnownData());
 			stmt.setInt(6, field.getProjectID());
+			stmt.setInt(7,  field.getId());
 			
 			if (stmt.executeUpdate() != 1) {
 				throw new DatabaseException("Could not update field");

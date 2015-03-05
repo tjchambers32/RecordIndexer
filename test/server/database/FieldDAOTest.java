@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import server.database.*;
 import shared.model.*;
 
 import java.util.*;
@@ -45,7 +44,7 @@ public class FieldDAOTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		// Delete all Projects from database
+		// Delete all Fields from database
 		db = new Database();
 		db.startTransaction();
 
@@ -78,9 +77,9 @@ public class FieldDAOTest {
 	 */
 	@Test
 	public void testAdd() throws DatabaseException {
-		Field one = new Field(1, 1, "one", 1, 1, "one", "one", 1);
-		Field two = new Field(2, 2, "two", 2, 2, "two", "two", 2);
-		Field three = new Field(3, 3, "three", 3, 3, "three", "three", 3);
+		Field one = new Field(1, "one", 1, 1, "one", "one", 1);
+		Field two = new Field(2, "two", 2, 2, "two", "two", 2);
+		Field three = new Field(3, "three", 3, 3, "three", "three", 3);
 		
 		daoDB.add(one);
 		daoDB.add(two);
@@ -109,19 +108,100 @@ public class FieldDAOTest {
 
 	/**
 	 * Test method for {@link server.database.FieldDAO#update(shared.model.Field)}.
+	 * @throws DatabaseException 
 	 */
 	@Test
-	public void testUpdate() {
-		fail("Not yet implemented"); // TODO
+	public void testUpdate() throws DatabaseException {
+		Field one = new Field(1, "one", 1, 1, "one", "one", 1);
+		Field two = new Field(2, "two", 2, 2, "two", "two", 2);
+		Field three = new Field(3, "three", 3, 3, "three", "three", 3);
+		
+		daoDB.add(one);
+		daoDB.add(two);
+		daoDB.add(three);
+		
+		List<Field> all = daoDB.getAll();
+		assertEquals(3, all.size());
+		
+		one.setTitle("1");
+		one.setProjectID(100);
+		one.setWidth(100);
+		one.setxCoord(100);
+		one.setHelpHTML("1");
+		one.setKnownData("1");
+
+		two.setTitle("2");
+		two.setProjectID(200);
+		two.setWidth(200);
+		two.setxCoord(200);
+		two.setHelpHTML("2");
+		two.setKnownData("2");
+		
+		three.setTitle("3");
+		three.setProjectID(300);
+		three.setWidth(300);
+		three.setxCoord(300);
+		three.setHelpHTML("3");
+		three.setKnownData("3");
+		
+		daoDB.update(one);
+		daoDB.update(two);
+		daoDB.update(three);
+		
+		all = daoDB.getAll();
+		assertEquals(3, all.size());
+		
+		boolean found1 = false;
+		boolean found2 = false;
+		boolean found3 = false;
+		
+		for (Field i : all) {
+			if (!found1) {
+				found1 = areEqual(i, one, false);
+			}
+			if (!found2) {
+				found2 = areEqual(i, two, false);
+			}
+			if (!found3) {
+				found3 = areEqual(i, three, false);
+			}
+		}
+		assertTrue(found1 && found2 && found3);
 	}
 
 	/**
 	 * Test method for {@link server.database.FieldDAO#delete(shared.model.Field)}.
+	 * @throws DatabaseException 
 	 */
 	@Test
-	public void testDelete() {
-		fail("Not yet implemented"); // TODO
+	public void testDelete() throws DatabaseException {
+		Field one = new Field(1, "one", 1, 1, "one", "one", 1);
+		Field two = new Field(2, "two", 2, 2, "two", "two", 2);
+		Field three = new Field(3, "three", 3, 3, "three", "three", 3);
+		
+		daoDB.add(one);
+		daoDB.add(two);
+		daoDB.add(three);
+		
+		List<Field> all = daoDB.getAll();
+		assertEquals(3, all.size());
+		
+		daoDB.delete(one);
+		
+		all = daoDB.getAll();
+		assertEquals(2, all.size());
+		
+		daoDB.delete(two);
+		
+		all = daoDB.getAll();
+		assertEquals(1, all.size());
+		
+		daoDB.delete(three);
+		
+		all = daoDB.getAll();
+		assertEquals(0, all.size());
 	}
+	
 	private boolean areEqual(Field a, Field b, boolean compareIDs) {
 		if (compareIDs) {
 			if (a.getId() != b.getId()) {
@@ -129,8 +209,7 @@ public class FieldDAOTest {
 			}
 		}
 
-		return (safeEquals(a.getFieldNumber(), b.getFieldNumber())
-				&& safeEquals(a.getTitle(), b.getTitle())
+		return (safeEquals(a.getTitle(), b.getTitle())
 				&& safeEquals(a.getxCoord(), b.getxCoord())
 				&& safeEquals(a.getWidth(), b.getWidth())
 				&& safeEquals(a.getHelpHTML(), b.getHelpHTML())

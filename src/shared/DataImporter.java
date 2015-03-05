@@ -136,7 +136,6 @@ public class DataImporter {
 			String email = emailElem.getTextContent();
 			int recordsIndexed = Integer.parseInt(recordsIndexedElem.getTextContent());
 			
-			//TODO: Ask TA how I should do ID?
 			model.addUser(new User(0, username, password, firstName, lastName, email, recordsIndexed, 0));
 		}
 	}
@@ -157,7 +156,6 @@ public class DataImporter {
 			int firstYCoord = Integer.parseInt(firstYCoordElem.getTextContent());
 			int recordHeight = Integer.parseInt(recordHeightElem.getTextContent());
 			
-			//TODO: ASK TA -- how to autoincrement projectID here. Should I just increment a local int?
 			Project project = new Project(0, title, recordsPerImage, firstYCoord, recordHeight);
 			model.addProject(project);
 			
@@ -216,10 +214,8 @@ public class DataImporter {
 			
 			Element filepathElem = (Element) imageElem.getElementsByTagName("file").item(0);
 			
-			//TODO: FIGURE OUT WHAT IS BREAKING HERE!!
 			String filepath = filepathElem.getTextContent();
 			
-			//TODO: ASK TA what ID I should put in??
 			Image image = new Image(projectID, filepath, -1); //-1 = available
 			model.addImage(image);
 			
@@ -244,7 +240,6 @@ public class DataImporter {
 			
 			Element recordElem = (Element)recordList.item(recordID);	
 			
-			//TODO: ASK TA what ID I should put in??
 			Record record = new Record(imageID, recordID+1);
 			model.addRecord(record); 
 			

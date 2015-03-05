@@ -17,7 +17,7 @@ public class User {
 	private int imageID; //image that the user has checked out
 	
 	/**
-	 * 
+	 * Constructor WITH id
 	 * @param id the id of the user
 	 * @param username username of the user
 	 * @param password password of the user
@@ -40,13 +40,35 @@ public class User {
 	}
 	
 	/**
-	 * 
+	 * Constructor WITHOUT id
+	 * @param id the id of the user
+	 * @param username username of the user
+	 * @param password password of the user
+	 * @param firstName user's first name
+	 * @param lastName user's last name
+	 * @param email user's email
+	 * @param recordsIndexed the number of records the user has indexed
+	 * @param imageID id of the image the user has checked out
+	 */
+	public User(String username, String password, String firstName, String lastName, 
+			String email, int recordsIndexed, int imageID) {
+
+		setUsername(username);
+		setPassword(password);
+		setFirstName(firstName);
+		setLastName(lastName);
+		setEmail(email);
+		setRecordsIndexed(recordsIndexed);
+		setImageID(imageID);
+	}
+	
+	/**
+	 * Constructor for username with JUST username and password
 	 */
 	public User(String username, String password) {
 		
 		setUsername(username);
 		setPassword(password);
-		
 	}
 
 	public int getId() {
@@ -96,8 +118,5 @@ public class User {
 	}
 	public void setImageID(int imageID) {
 		this.imageID = imageID;
-	}
-	
-	
-	
+	}	
 }

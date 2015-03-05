@@ -34,18 +34,18 @@ public class ValueDAO {
 		ResultSet rs = null;
 
 		try {
-			String query = "SELECT id, recordID, value, fieldID FROM value";
+			String query = "SELECT id, recordID, text, fieldID FROM value";
 			stmt = db.getConnection().prepareStatement(query);
 
 			rs = stmt.executeQuery();
 			while (rs.next()) {
 				int id = rs.getInt(1);
 				int recordID = rs.getInt(2);
-				String value = rs.getString(3);
+				String text = rs.getString(3);
 				int fieldID = rs.getInt(4);
 
 
-				result.add(new Value(id, recordID, value, fieldID));
+				result.add(new Value(id, recordID, text, fieldID));
 			}
 		} catch (SQLException e) {
 			DatabaseException serverEx = new DatabaseException(e.getMessage(),

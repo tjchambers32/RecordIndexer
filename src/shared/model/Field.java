@@ -8,7 +8,6 @@ package shared.model;
 public class Field {
 
 	private int id;
-	private int fieldNumber;
 	private String title;
 	private int xCoord;
 	private int width;
@@ -27,11 +26,10 @@ public class Field {
 	 * @param knownData relative path to the knownData subdirectory
 	 * @param projectID the id of the project this field belongs to
 	 */
-	public Field(int id, int fieldNumber, String title, int xCoord,
+	public Field(int id, String title, int xCoord,
 			int width, String helpHTML, String knownData, int projectID) {
 		
 		setId(id);
-		setFieldNumber(fieldNumber);
 		setTitle(title);
 		setxCoord(xCoord);
 		setWidth(width);
@@ -50,10 +48,9 @@ public class Field {
 	 * @param knownData relative path to the knownData subdirectory
 	 * @param projectID the id of the project this field belongs to
 	 */
-	public Field(int fieldNumber, String title, int xCoord,
+	public Field(String title, int xCoord,
 			int width, String helpHTML, String knownData, int projectID) {
 
-		setFieldNumber(fieldNumber);
 		setTitle(title);
 		setxCoord(xCoord);
 		setWidth(width);
@@ -67,12 +64,6 @@ public class Field {
 	}
 	public void setId(int fieldId) {
 		this.id = fieldId;
-	}
-	public int getFieldNumber() {
-		return fieldNumber;
-	}
-	public void setFieldNumber(int fieldNumber) {
-		this.fieldNumber = fieldNumber;
 	}
 	public String getTitle() {
 		return title;

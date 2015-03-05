@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import server.database.*;
 import shared.model.*;
 
 import java.util.*;
@@ -108,13 +107,6 @@ public class ImageDAOTest {
 		}
 		assertTrue(found1 && found2 && found3);
 	}
-
-	/**
-	 * @param i
-	 * @param one
-	 * @param b
-	 * @return
-	 */
 	
 
 	/**

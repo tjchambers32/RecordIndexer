@@ -39,8 +39,8 @@ public class ServerFacade {
 	
 	public GetProjects_Result getProjects(GetProjects_Params params) throws ServerFacadeException, DatabaseException {
 		Database db = new Database();
-		User user = params.getParams();
 		
+		User user = params.getParams();
 		//TODO: check if user is valid??
 		
 		List<Project> returnProjects = null;
