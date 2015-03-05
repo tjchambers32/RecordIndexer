@@ -67,7 +67,7 @@ public class ClientCommunicator {
 	 */
 	public ValidateUser_Result ValidateUser(ValidateUser_Params params)
 			throws ClientException {
-		return (ValidateUser_Result) doGet("/validateUser");
+		return (ValidateUser_Result) doPost("/validateUser", params);
 	}
 
 	/**
@@ -253,13 +253,19 @@ public class ClientCommunicator {
 	 *         name or password, user doesn’t own the submitted batch, wrong
 	 *         number of values, can’t connect to the server, internal server
 	 *         error,etc.) returns FAILED
-	 * 
+	 *         
 	 */
 	public Search_Result search(Search_Params params) {
 
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param urlPath
+	 * @return
+	 * @throws ClientException
+	 */
 	private Object doGet(String urlPath) throws ClientException {
 		try {
 			URL url = new URL(URL_PREFIX + urlPath);
@@ -281,7 +287,14 @@ public class ClientCommunicator {
 		}
 	}
 
-	private void doPost(String urlPath, Object postData) throws ClientException {
+	/**
+	 * 
+	 * @param urlPath
+	 * @param postData
+	 * @return
+	 * @throws ClientException
+	 */
+	private Object doPost(String urlPath, Object postData) throws ClientException {
 		try {
 			URL url = new URL(URL_PREFIX + urlPath);
 			HttpURLConnection connection = (HttpURLConnection) url
@@ -295,6 +308,9 @@ public class ClientCommunicator {
 				throw new ClientException(String.format(
 						"doPost failed: %s (http code %d)", urlPath,
 						connection.getResponseCode()));
+			} else {
+				Object result = xmlStream.fromXML(connection.getInputStream());
+				return result;
 			}
 		} catch (IOException e) {
 			throw new ClientException(String.format("doPost failed: %s",
