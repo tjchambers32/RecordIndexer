@@ -13,7 +13,8 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import server.database.DatabaseException;
-import shared.model.*;
+import server.facade.ServerFacade;
+import server.facade.ServerFacadeException;
 import shared.communication.*;
 //import server.facade.*;
 
@@ -21,7 +22,7 @@ public class ValidateUserHandler implements HttpHandler {
 
 	private Logger logger = Logger.getLogger("recordindexer"); 
 	private XStream xmlStream = new XStream(new DomDriver());	
-	private Model model = new Model();
+	private ServerFacade facade = new ServerFacade();
 	
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
@@ -31,9 +32,9 @@ public class ValidateUserHandler implements HttpHandler {
 		ValidateUser_Result result = null;
 		
 		try {
-			result = model.validateUser(params);
+			result = facade.validateUser(params);
 		}
-		catch (ModelException | DatabaseException e) {
+		catch (ServerFacadeException | DatabaseException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, -1);
 			return;

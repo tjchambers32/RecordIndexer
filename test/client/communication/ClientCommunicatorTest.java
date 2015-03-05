@@ -17,6 +17,8 @@ import org.junit.Test;
  */
 public class ClientCommunicatorTest {
 
+	//TODO: IMPLEMENT CLIENTCOMMUNICATORTEST
+	
 	/**
 	 * @throws java.lang.Exception
 	 */

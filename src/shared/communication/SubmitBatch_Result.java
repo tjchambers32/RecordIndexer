@@ -13,10 +13,17 @@ public class SubmitBatch_Result {
 
 	/**
 	 * 
-	 * @param result true or false if whether a batch was submitted successfully or failed
+	 * @param result true or false if a batch was submitted successfully or failed
 	 */
-	SubmitBatch_Result(boolean result) {
+	public SubmitBatch_Result(boolean result) {
 		setResult(result);
+	}
+	
+	/**
+	 * Empty Constructor
+	 * @return
+	 */
+	public SubmitBatch_Result() {
 	}
 	
 	public boolean getResult() {

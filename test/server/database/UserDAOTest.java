@@ -168,6 +168,21 @@ public class UserDAOTest {
 		allUsers = dbUsers.getAll();
 		assertEquals(0, allUsers.size());
 	}
+	
+	@Test
+	public void testValidateUser() throws DatabaseException {
+		User kels = new User("kchambers", "kelsey", "chambers",
+				"kelsey@chambers.com", "kels", 43, 5);
+		
+		dbUsers.add(kels);
+		
+		User kels2 = dbUsers.validateUser(kels);
+		
+		boolean foundKels = false;
+		foundKels = areEqual(kels, kels2, true);
+		
+		assertTrue(foundKels);
+	}
 
 	@Test(expected = DatabaseException.class)
 	public void testInvalidAdd() throws DatabaseException {

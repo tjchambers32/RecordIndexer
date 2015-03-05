@@ -15,4 +15,11 @@ public class ServerFacadeException extends Exception {
 		super(message, cause);
 	}
 
+	/**
+	 * @param string
+	 */
+	public ServerFacadeException(String string) {
+		super(string);
+	}
+
 }

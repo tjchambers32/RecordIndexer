@@ -17,7 +17,7 @@ public class ValidateUser_Params {
 	 * 
 	 * @param params a user object that contains the user's username and password
 	 */
-	ValidateUser_Params(User params) {
+	public ValidateUser_Params(User params) {
 		setParams(params);
 	}
 

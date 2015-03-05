@@ -28,6 +28,14 @@ public class Search_Result {
 		setFieldID(fieldID);
 	}
 	
+	/**
+	 * Empty Constructor
+	 * @return
+	 */
+	public Search_Result() {
+		
+	}
+	
 	public int getImageID() {
 		return imageID;
 	}

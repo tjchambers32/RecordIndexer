@@ -10,7 +10,7 @@ import server.database.*;
 
 public class Server {
 
-	private static final int SERVER_PORT_NUMBER = 8080;
+	private static final int DEFAULT_SERVER_PORT_NUMBER = 8080;
 	private static final int MAX_WAITING_CONNECTIONS = 10;
 
 	private static Logger logger;
@@ -48,7 +48,7 @@ public class Server {
 		return;
 	}
 
-	private void run() throws DatabaseException {
+	private void run(int port) throws DatabaseException {
 
 		logger.info("Initializing Database");
 
@@ -58,7 +58,7 @@ public class Server {
 
 		try {
 			server = HttpServer.create(
-					new InetSocketAddress(SERVER_PORT_NUMBER),
+					new InetSocketAddress(port),
 					MAX_WAITING_CONNECTIONS);
 		} catch (IOException e) {
 
@@ -89,87 +89,19 @@ public class Server {
 	
 	private HttpHandler validateUserHandler = new ValidateUserHandler();
 	private HttpHandler getProjectsHandler = new GetProjectsHandler();
+	private HttpHandler getSampleImageHandler = new GetSampleImageHandler();
+	private HttpHandler downloadBatchHandler = new DownloadBatchHandler();	
+	private HttpHandler submitBatchHandler = new SubmitBatchHandler();	
+	private HttpHandler getFieldsHandler = new GetFieldsHandler();	
+	private HttpHandler searchHandler = new SearchHandler();
+	private HttpHandler downloadFileHandler = new DownloadFileHandler();
 	
-	private HttpHandler getSampleImageHandler = new HttpHandler() {
-
-		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			// Process UpdateContact request
-
-			// Database db = new Database();
-			// db.startTransaction();
-			// ...
-			// db.endTransaction();
-		}
-	};
-
-	private HttpHandler downloadBatchHandler = new HttpHandler() {
-
-		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			// Process DeleteContact request
-
-			// Database db = new Database();
-			// db.startTransaction();
-			// ...
-			// db.endTransaction();
-		}
-	};
-	
-	private HttpHandler submitBatchHandler = new HttpHandler() {
-
-		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			// Process DeleteContact request
-
-			// Database db = new Database();
-			// db.startTransaction();
-			// ...
-			// db.endTransaction();
-		}
-	};
-	
-	private HttpHandler getFieldsHandler = new HttpHandler() {
-
-		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			// Process DeleteContact request
-
-			// Database db = new Database();
-			// db.startTransaction();
-			// ...
-			// db.endTransaction();
-		}
-	};
-	
-	private HttpHandler searchHandler = new HttpHandler() {
-
-		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			// Process DeleteContact request
-
-			// Database db = new Database();
-			// db.startTransaction();
-			// ...
-			// db.endTransaction();
-		}
-	};
-	
-	private HttpHandler downloadFileHandler = new HttpHandler() {
-
-		@Override
-		public void handle(HttpExchange exchange) throws IOException {
-			// Process DeleteContact request
-
-			// Database db = new Database();
-			// db.startTransaction();
-			// ...
-			// db.endTransaction();
-		}
-	};
 	
 	public static void main(String[] args) throws DatabaseException {
-		new Server().run();
+		if (args.length == 1)
+			new Server().run(Integer.parseInt(args[0]));
+		else
+			new Server().run(DEFAULT_SERVER_PORT_NUMBER);
 	}
 
 }
