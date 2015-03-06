@@ -8,6 +8,7 @@ package client.communication;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 import shared.communication.*;
 import client.ClientException;
@@ -117,6 +118,11 @@ public class ClientCommunicator {
 		return (GetSampleImage_Result) doPost("/GetSampleImage", params);
 	}
 
+	public void downloadFile(String url) throws ClientException {
+		
+		doGet("/" + url);
+	}
+	
 	/**
 	 * Downloads a batch for the user to index
 	 * 
@@ -264,9 +270,9 @@ public class ClientCommunicator {
 	 * @throws ClientException 
 	 * 
 	 */
-	public Search_Result search(Search_Params params) throws ClientException {
+	public ArrayList<Search_Result> search(Search_Params params) throws ClientException {
 
-		return (Search_Result) doPost("/Search", params);
+		return (ArrayList<Search_Result>) doPost("/Search", params);
 	}
 
 	/**
@@ -319,11 +325,7 @@ public class ClientCommunicator {
 			xmlStream.toXML(postData, connection.getOutputStream());
 			connection.getOutputStream().close();
 			int test = connection.getResponseCode();
-			
-			
-			int whatever = 10;
-			
-			
+	
 			if (test == HttpURLConnection.HTTP_OK) {
 				Object result = xmlStream.fromXML(connection.getInputStream());
 				return result;

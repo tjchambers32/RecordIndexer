@@ -1,22 +1,6 @@
-Mar 06, 2015 9:43:50 AM server.Server run
+Mar 06, 2015 11:36:35 AM server.Server run
 INFO: Initializing Database
-Mar 06, 2015 9:43:50 AM server.Server run
+Mar 06, 2015 11:36:35 AM server.Server run
 INFO: Initializing HTTP Server
-Mar 06, 2015 9:43:50 AM server.Server run
+Mar 06, 2015 11:36:35 AM server.Server run
 INFO: Starting HTTP Server
-Mar 06, 2015 9:48:43 AM server.GetFieldsHandler handle
-SEVERE: Invalid ProjectID
-server.facade.ServerFacadeException: Invalid ProjectID
-	at server.facade.ServerFacade.getFields(ServerFacade.java:249)
-	at server.GetFieldsHandler.handle(GetFieldsHandler.java:40)
-	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
-	at sun.net.httpserver.AuthFilter.doFilter(AuthFilter.java:83)
-	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:80)
-	at sun.net.httpserver.ServerImpl$Exchange$LinkHandler.handle(ServerImpl.java:677)
-	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
-	at sun.net.httpserver.ServerImpl$Exchange.run(ServerImpl.java:649)
-	at sun.net.httpserver.ServerImpl$DefaultExecutor.execute(ServerImpl.java:158)
-	at sun.net.httpserver.ServerImpl$Dispatcher.handle(ServerImpl.java:433)
-	at sun.net.httpserver.ServerImpl$Dispatcher.run(ServerImpl.java:398)
-	at java.lang.Thread.run(Thread.java:745)
-

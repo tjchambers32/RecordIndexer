@@ -3,7 +3,13 @@
  */
 package server;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -19,8 +25,17 @@ public class DownloadFileHandler implements HttpHandler {
 	 */
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
-		// TODO Auto-generated method stub
-
+		
+		String filepath = exchange.getRequestURI().getPath();
+		String file = "database" + File.separator + filepath;
+		
+		Path path = Paths.get(file);
+		byte[] image = Files.readAllBytes(path);
+		
+		exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+		OutputStream os = exchange.getResponseBody();
+		os.write(image);
+		os.close();
 	}
 
 }

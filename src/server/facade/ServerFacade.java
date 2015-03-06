@@ -102,13 +102,14 @@ public class ServerFacade {
 		db.getUserDAO().update(user);
 
 		List<Record> records = params.getRecords();
-		RecordDAO recordDAO = db.getRecordDAO();
+		List<Value> values = params.getValues();
 		
 		for (int i = 0; i < records.size(); i++) {
-			recordDAO.add(records.get(i));
+			db.getRecordDAO().add(records.get(i));
 		}
-		
-		//TODO: What do I do with VALUES?????
+		for (int i = 0; i < values.size(); i++) {
+			db.getValueDAO().add(values.get(i));
+		}
 		
 		db.endTransaction(true);
 		result.setResult(true);

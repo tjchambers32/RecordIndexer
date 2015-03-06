@@ -23,7 +23,7 @@ public class Search_Params {
 	 * @param fields the fields that are being searched in
 	 * @param search_values the values being searched for
 	 */
-	Search_Params(User user, ArrayList<Integer> fields, ArrayList<String> search_values) {
+	public Search_Params(User user, ArrayList<Integer> fields, ArrayList<String> search_values) {
 		setUser(user);
 		setFields(fields);
 		setSearch_values(search_values);

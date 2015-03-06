@@ -109,12 +109,12 @@ public class FieldDAO {
 		try {
 			for (int id : fields) {
 				for (String value : search_values) {
-					String query = "SELECT records.imageID, image.filepath, records.rowNumber, fields.id "
-							+ "FROM images, records, fields "
-							+ "WHERE images.imageID = records.imageID "
+					String query = "SELECT records.imageID, images.filepath, records.rowNumber, fields.id "
+							+ "FROM images, records, fields, value "
+							+ "WHERE images.id = records.imageID "
 							+ "AND images.projectID = fields.projectID "
-							+ "AND fields.fieldNumber = records.fieldNumber "
-							+ "AND fields.ID = ? " + "AND records.value = ? ";
+							+ "AND fields.id =  value.fieldID "
+							+ "AND fields.id = ? " + "AND value.text = ? ";
 
 					stmt = db.getConnection().prepareStatement(query);
 					stmt.setInt(1, id);

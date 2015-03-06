@@ -3,6 +3,8 @@
  */
 package shared.communication;
 
+import java.util.ArrayList;
+
 /**
  * @author tchambs
  *
@@ -26,6 +28,7 @@ public class Search_Result {
 		setImageURL(imageURL);
 		setRowNumber(rowNumber);
 		setFieldID(fieldID);
+		
 	}
 	
 	/**
@@ -62,5 +65,16 @@ public class Search_Result {
 	}
 	public void setFieldID(int fieldID) {
 		this.fieldID = fieldID;
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(imageID + "\n");
+		sb.append(imageURL + "\n");
+		sb.append(rowNumber + "\n");
+		sb.append(fieldID + "\n");
+		
+		return sb.toString();
 	}
 }
