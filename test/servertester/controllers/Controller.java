@@ -213,6 +213,35 @@ public class Controller implements IController {
 	}
 	
 	private void getFields() {
+		ClientCommunicator communicator = new ClientCommunicator(_view.getHost(), Integer.parseInt(_view.getPort()));
+		
+		String[] paramValues = getView().getParameterValues();
+		User user = new User(paramValues[0], paramValues[1]);
+		String testing = paramValues[2];
+		int projectID = -1; //default for no projectID passed in
+		if (!paramValues[2].equals(""))
+			projectID = Integer.parseInt(paramValues[2]);
+		
+		GetFields_Params params = new GetFields_Params(user, projectID);
+		
+		// Print out Results
+		GetFields_Result result = null;
+		try {
+			result = communicator.getFields(params);
+		}
+		catch (ClientException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			_view.setResponse("FAILED\n");
+			return;
+		}
+		
+		if (result == null) {
+			_view.setResponse("FAILED\n");
+		} 
+		else {
+			_view.setResponse(result.toString());
+		}
 	}
 	
 	private void submitBatch() {

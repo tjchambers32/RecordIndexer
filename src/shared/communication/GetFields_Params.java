@@ -19,7 +19,7 @@ public class GetFields_Params {
 	 * @param user a user object containing the user's information
 	 * @param projectID the ID of the project the fields belong to
 	 */
-	GetFields_Params(User user, int projectID) {
+	public GetFields_Params(User user, int projectID) {
 		setUser(user);
 		setProjectID(projectID);
 	}

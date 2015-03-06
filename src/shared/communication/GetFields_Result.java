@@ -4,31 +4,44 @@
 package shared.communication;
 
 import java.util.ArrayList;
-import shared.model.Field;
+import java.util.List;
 
+import shared.model.Field;
 
 /**
  * @author tchambs
- *
+ * 
  */
 public class GetFields_Result {
 
-	private ArrayList<Field> fields;
+	private List<Field> fields;
 
 	/**
 	 * 
-	 * @param fields a list of each field
+	 * @param fields
+	 *            a list of each field
 	 */
-	GetFields_Result(ArrayList<Field> fields) {
+	public GetFields_Result(List<Field> fields) {
 		setFields(fields);
 	}
-	
-	public ArrayList<Field> getFields() {
+
+	public List<Field> getFields() {
 		return fields;
 	}
 
-	public void setFields(ArrayList<Field> fields) {
+	public void setFields(List<Field> fields) {
 		this.fields = fields;
 	}
-	
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		for (Field f : this.fields) {
+			sb.append(f.getProjectID() + "\n");
+			sb.append(f.getId() + "\n");
+			sb.append(f.getTitle() + "\n");
+		}
+		
+		return sb.toString();
+	}
 }

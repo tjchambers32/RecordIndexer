@@ -218,6 +218,52 @@ public class ServerFacade {
 	/**
 	 * @param params
 	 * @return
+	 * @throws DatabaseException 
+	 * @throws ServerFacadeException 
+	 */
+	public GetFields_Result getFields(GetFields_Params params) throws ServerFacadeException, DatabaseException {
+
+		Database db = new Database();
+		User user = params.getUser();
+		
+		ValidateUser_Params validate = new ValidateUser_Params(user);
+		ValidateUser_Result validUser = validateUser(validate);
+
+		if (validUser.getResult() == null) {
+			throw new ServerFacadeException("Invalid username and/or password");
+		} else {
+			user = validUser.getResult();
+		}
+
+		List<Field> fields = new ArrayList<Field>();
+		Project p = null;
+		
+		try {
+			db.startTransaction();
+
+			if (params.getProjectID() == -1) {
+				fields = db.getFieldDAO().getAll();
+			} else {
+				p = db.getProjectDAO().getProject(params.getProjectID());
+				if (p == null)
+					throw new ServerFacadeException("Invalid ProjectID");
+				else
+					fields = db.getFieldDAO().getFields(params.getProjectID());
+			}
+			db.endTransaction(true);
+						
+		} catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new DatabaseException(e.getMessage(), e);
+		}
+		GetFields_Result result = new GetFields_Result(fields);
+		
+		return result;
+	}
+	
+	/**
+	 * @param params
+	 * @return
 	 * @throws ServerFacadeException 
 	 * @throws ModelException 
 	 * @throws DatabaseException 
