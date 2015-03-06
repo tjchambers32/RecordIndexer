@@ -179,7 +179,7 @@ public class Controller implements IController {
 		if (result.getImageURL() == null) {
 			_view.setResponse("FAILED\n");
 		} else {
-			_view.setResponse(result.toString());
+			_view.setResponse("http://"+_view.getHost()+ ":" + _view.getPort() + "/" + result.toString());
 		}
 	}
 
