@@ -31,9 +31,6 @@ public class GetProjectsHandler implements HttpHandler {
 	public void handle(HttpExchange exchange) throws IOException {
 		
 		GetProjects_Params params = (GetProjects_Params)xmlStream.fromXML(exchange.getRequestBody());
-		
-		//TODO: check if user is valid?
-		
 		GetProjects_Result result = null;
 		
 		try {

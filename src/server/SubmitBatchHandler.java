@@ -13,10 +13,6 @@ import server.facade.ServerFacade;
 import server.facade.ServerFacadeException;
 import shared.communication.SubmitBatch_Params;
 import shared.communication.SubmitBatch_Result;
-import shared.communication.ValidateUser_Params;
-import shared.communication.ValidateUser_Result;
-import shared.model.Model;
-import shared.model.ModelException;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

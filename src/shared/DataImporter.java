@@ -13,6 +13,7 @@ import java.nio.file.*;
 
 import javax.xml.parsers.*;
 
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.*;
 
 /**
@@ -46,16 +47,17 @@ public class DataImporter {
 	private void doImport(String filepath) throws Exception {
 		
 		File newFile = new File(filepath);
-		
+		File dest = new File(databasePath);
 		Model.initialize();
 
 		model.clear();
 
 		System.out.println("Deleting Old Databases");
-		di.deleteFiles(databasePath);
+		if(!newFile.getParentFile().getCanonicalPath().equals(dest.getCanonicalPath()))
+			FileUtils.deleteDirectory(dest);
 		
 		System.out.println("Copying Files from new filepath");
-		di.addNewFiles(newFile.getParent(), databasePath);
+		FileUtils.copyDirectory(newFile.getParentFile(), dest);
 		
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document doc = builder.parse(newFile);
@@ -83,30 +85,6 @@ public class DataImporter {
 			}
 		}
 
-	}
-	/**
-	 * @param filepath
-	 */
-	private void addNewFiles(String filepath, String destination) {
-
-		File directory = new File(filepath);
-		if (directory.isDirectory()) {
-			File[] subDirectory = directory.listFiles();
-
-			for (File file : subDirectory) {
-				addNewFiles(file.getAbsolutePath(), destination
-						+ File.separator + file.getName());
-			}
-		} else {
-			try {
-				Path source = Paths.get(filepath);
-				Path dest = Paths.get(destination);
-				Files.copy(source, dest);
-			} catch (IOException e) {
-				System.out.println("Error copying files");
-				return;
-			}
-		}
 	}
 	
 	private void parse(Document doc) throws DatabaseException, ModelException {

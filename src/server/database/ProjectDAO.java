@@ -75,7 +75,7 @@ public class ProjectDAO {
 			stmt.setInt(3, project.getFirstYCoord());
 			stmt.setInt(4, project.getRecordHeight());
 			stmt.setInt(5, project.getId());
-			
+
 			if (stmt.executeUpdate() != 1) {
 				throw new DatabaseException("Could not update project");
 			}
@@ -141,6 +141,47 @@ public class ProjectDAO {
 
 	public void setDb(Database db) {
 		this.db = db;
+	}
+
+	/**
+	 * @param projectID 
+	 * @return
+	 * @throws DatabaseException
+	 */
+	public Project getProject(int projectID) throws DatabaseException {
+		Project result = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+
+		try {
+			String query = "SELECT id, title, recordsPerImage, firstYCoord, recordHeight FROM projects "
+						+ "WHERE id = ?";
+			
+			stmt = db.getConnection().prepareStatement(query);
+			stmt.setInt(1, projectID);
+			
+			rs = stmt.executeQuery();
+			
+			while (rs.next()) {
+				int id = rs.getInt(1);
+				String title = rs.getString(2);
+				int recordsPerImage = rs.getInt(3);
+				int firstYCoord = rs.getInt(4);
+				int recordHeight = rs.getInt(5);
+
+				result = new Project(id, title, recordsPerImage, firstYCoord,
+						recordHeight);
+			}
+		} catch (SQLException e) {
+			DatabaseException serverEx = new DatabaseException(e.getMessage(),
+					e);
+			throw serverEx;
+		} finally {
+			Database.safeClose(rs);
+			Database.safeClose(stmt);
+		}
+
+		return result;
 	}
 
 }

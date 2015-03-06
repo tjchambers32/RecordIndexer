@@ -17,7 +17,7 @@ public class GetProjects_Params {
 	 * 
 	 * @param params a user object containing the username and password of the user
 	 */
-	GetProjects_Params(User params) {
+	public GetProjects_Params(User params) {
 		setParams(params);
 	}
 	

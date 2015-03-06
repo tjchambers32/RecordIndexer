@@ -5,9 +5,8 @@ import java.util.*;
 import client.ClientException;
 import client.communication.ClientCommunicator;
 import servertester.views.*;
-import shared.communication.ValidateUser_Params;
-import shared.communication.ValidateUser_Result;
-import shared.model.User;
+import shared.communication.*;
+import shared.model.*;
 
 public class Controller implements IController {
 
@@ -117,8 +116,6 @@ public class Controller implements IController {
 			result = communicator.ValidateUser(params);
 		} 
 		catch (ClientException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
 			_view.setResponse("FAILED\n");
 			return;
 		}
@@ -132,18 +129,135 @@ public class Controller implements IController {
 	}
 	
 	private void getProjects() {
+		ClientCommunicator communicator = new ClientCommunicator(_view.getHost(), Integer.parseInt(_view.getPort()));
+		
+		String[] paramValues = getView().getParameterValues();
+		User user = new User(paramValues[0], paramValues[1]);
+
+		GetProjects_Params params = new GetProjects_Params(user);
+		
+		// Print out Results
+		GetProjects_Result result = null;
+		try {
+			result = communicator.getProjects(params);
+		}
+		catch (ClientException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			_view.setResponse("FAILED\n");
+			return;
+		}
+		
+		if (result.getProjects() == null) {
+			_view.setResponse("FAILED\n");
+		} 
+		else {
+			_view.setResponse(result.toString());
+		}
 	}
 	
 	private void getSampleImage() {
+		ClientCommunicator communicator = new ClientCommunicator(_view.getHost(), Integer.parseInt(_view.getPort()));
+		
+		String[] paramValues = getView().getParameterValues();
+		User user = new User(paramValues[0], paramValues[1]);
+		
+		GetSampleImage_Params params = new GetSampleImage_Params(user, Integer.parseInt(paramValues[2]));
+		
+		// Print out Results
+		GetSampleImage_Result result = null;
+		try {
+			result = communicator.getSampleImage(params);
+		}
+		catch (ClientException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			_view.setResponse("FAILED\n");
+			return;
+		}
+		
+		if (result.getImageURL() == null) {
+			_view.setResponse("FAILED\n");
+		} 
+		else {
+			_view.setResponse(result.toString());
+		}
 	}
 	
 	private void downloadBatch() {
+		ClientCommunicator communicator = new ClientCommunicator(_view.getHost(), Integer.parseInt(_view.getPort()));
+		
+		String[] paramValues = getView().getParameterValues();
+		User user = new User(paramValues[0], paramValues[1]);
+		
+		DownloadBatch_Params params = new DownloadBatch_Params(user, Integer.parseInt(paramValues[2]));
+		
+		// Print out Results
+		DownloadBatch_Result result = null;
+		try {
+			result = communicator.downloadBatch(params);
+		}
+		catch (ClientException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			_view.setResponse("FAILED\n");
+			return;
+		}
+		
+		if (result == null) {
+			_view.setResponse("FAILED\n");
+		} 
+		else {
+			_view.setResponse(result.toString("http://"+_view.getHost()+ ":" + _view.getPort() + "/"));
+		}
 	}
 	
 	private void getFields() {
 	}
 	
 	private void submitBatch() {
+		ClientCommunicator communicator = new ClientCommunicator(_view.getHost(), Integer.parseInt(_view.getPort()));
+		
+		String[] paramValues = getView().getParameterValues();
+		User user = new User(paramValues[0], paramValues[1]);
+		user.setImageID(Integer.parseInt(paramValues[2]));
+		
+		ArrayList<Record> records = new ArrayList<Record>();
+		ArrayList<Value> valueList = new ArrayList<Value>();
+		
+		String[] recordString = paramValues[3].split("\\s*(;)\\s*");
+		int rowNumber = 0;
+		for (String field : recordString) {
+			rowNumber++;
+			String[] values = field.split("\\s*(,)\\s*");
+			records.add(new Record(user.getImageID(), rowNumber));
+			int valueNumber = 0;
+			for (String valueString : values) {
+				valueNumber++;
+				valueList.add(new Value(rowNumber, valueString, valueNumber));
+			}
+		}
+		
+		SubmitBatch_Params params = new SubmitBatch_Params(user, records, valueList);
+		
+		// Print out Results
+		SubmitBatch_Result result = null;
+		try {
+			result = communicator.submitBatch(params);
+		}
+		catch (ClientException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			_view.setResponse("FAILED\n");
+			return;
+		}
+		
+		if (result.getResult() == false) {
+			_view.setResponse("FAILED\n");
+		} 
+		else {
+			_view.setResponse(result.toString());
+		}
 	}
 	
 	private void search() {

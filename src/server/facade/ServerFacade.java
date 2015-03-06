@@ -42,9 +42,13 @@ public class ServerFacade {
 		Database db = new Database();
 
 		User user = params.getParams();
-		// TODO: check if user is valid??
+		ValidateUser_Params vParams = new ValidateUser_Params(user);
+		ValidateUser_Result vResult = validateUser(vParams);
+		if (vResult.getResult() == null)
+			throw new ServerFacadeException("Invalid username and/or password");
 
 		List<Project> returnProjects = null;
+		
 		try {
 			db.startTransaction();
 			returnProjects = db.getProjectDAO().getAll();
@@ -88,6 +92,7 @@ public class ServerFacade {
 			throw new ServerFacadeException("ERROR. Batch submitted previously.");
 		} else {
 			image.setAvailability(1);
+			db.getImageDAO().update(image);
 		}
 		
 		int recordsPerImage = db.getImageDAO().getNumberOfRecords(user.getImageID());
@@ -108,6 +113,102 @@ public class ServerFacade {
 		return result;
 	}
 
+	/**
+	 * @param params
+	 * @return
+	 * @throws ServerFacadeException 
+	 * @throws DatabaseException 
+	 */
+	public GetSampleImage_Result GetSampleImage(GetSampleImage_Params params) throws ServerFacadeException, DatabaseException {
+		GetSampleImage_Result result = new GetSampleImage_Result(null);
+		
+		Database db = new Database();
+		User user = params.getUser();
+		
+		ValidateUser_Params validate = new ValidateUser_Params(user);
+		ValidateUser_Result validUser = validateUser(validate);
+
+		if (validUser.getResult() == null) {
+			throw new ServerFacadeException("Invalid username and/or password");
+		} else {
+			user = validUser.getResult();
+		}
+				
+		try {
+			db.startTransaction();
+			Project project = db.getProjectDAO().getProject(params.getProjectID());
+			if (project == null)
+				throw new ServerFacadeException("Invalid ProjectID");
+			Image sampleImage = db.getImageDAO().getSampleImage(params.getProjectID());
+			db.endTransaction(true);
+			result.setImageURL(sampleImage.getFilepath());
+			
+		} catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new DatabaseException(e.getMessage(), e);
+		}
+		
+		return result;
+	}
+	
+
+	/**
+	 * @param params
+	 * @return
+	 * @throws ServerFacadeException 
+	 * @throws DatabaseException 
+	 */
+	public DownloadBatch_Result downloadBatch(DownloadBatch_Params params) throws ServerFacadeException, DatabaseException {
+		DownloadBatch_Result result = null;
+		
+		Database db = new Database();
+		User user = params.getUser();
+		
+		ValidateUser_Params validate = new ValidateUser_Params(user);
+		ValidateUser_Result validUser = validateUser(validate);
+
+		if (validUser.getResult() == null) {
+			throw new ServerFacadeException("Invalid username and/or password");
+		} else if (validUser.getResult().getImageID() != 0){
+			throw new ServerFacadeException("User can only have one batch checked out at a time");
+		} else {
+			user = validUser.getResult();
+		}
+				
+		Image userImage = null;
+		
+//		List<Field> fieldList = new ArrayList<Field>();
+		
+		try {
+			db.startTransaction();
+			Project project = db.getProjectDAO().getProject(params.getProjectID());
+			if (project == null)
+				throw new ServerFacadeException("Invalid ProjectID");
+			userImage = db.getImageDAO().downloadBatch(params.getProjectID());
+			if (userImage.getProjectID() == -1) 
+				throw new ServerFacadeException("This project has no available batches");
+			else
+				user.setImageID(userImage.getId());
+			
+			userImage.setAvailability(0);
+			db.getImageDAO().update(userImage);
+			db.getUserDAO().update(user);
+			
+			db.endTransaction(true);
+						
+		} catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new DatabaseException(e.getMessage(), e);
+		}
+		
+		Project project = db.getProjectDAO().getProject(params.getProjectID());
+		
+		ArrayList<Field> fields = db.getFieldDAO().getFields(params.getProjectID());
+		
+		result = new DownloadBatch_Result(project, fields, userImage);
+		return result;
+	}
+	
 	/**
 	 * @param params
 	 * @return
@@ -211,7 +312,5 @@ public class ServerFacade {
 		} catch (DatabaseException e) {
 			e.printStackTrace();
 		}
-
 	}
-
 }

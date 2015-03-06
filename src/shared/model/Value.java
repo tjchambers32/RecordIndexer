@@ -16,7 +16,7 @@ public class Value {
 
 	
 	/**
-	 * 
+	 * Constructor WITH id
 	 * @param id the id of the value
 	 * @param recordID the recordID the value belongs to
 	 * @param text the actual text
@@ -28,6 +28,18 @@ public class Value {
 		setFieldID(fieldID);
 	}
 	
+	/**
+	 * Constructor WITHOUT id
+	 * @param id the id of the value
+	 * @param recordID the recordID the value belongs to
+	 * @param text the actual text
+	 */
+	public Value(int recordID, String text, int fieldID) {
+		setId(id);
+		setRecordID(recordID);
+		setText(text);
+		setFieldID(fieldID);
+	}
 	
 	public int getId() {
 		return id;

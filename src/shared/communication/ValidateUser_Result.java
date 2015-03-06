@@ -36,7 +36,7 @@ public class ValidateUser_Result {
 		result.append("TRUE\n");
 		result.append(user.getFirstName() + "\n");
 		result.append(user.getLastName() + "\n");
-		result.append(user.getRecordsIndexed() + "/n");
+		result.append(user.getRecordsIndexed() + "\n");
 		
 		return result.toString();
 	}

@@ -19,7 +19,7 @@ public class DownloadBatch_Params {
 	 * @param user a user object containing username and password
 	 * @param projectID the ID of the project to download
 	 */
-	DownloadBatch_Params(User user, int projectID) {
+	public DownloadBatch_Params(User user, int projectID) {
 		setUser(user);
 		setProjectID(projectID);
 	}

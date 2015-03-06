@@ -16,7 +16,6 @@ import server.database.DatabaseException;
 import server.facade.ServerFacade;
 import server.facade.ServerFacadeException;
 import shared.communication.*;
-//import server.facade.*;
 
 public class ValidateUserHandler implements HttpHandler {
 

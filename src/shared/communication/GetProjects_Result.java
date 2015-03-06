@@ -28,4 +28,15 @@ public class GetProjects_Result {
 			this.projects = projects;
 		}
 		
+		public String toString() {
+			
+			StringBuilder sb = new StringBuilder();
+			List<Project> projects = this.getProjects();
+			for (Project p : projects) {
+				sb.append(p.getId() + "\n");
+				sb.append(p.getTitle() + "\n");
+			}
+			
+			return sb.toString();
+		}
 }

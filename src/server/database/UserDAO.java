@@ -126,20 +126,20 @@ public class UserDAO {
 			stmt.setString(2, user.getPassword());
 			rs = stmt.executeQuery();
 
-			rs.next(); //user is unique. can only return one user here
 			
-			int id = rs.getInt(1);
-			String username = rs.getString(2);
-			String password = rs.getString(3);
-			String firstName = rs.getString(4);
-			String lastName = rs.getString(5);
-			String email = rs.getString(6);
-			int recordsIndexed = rs.getInt(7);
-			int selectedImage = rs.getInt(8);
+			while (rs.next()) {
+				int id = rs.getInt(1);
+				String username = rs.getString(2);
+				String password = rs.getString(3);
+				String firstName = rs.getString(4);
+				String lastName = rs.getString(5);
+				String email = rs.getString(6);
+				int recordsIndexed = rs.getInt(7);
+				int selectedImage = rs.getInt(8);
 
-			result = new User(id, username, password, firstName, lastName,
-					email, recordsIndexed, selectedImage);
-
+				result = new User(id, username, password, firstName, lastName,
+						email, recordsIndexed, selectedImage);
+			}
 		} catch (Exception e) {
 			throw new DatabaseException(e.getMessage(), e);
 		} finally {

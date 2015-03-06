@@ -20,7 +20,7 @@ public class GetSampleImage_Params {
 	 * @param projectID the projectID the image will come from
 	 * 
 	 */
-	GetSampleImage_Params(User user, int projectID) {
+	public GetSampleImage_Params(User user, int projectID) {
 		setUser(user);
 		setProjectID(projectID);
 	}

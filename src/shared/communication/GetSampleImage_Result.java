@@ -8,13 +8,14 @@ package shared.communication;
  *
  */
 public class GetSampleImage_Result {
+	
 	private String imageURL;
 
 	/**
 	 * 
 	 * @param imageURL the URL of the sample image
 	 */
-	GetSampleImage_Result(String imageURL) {
+	public GetSampleImage_Result(String imageURL) {
 		setImageURL(imageURL);
 	}
 	
@@ -26,5 +27,7 @@ public class GetSampleImage_Result {
 		this.imageURL = imageURL;
 	}
 	
-	
+	public String toString() {
+		return (imageURL + "\n");
+	}
 }

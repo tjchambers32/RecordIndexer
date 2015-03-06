@@ -142,14 +142,14 @@ public class ImageDAO {
 			stmt.setInt(1, projectID);
 			rs = stmt.executeQuery();
 
-			rs.next(); // just get the first one
-			int id = rs.getInt(1);
-			int projID = rs.getInt(2);
-			String filepath = rs.getString(3);
-			int availability = rs.getInt(4);
+			while (rs.next()) {
+				int id = rs.getInt(1);
+				int projID = rs.getInt(2);
+				String filepath = rs.getString(3);
+				int availability = rs.getInt(4);
 
-			result = new Image(id, projID, filepath, availability);
-
+				result = new Image(id, projID, filepath, availability);
+			}
 		} catch (SQLException e) {
 			DatabaseException serverEx = new DatabaseException(e.getMessage(),
 					e);

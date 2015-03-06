@@ -67,6 +67,7 @@ public class ClientCommunicator {
 	 */
 	public ValidateUser_Result ValidateUser(ValidateUser_Params params)
 			throws ClientException {
+		
 		return (ValidateUser_Result) doPost("/ValidateUser", params);
 	}
 
@@ -93,10 +94,12 @@ public class ClientCommunicator {
 	 *         shown above. Returns "FALSE" if the user credentials are invalid.
 	 *         Returns "FAILED" if the operation failed for any reason (e.g.,
 	 *         can't connect to the server, internal server error).
+	 * @throws ClientException
 	 */
-	public GetProjects_Result getProjects(GetProjects_Params params) {
+	public GetProjects_Result getProjects(GetProjects_Params params)
+			throws ClientException {
 
-		return null;
+		return (GetProjects_Result) doPost("/GetProjects", params);
 	}
 
 	/**
@@ -107,9 +110,11 @@ public class ClientCommunicator {
 	 * @param projectID
 	 *            the project ID
 	 * @return a URL for a sample image for the specified project
+	 * @throws ClientException 
 	 */
-	public GetSampleImage_Result getSampleImage(GetSampleImage_Params params) {
-		return null;
+	public GetSampleImage_Result getSampleImage(GetSampleImage_Params params) throws ClientException {
+		
+		return (GetSampleImage_Result) doPost("/GetSampleImage", params);
 	}
 
 	/**
@@ -138,11 +143,12 @@ public class ClientCommunicator {
 	 *         "FALSE" if the user credentials are invalid. Returns "FAILED" if
 	 *         the operation failed for any reason (e.g., can't connect to the
 	 *         server, internal server error).
+	 * @throws ClientException 
 	 * 
 	 */
-	public DownloadBatch_Result downloadBatch(DownloadBatch_Params params) {
+	public DownloadBatch_Result downloadBatch(DownloadBatch_Params params) throws ClientException {
 
-		return null;
+		return (DownloadBatch_Result) doPost("/DownloadBatch", params);
 	}
 
 	/**
@@ -173,11 +179,12 @@ public class ClientCommunicator {
 	 *         user doesn’t own the submitted batch, wrong number of values,
 	 *         can’t connect to the server, internal server error,etc.) returns
 	 *         FAILED
+	 * @throws ClientException 
 	 * 
 	 */
-	public SubmitBatch_Result submitBatch(SubmitBatch_Params params) {
+	public SubmitBatch_Result submitBatch(SubmitBatch_Params params) throws ClientException {
 
-		return null;
+		return (SubmitBatch_Result) doPost("/SubmitBatch", params);
 	}
 
 	/**
@@ -207,11 +214,12 @@ public class ClientCommunicator {
 	 *         name or password, user doesn’t own the submitted batch, wrong
 	 *         number of values, can’t connect to the server, internal server
 	 *         error,etc.) returns FAILED
+	 * @throws ClientException 
 	 * 
 	 */
-	public GetFields_Result getFields(GetFields_Params params) {
+	public GetFields_Result getFields(GetFields_Params params) throws ClientException {
 
-		return null;
+		return (GetFields_Result) doPost("/GetFields", params);
 	}
 
 	/**
@@ -253,11 +261,12 @@ public class ClientCommunicator {
 	 *         name or password, user doesn’t own the submitted batch, wrong
 	 *         number of values, can’t connect to the server, internal server
 	 *         error,etc.) returns FAILED
+	 * @throws ClientException 
 	 * 
 	 */
-	public Search_Result search(Search_Params params) {
+	public Search_Result search(Search_Params params) throws ClientException {
 
-		return null;
+		return (Search_Result) doPost("/Search", params);
 	}
 
 	/**
@@ -296,26 +305,32 @@ public class ClientCommunicator {
 	 */
 	private Object doPost(String urlPath, Object postData)
 			throws ClientException {
-		
+
 		try {
 			URL url = new URL(URL_PREFIX + urlPath);
-			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			HttpURLConnection connection = (HttpURLConnection) url
+					.openConnection();
 			connection.setRequestMethod(HTTP_POST);
 			connection.setDoOutput(true);
 			String urlString = url.getPath();
 			String testURL = url.toString();
 			connection.connect();
-			
+
 			xmlStream.toXML(postData, connection.getOutputStream());
 			connection.getOutputStream().close();
 			int test = connection.getResponseCode();
-			if (test != HttpURLConnection.HTTP_OK) {
+			
+			
+			int whatever = 10;
+			
+			
+			if (test == HttpURLConnection.HTTP_OK) {
+				Object result = xmlStream.fromXML(connection.getInputStream());
+				return result;
+			} else {
 				throw new ClientException(String.format(
 						"doPost failed: %s (http code %d)", urlPath,
 						connection.getResponseCode()));
-			} else {
-				Object result = xmlStream.fromXML(connection.getInputStream());
-				return result;
 			}
 		} catch (IOException e) {
 			throw new ClientException(String.format("doPost failed: %s",

@@ -5,8 +5,7 @@ package shared.communication;
 
 import java.util.ArrayList;
 
-import shared.model.Record;
-import shared.model.User;
+import shared.model.*;
 
 /**
  * @author tchambs
@@ -16,15 +15,17 @@ public class SubmitBatch_Params {
 
 	private User user;
 	private ArrayList<Record> records;
+	private ArrayList<Value> values;
 
 	/**
 	 * 
 	 * @param user the user who is submitting the batch
 	 * @param records a list of each record the user is submitting
 	 */
-	SubmitBatch_Params(User user, ArrayList<Record> records) {
+	public SubmitBatch_Params(User user, ArrayList<Record> records, ArrayList<Value> values) {
 		setUser(user);
 		setRecords(records);
+		setValues(values);
 	}
 
 	public User getUser() {
@@ -41,6 +42,14 @@ public class SubmitBatch_Params {
 
 	public void setRecords(ArrayList<Record> records) {
 		this.records = records;
+	}
+
+	public ArrayList<Value> getValues() {
+		return values;
+	}
+
+	public void setValues(ArrayList<Value> values) {
+		this.values = values;
 	}
 	
 	
