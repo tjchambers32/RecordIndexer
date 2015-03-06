@@ -327,7 +327,8 @@ public class Controller implements IController {
 		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < result.size(); i++) {
-			sb.append(result.get(i).toString());
+			sb.append(result.get(i).toString("http://" + _view.getHost() + ":"
+					+ _view.getPort() + "/"));
 		}
 		
 		_view.setResponse(sb.toString());

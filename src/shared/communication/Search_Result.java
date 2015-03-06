@@ -67,11 +67,11 @@ public class Search_Result {
 		this.fieldID = fieldID;
 	}
 	
-	public String toString() {
+	public String toString(String urlPrefix) {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(imageID + "\n");
-		sb.append(imageURL + "\n");
+		sb.append(urlPrefix + imageURL + "\n");
 		sb.append(rowNumber + "\n");
 		sb.append(fieldID + "\n");
 		
