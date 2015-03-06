@@ -84,6 +84,7 @@ public class ServerFacade {
 			user = validUser.getResult();
 		}
 				
+		
 		db.startTransaction();
 		
 		Image image = db.getImageDAO().getImage(user.getImageID());
@@ -106,6 +107,8 @@ public class ServerFacade {
 		for (int i = 0; i < records.size(); i++) {
 			recordDAO.add(records.get(i));
 		}
+		
+		//TODO: What do I do with VALUES?????
 		
 		db.endTransaction(true);
 		result.setResult(true);
@@ -169,7 +172,7 @@ public class ServerFacade {
 
 		if (validUser.getResult() == null) {
 			throw new ServerFacadeException("Invalid username and/or password");
-		} else if (validUser.getResult().getImageID() != 0){
+		} else if (validUser.getResult().getImageID() != -1){
 			throw new ServerFacadeException("User can only have one batch checked out at a time");
 		} else {
 			user = validUser.getResult();
@@ -177,10 +180,13 @@ public class ServerFacade {
 				
 		Image userImage = null;
 		
+		Project project = null;
+		ArrayList<Field> fields = null;
+		
 		try {
 			db.startTransaction();
-			Project project = db.getProjectDAO().getProject(params.getProjectID());
-			if (project == null)
+			Project p = db.getProjectDAO().getProject(params.getProjectID());
+			if (p == null)
 				throw new ServerFacadeException("Invalid ProjectID");
 			userImage = db.getImageDAO().downloadBatch(params.getProjectID());
 			if (userImage.getProjectID() == -1) 
@@ -192,6 +198,10 @@ public class ServerFacade {
 			db.getImageDAO().update(userImage);
 			db.getUserDAO().update(user);
 			
+			project = db.getProjectDAO().getProject(params.getProjectID());
+			
+			fields = db.getFieldDAO().getFields(params.getProjectID());
+			
 			db.endTransaction(true);
 						
 		} catch (DatabaseException e) {
@@ -199,9 +209,7 @@ public class ServerFacade {
 			throw new DatabaseException(e.getMessage(), e);
 		}
 		
-		Project project = db.getProjectDAO().getProject(params.getProjectID());
 		
-		ArrayList<Field> fields = db.getFieldDAO().getFields(params.getProjectID());
 		
 		result = new DownloadBatch_Result(project, fields, userImage);
 		return result;

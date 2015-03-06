@@ -219,7 +219,7 @@ public class ImageDAO {
 		ResultSet rs = null;
 
 		try {
-			String query = "SELECT projects.recordsPerImage, FROM images, projects WHERE images.projectID = projects.id AND images.id = ?";
+			String query = "SELECT projects.recordsPerImage FROM images, projects WHERE images.projectID = projects.id AND images.id = ?";
 
 			stmt = db.getConnection().prepareStatement(query);
 			stmt.setInt(1, imageID);

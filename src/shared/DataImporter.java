@@ -46,18 +46,20 @@ public class DataImporter {
 	 */
 	private void doImport(String filepath) throws Exception {
 		
+		
 		File newFile = new File(filepath);
 		File dest = new File(databasePath);
 		Model.initialize();
 
-		model.clear();
-
 		System.out.println("Deleting Old Databases");
 		if(!newFile.getParentFile().getCanonicalPath().equals(dest.getCanonicalPath()))
 			FileUtils.deleteDirectory(dest);
+
 		
 		System.out.println("Copying Files from new filepath");
 		FileUtils.copyDirectory(newFile.getParentFile(), dest);
+
+		model.clear();
 		
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document doc = builder.parse(newFile);
@@ -66,25 +68,6 @@ public class DataImporter {
 		di.parse(doc);
 		
 		System.out.println("Import Complete");
-	}
-
-	/**
-	 * @param filepath
-	 */
-	private void deleteFiles(String filepath) {
-
-		File directory = new File(filepath);
-		File[] files = directory.listFiles();
-
-		if (files == null)
-			return;
-
-		for (File file : files) {
-			if (file.isDirectory()) {
-				deleteFiles(file.getAbsolutePath());
-			}
-		}
-
 	}
 	
 	private void parse(Document doc) throws DatabaseException, ModelException {
@@ -114,7 +97,7 @@ public class DataImporter {
 			String email = emailElem.getTextContent();
 			int recordsIndexed = Integer.parseInt(recordsIndexedElem.getTextContent());
 			
-			model.addUser(new User(0, username, password, firstName, lastName, email, recordsIndexed, 0));
+			model.addUser(new User(0, username, password, firstName, lastName, email, recordsIndexed, -1));
 		}
 	}
 	

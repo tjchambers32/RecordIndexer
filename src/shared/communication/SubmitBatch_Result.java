@@ -33,5 +33,8 @@ public class SubmitBatch_Result {
 	public void setResult(boolean result) {
 		this.result = result;
 	}
-	
+
+	public String toString() {
+		return "True\n";
+	}
 }

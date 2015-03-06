@@ -50,5 +50,4 @@ public class SubmitBatchHandler implements HttpHandler {
 		xmlStream.toXML(result, exchange.getResponseBody());
 		exchange.getResponseBody().close();
 	}
-
 }

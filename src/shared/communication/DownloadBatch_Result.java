@@ -65,13 +65,13 @@ public class DownloadBatch_Result {
 		sb.append(project.getRecordsPerImage() + "\n");
 		sb.append(fields.size() + "\n");
 		for (Field f : fields) {
-			sb.append(f.getId());
-			sb.append(f.getTitle());
-			sb.append(urlPrefix + f.getHelpHTML());
-			sb.append(f.getxCoord());
-			sb.append(f.getWidth());
+			sb.append(f.getId() + "\n");
+			sb.append(f.getTitle() + "\n");
+			sb.append(urlPrefix + f.getHelpHTML() + "\n");
+			sb.append(f.getxCoord() + "\n");
+			sb.append(f.getWidth() + "\n");
 			if (f.getKnownData() != null)
-				sb.append(f.getKnownData());
+				sb.append(f.getKnownData() + "\n");
 		}
 		
 		return sb.toString();
