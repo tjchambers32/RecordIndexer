@@ -18,7 +18,7 @@ public class ServerFacade {
 
 	public ValidateUser_Result validateUser(ValidateUser_Params params)
 			throws ServerFacadeException, DatabaseException {
-		
+
 		Database db = new Database();
 		User user = params.getParams();
 
@@ -48,7 +48,7 @@ public class ServerFacade {
 			throw new ServerFacadeException("Invalid username and/or password");
 
 		List<Project> returnProjects = null;
-		
+
 		try {
 			db.startTransaction();
 			returnProjects = db.getProjectDAO().getAll();
@@ -83,52 +83,55 @@ public class ServerFacade {
 		} else {
 			user = validUser.getResult();
 		}
-				
-		
+
 		db.startTransaction();
-		
+
 		Image image = db.getImageDAO().getImage(user.getImageID());
-		
+
 		if (image.getAvailability() == 1) {
-			throw new ServerFacadeException("ERROR. Batch submitted previously.");
+			db.endTransaction(false);
+			throw new ServerFacadeException(
+					"ERROR. Batch submitted previously.");
 		} else {
 			image.setAvailability(1);
 			db.getImageDAO().update(image);
 		}
-		
-		int recordsPerImage = db.getImageDAO().getNumberOfRecords(user.getImageID());
-		user.setImageID(-1); //user no longer assigned to image
+
+		int recordsPerImage = db.getImageDAO().getNumberOfRecords(
+				user.getImageID());
+		user.setImageID(-1); // user no longer assigned to image
 		user.setRecordsIndexed(user.getRecordsIndexed() + recordsPerImage);
 		db.getUserDAO().update(user);
 
 		List<Record> records = params.getRecords();
 		List<Value> values = params.getValues();
-		
+
 		for (int i = 0; i < records.size(); i++) {
 			db.getRecordDAO().add(records.get(i));
 		}
 		for (int i = 0; i < values.size(); i++) {
 			db.getValueDAO().add(values.get(i));
 		}
-		
+
 		db.endTransaction(true);
 		result.setResult(true);
-		
+
 		return result;
 	}
 
 	/**
 	 * @param params
 	 * @return
-	 * @throws ServerFacadeException 
-	 * @throws DatabaseException 
+	 * @throws ServerFacadeException
+	 * @throws DatabaseException
 	 */
-	public GetSampleImage_Result GetSampleImage(GetSampleImage_Params params) throws ServerFacadeException, DatabaseException {
+	public GetSampleImage_Result GetSampleImage(GetSampleImage_Params params)
+			throws ServerFacadeException, DatabaseException {
 		GetSampleImage_Result result = new GetSampleImage_Result(null);
-		
+
 		Database db = new Database();
 		User user = params.getUser();
-		
+
 		ValidateUser_Params validate = new ValidateUser_Params(user);
 		ValidateUser_Result validUser = validateUser(validate);
 
@@ -137,96 +140,105 @@ public class ServerFacade {
 		} else {
 			user = validUser.getResult();
 		}
-				
+
 		try {
 			db.startTransaction();
-			Project project = db.getProjectDAO().getProject(params.getProjectID());
-			if (project == null)
+			Project project = db.getProjectDAO().getProject(
+					params.getProjectID());
+			if (project == null) {
+				db.endTransaction(false);
 				throw new ServerFacadeException("Invalid ProjectID");
-			Image sampleImage = db.getImageDAO().getSampleImage(params.getProjectID());
+			}
+			Image sampleImage = db.getImageDAO().getSampleImage(
+					params.getProjectID());
 			db.endTransaction(true);
 			result.setImageURL(sampleImage.getFilepath());
-			
+
 		} catch (DatabaseException e) {
 			db.endTransaction(false);
 			throw new DatabaseException(e.getMessage(), e);
 		}
-		
+
 		return result;
 	}
-	
 
 	/**
 	 * @param params
 	 * @return
-	 * @throws ServerFacadeException 
-	 * @throws DatabaseException 
+	 * @throws ServerFacadeException
+	 * @throws DatabaseException
 	 */
-	public DownloadBatch_Result downloadBatch(DownloadBatch_Params params) throws ServerFacadeException, DatabaseException {
+	public DownloadBatch_Result downloadBatch(DownloadBatch_Params params)
+			throws ServerFacadeException, DatabaseException {
 		DownloadBatch_Result result = null;
-		
+
 		Database db = new Database();
 		User user = params.getUser();
-		
+
 		ValidateUser_Params validate = new ValidateUser_Params(user);
 		ValidateUser_Result validUser = validateUser(validate);
 
 		if (validUser.getResult() == null) {
 			throw new ServerFacadeException("Invalid username and/or password");
-		} else if (validUser.getResult().getImageID() != -1){
-			throw new ServerFacadeException("User can only have one batch checked out at a time");
+		} else if (validUser.getResult().getImageID() != -1) {
+			throw new ServerFacadeException(
+					"User can only have one batch checked out at a time");
 		} else {
 			user = validUser.getResult();
 		}
-				
+
 		Image userImage = null;
-		
+
 		Project project = null;
 		ArrayList<Field> fields = null;
-		
+
 		try {
 			db.startTransaction();
 			Project p = db.getProjectDAO().getProject(params.getProjectID());
-			if (p == null)
+			if (p == null) {
+				db.endTransaction(false);
 				throw new ServerFacadeException("Invalid ProjectID");
+			}
 			userImage = db.getImageDAO().downloadBatch(params.getProjectID());
-			if (userImage.getProjectID() == -1) 
-				throw new ServerFacadeException("This project has no available batches");
+			if (userImage.getProjectID() == -1) {
+				db.endTransaction(false);
+				throw new ServerFacadeException(
+						"This project has no available batches");
+			}
 			else
 				user.setImageID(userImage.getId());
-			
+
 			userImage.setAvailability(0);
 			db.getImageDAO().update(userImage);
 			db.getUserDAO().update(user);
-			
+
 			project = db.getProjectDAO().getProject(params.getProjectID());
-			
+
 			fields = db.getFieldDAO().getFields(params.getProjectID());
-			
+
 			db.endTransaction(true);
-						
+
 		} catch (DatabaseException e) {
 			db.endTransaction(false);
 			throw new DatabaseException(e.getMessage(), e);
 		}
-		
-		
-		
+
 		result = new DownloadBatch_Result(project, fields, userImage);
 		return result;
 	}
-	
+
 	/**
 	 * @param params
 	 * @return
-	 * @throws DatabaseException 
-	 * @throws ServerFacadeException 
+	 * @throws DatabaseException
+	 * @throws ServerFacadeException
 	 */
-	public GetFields_Result getFields(GetFields_Params params) throws ServerFacadeException, DatabaseException {
+	public GetFields_Result getFields(GetFields_Params params)
+			throws ServerFacadeException, DatabaseException {
 
 		Database db = new Database();
 		User user = params.getUser();
-		
+
 		ValidateUser_Params validate = new ValidateUser_Params(user);
 		ValidateUser_Result validUser = validateUser(validate);
 
@@ -238,7 +250,7 @@ public class ServerFacade {
 
 		List<Field> fields = new ArrayList<Field>();
 		Project p = null;
-		
+
 		try {
 			db.startTransaction();
 
@@ -246,30 +258,32 @@ public class ServerFacade {
 				fields = db.getFieldDAO().getAll();
 			} else {
 				p = db.getProjectDAO().getProject(params.getProjectID());
-				if (p == null)
+				if (p == null) {
+					db.endTransaction(false);
 					throw new ServerFacadeException("Invalid ProjectID");
-				else
+				} else
 					fields = db.getFieldDAO().getFields(params.getProjectID());
 			}
 			db.endTransaction(true);
-						
+
 		} catch (DatabaseException e) {
 			db.endTransaction(false);
 			throw new DatabaseException(e.getMessage(), e);
 		}
 		GetFields_Result result = new GetFields_Result(fields);
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * @param params
 	 * @return
-	 * @throws ServerFacadeException 
-	 * @throws ModelException 
-	 * @throws DatabaseException 
+	 * @throws ServerFacadeException
+	 * @throws ModelException
+	 * @throws DatabaseException
 	 */
-	public ArrayList<Search_Result> search(Search_Params params) throws ServerFacadeException, ModelException, DatabaseException {
+	public ArrayList<Search_Result> search(Search_Params params)
+			throws ServerFacadeException, ModelException, DatabaseException {
 		ArrayList<Search_Result> results = new ArrayList<Search_Result>();
 		Database db = new Database();
 		User user = params.getUser();
@@ -277,23 +291,22 @@ public class ServerFacade {
 		ValidateUser_Result validUser = validateUser(validate);
 		if (validUser.getResult() == null)
 			throw new ServerFacadeException("Invalid username and/or password");
-		
+
 		ArrayList<Integer> fieldIDs = params.getFields();
 		ArrayList<String> search_values = params.getSearch_values();
-		
+
 		try {
 			db.startTransaction();
 			results = db.getFieldDAO().search(fieldIDs, search_values);
 			db.endTransaction(true);
-		} 
-		catch (DatabaseException e) {
+		} catch (DatabaseException e) {
 			db.endTransaction(false);
 			throw new ModelException(e.getMessage(), e);
 		}
-		
+
 		return results;
 	}
-	
+
 	public static List<Field> getAllFields() throws ServerFacadeException,
 			DatabaseException {
 
