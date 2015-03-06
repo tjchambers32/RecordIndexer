@@ -177,8 +177,6 @@ public class ServerFacade {
 				
 		Image userImage = null;
 		
-//		List<Field> fieldList = new ArrayList<Field>();
-		
 		try {
 			db.startTransaction();
 			Project project = db.getProjectDAO().getProject(params.getProjectID());

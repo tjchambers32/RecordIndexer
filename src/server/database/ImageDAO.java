@@ -73,7 +73,7 @@ public class ImageDAO {
 			stmt.setString(2, image.getFilepath());
 			stmt.setInt(3, image.getAvailability());
 			stmt.setInt(4, image.getId());
-			
+
 			if (stmt.executeUpdate() != 1) {
 				throw new DatabaseException("Could not update project");
 			}
@@ -168,20 +168,20 @@ public class ImageDAO {
 		ResultSet rs = null;
 
 		try {
-			String query = "SELECT id, projectID, filepath, availability FROM images WHERE projectID = ?";
+			String query = "SELECT id, projectID, filepath, availability FROM images WHERE projectID = ? AND availability = ?";
 			stmt = db.getConnection().prepareStatement(query);
 			stmt.setInt(1, projectID);
 			stmt.setInt(2, -1); // -1 = available
 			rs = stmt.executeQuery();
 
-			rs.next(); // just get the first one
-			int id = rs.getInt(1);
-			int projID = rs.getInt(2);
-			String filepath = rs.getString(3);
-			int availability = rs.getInt(4);
+			while (rs.next()) {
+				int id = rs.getInt(1);
+				int projID = rs.getInt(2);
+				String filepath = rs.getString(3);
+				int availability = rs.getInt(4);
 
-			result = new Image(id, projID, filepath, availability);
-
+				result = new Image(id, projID, filepath, availability);
+			}
 		} catch (SQLException e) {
 			DatabaseException serverEx = new DatabaseException(e.getMessage(),
 					e);
