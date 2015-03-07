@@ -12,7 +12,7 @@ public class Value {
 	private int id;
 	private int recordID;
 	private String text;
-	private int fieldID;
+	private int fieldNumber;
 
 	
 	/**
@@ -21,11 +21,11 @@ public class Value {
 	 * @param recordID the recordID the value belongs to
 	 * @param text the actual text
 	 */
-	public Value(int id, int recordID, String text, int fieldID) {
+	public Value(int id, int recordID, String text, int fieldNumber) {
 		setId(id);
 		setRecordID(recordID);
 		setText(text);
-		setFieldID(fieldID);
+		setFieldNumber(fieldNumber);
 	}
 	
 	/**
@@ -34,11 +34,11 @@ public class Value {
 	 * @param recordID the recordID the value belongs to
 	 * @param text the actual text
 	 */
-	public Value(int recordID, String text, int fieldID) {
+	public Value(int recordID, String text, int fieldNumber) {
 		setId(id);
 		setRecordID(recordID);
 		setText(text);
-		setFieldID(fieldID);
+		setFieldNumber(fieldNumber);
 	}
 	
 	public int getId() {
@@ -59,10 +59,10 @@ public class Value {
 	public void setText(String text) {
 		this.text = text;
 	}
-	public int getFieldID() {
-		return fieldID;
+	public int getFieldNumber() {
+		return fieldNumber;
 	}
-	public void setFieldID(int fieldID) {
-		this.fieldID = fieldID;
+	public void setFieldNumber(int fieldID) {
+		this.fieldNumber = fieldID;
 	}
 }

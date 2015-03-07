@@ -34,7 +34,7 @@ public class ValueDAO {
 		ResultSet rs = null;
 
 		try {
-			String query = "SELECT id, recordID, text, fieldID FROM value";
+			String query = "SELECT id, recordID, text, fieldNumber FROM value";
 			stmt = db.getConnection().prepareStatement(query);
 
 			rs = stmt.executeQuery();
@@ -42,10 +42,9 @@ public class ValueDAO {
 				int id = rs.getInt(1);
 				int recordID = rs.getInt(2);
 				String text = rs.getString(3);
-				int fieldID = rs.getInt(4);
+				int fieldNumber = rs.getInt(4);
 
-
-				result.add(new Value(id, recordID, text, fieldID));
+				result.add(new Value(id, recordID, text, fieldNumber));
 			}
 		} catch (SQLException e) {
 			DatabaseException serverEx = new DatabaseException(e.getMessage(),
@@ -76,14 +75,14 @@ public class ValueDAO {
 		ResultSet keyRS = null;
 		try {
 			String query = "INSERT INTO value"
-					+ "(recordID, text, fieldID) "
+					+ "(recordID, text, fieldNumber) "
 					+ "VALUES (?, ?, ?)";
 
 			stmt = db.getConnection().prepareStatement(query);
 
 			stmt.setInt(1, value.getRecordID());
 			stmt.setString(2, value.getText());
-			stmt.setInt(3, value.getFieldID());
+			stmt.setInt(3, value.getFieldNumber());
 
 			if (stmt.executeUpdate() == 1) {
 				keyStmt = db.getConnection().createStatement();
@@ -107,13 +106,13 @@ public class ValueDAO {
 		PreparedStatement stmt = null;
 		try {
 			String query = "UPDATE value "
-					+ "SET recordID=?, text=?, fieldID=?"
+					+ "SET recordID=?, text=?, fieldNumber=?"
 					+ "WHERE id=?";
 			stmt = db.getConnection().prepareStatement(query);
 
 			stmt.setInt(1, value.getRecordID());
 			stmt.setString(2, value.getText());
-			stmt.setInt(3, value.getFieldID());
+			stmt.setInt(3, value.getFieldNumber());
 			stmt.setInt(4, value.getId());
 			
 			if (stmt.executeUpdate() != 1) {

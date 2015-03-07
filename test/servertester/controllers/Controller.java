@@ -179,7 +179,8 @@ public class Controller implements IController {
 		if (result.getImageURL() == null) {
 			_view.setResponse("FAILED\n");
 		} else {
-			_view.setResponse("http://"+_view.getHost()+ ":" + _view.getPort() + "/" + result.toString());
+			_view.setResponse("http://" + _view.getHost() + ":"
+					+ _view.getPort() + "/" + result.toString());
 		}
 	}
 
@@ -253,6 +254,8 @@ public class Controller implements IController {
 		ArrayList<Record> records = new ArrayList<Record>();
 		ArrayList<Value> valueList = new ArrayList<Value>();
 
+		//TODO: Get a recordID so I can attach it to each value
+		
 		String[] recordString = paramValues[3].split("\\s*(;)\\s*");
 		int rowNumber = 0;
 		for (String field : recordString) {
@@ -304,34 +307,37 @@ public class Controller implements IController {
 			fields.add(Integer.parseInt(s));
 		}
 		for (String s : valueString) {
-			searchValues.add(s);
+			if (!s.equals(""))
+				searchValues.add(s.toLowerCase());
 		}
-
-		Search_Params params = new Search_Params(user, fields, searchValues);
 
 		// Print out Results
 		ArrayList<Search_Result> result = null;
-		try {
-			result = communicator.search(params);
-		} catch (ClientException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-			_view.setResponse("FAILED\n");
-			return;
-		}
+		if (fields.size() != 0 && searchValues.size() != 0) {
+			Search_Params params = new Search_Params(user, fields, searchValues);
+			try {
 
+				result = communicator.search(params);
+
+			} catch (ClientException e) {
+				e.printStackTrace();
+				System.out.println(e.getMessage());
+				_view.setResponse("FAILED\n");
+				return;
+			}
+		}
 		if (result == null || result.size() == 0) {
 			_view.setResponse("FAILED\n");
-			return;
-		}
-		StringBuilder sb = new StringBuilder();
+		} else {
+			StringBuilder sb = new StringBuilder();
 
-		for (int i = 0; i < result.size(); i++) {
-			sb.append(result.get(i).toString("http://" + _view.getHost() + ":"
-					+ _view.getPort() + "/"));
-		}
-		
-		_view.setResponse(sb.toString());
+			for (int i = 0; i < result.size(); i++) {
+				sb.append(result.get(i).toString(
+						"http://" + _view.getHost() + ":" + _view.getPort()
+								+ "/"));
+			}
 
+			_view.setResponse(sb.toString());
+		}
 	}
 }

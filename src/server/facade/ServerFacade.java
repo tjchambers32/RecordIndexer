@@ -284,11 +284,14 @@ public class ServerFacade {
 	 */
 	public ArrayList<Search_Result> search(Search_Params params)
 			throws ServerFacadeException, ModelException, DatabaseException {
+		
 		ArrayList<Search_Result> results = new ArrayList<Search_Result>();
 		Database db = new Database();
+		
 		User user = params.getUser();
 		ValidateUser_Params validate = new ValidateUser_Params(user);
 		ValidateUser_Result validUser = validateUser(validate);
+		
 		if (validUser.getResult() == null)
 			throw new ServerFacadeException("Invalid username and/or password");
 

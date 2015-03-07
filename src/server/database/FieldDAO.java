@@ -107,9 +107,12 @@ public class FieldDAO {
 		ResultSet rs = null;
 
 		try {
+			
 			for (int id : fields) {
-				for (String value : search_values) {
-					String query = "SELECT records.imageID, images.filepath, records.rowNumber, fields.id "
+				int test = search_values.size();
+				for (int i = 0; i < test; i++) {
+					String value = search_values.get(i);
+					String query = "SELECT DISTINCT records.imageID, images.filepath, records.rowNumber, fields.id "
 							+ "FROM images, records, fields, value "
 							+ "WHERE images.id = records.imageID "
 							+ "AND images.projectID = fields.projectID "

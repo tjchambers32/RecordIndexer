@@ -147,11 +147,11 @@ public class ValueDAOTest {
 		List<Value> all = daoDB.getAll();
 		assertEquals(3, all.size());
 		
-		one.setFieldID(100);
+		one.setFieldNumber(100);
 		one.setRecordID(100);
 		one.setText("1");
 		
-		two.setFieldID(200);
+		two.setFieldNumber(200);
 		two.setRecordID(200);
 		two.setText("2");
 		
@@ -222,7 +222,7 @@ public class ValueDAOTest {
 
 		return (safeEquals(a.getRecordID(), b.getRecordID())
 				&& safeEquals(a.getText(), b.getText())
-				&& safeEquals(a.getFieldID(), b.getFieldID()));
+				&& safeEquals(a.getFieldNumber(), b.getFieldNumber()));
 	}
 
 	private boolean safeEquals(Object a, Object b) {

@@ -223,13 +223,13 @@ public class DataImporter {
 		if (valueList == null)
 				return;
 		
-		for (int fieldID = 0; fieldID < valueList.getLength(); fieldID++) {
-			Element valueElem = (Element)valueList.item(fieldID);
+		for (int fieldNumber = 0; fieldNumber < valueList.getLength(); fieldNumber++) {
+			Element valueElem = (Element)valueList.item(fieldNumber);
 			
 			Element textElem = (Element)valueElem.getElementsByTagName("value").item(0);
 			String text = textElem.getTextContent();
 			
-			Value value = new Value(0, recordID, text, fieldID);
+			Value value = new Value(0, recordID, text, fieldNumber);
 			model.addValue(value);
 		}
 	}
