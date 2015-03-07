@@ -115,7 +115,8 @@ public class ServerFacade {
 		int lastFieldNumber; // keeps track of last field number so we know when we hit a new record
 		for (int i = 0; i < records.size(); i++) {
 			db.getRecordDAO().add(records.get(i));
-			int recordID = records.get(i).getId();
+			Record temp = records.get(i);
+			int recordID = temp.getId();
 			int fieldNumber = 1;
 			for (; j < values.size(); j++) {
 				lastFieldNumber = values.get(j).getFieldNumber();
@@ -124,6 +125,7 @@ public class ServerFacade {
 				}
 				fieldNumber = values.get(j).getFieldNumber();
 				values.get(j).setRecordID(recordID);
+				int rID = values.get(j).getRecordID();
 				db.getValueDAO().add(values.get(j));
 			}
 		}
