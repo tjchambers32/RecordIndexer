@@ -1,9 +1,5 @@
-/**
- * 
- */
 package shared.communication;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import shared.model.Field;

@@ -270,6 +270,7 @@ public class ClientCommunicator {
 	 * @throws ClientException 
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	public ArrayList<Search_Result> search(Search_Params params) throws ClientException {
 
 		return (ArrayList<Search_Result>) doPost("/Search", params);
@@ -318,8 +319,6 @@ public class ClientCommunicator {
 					.openConnection();
 			connection.setRequestMethod(HTTP_POST);
 			connection.setDoOutput(true);
-			String urlString = url.getPath();
-			String testURL = url.toString();
 			connection.connect();
 
 			xmlStream.toXML(postData, connection.getOutputStream());

@@ -8,6 +8,7 @@ package shared.model;
 public class Field {
 
 	private int id;
+	private int fieldNumber;
 	private String title;
 	private int xCoord;
 	private int width;
@@ -18,7 +19,7 @@ public class Field {
 	/**
 	 * Constructor WITH a fieldID
 	 * @param id the field ID
-	 * @param fieldNumber indicates field's position in image
+	 * @param fieldNumber indicates field's X position in image
 	 * @param title the field title
 	 * @param xCoord specifies starting x position of the field in pixels
 	 * @param width specifies the width of the field in pixels
@@ -26,10 +27,11 @@ public class Field {
 	 * @param knownData relative path to the knownData subdirectory
 	 * @param projectID the id of the project this field belongs to
 	 */
-	public Field(int id, String title, int xCoord,
+	public Field(int id, int fieldNumber, String title, int xCoord,
 			int width, String helpHTML, String knownData, int projectID) {
 		
 		setId(id);
+		setFieldNumber(fieldNumber);
 		setTitle(title);
 		setxCoord(xCoord);
 		setWidth(width);
@@ -40,7 +42,7 @@ public class Field {
 
 	/**
 	 * Constructor WITHOUT fieldID
-	 * @param fieldNumber indicates field's position in image
+	 * @param fieldNumber indicates field's X position in image
 	 * @param title the field title
 	 * @param xCoord specifies starting x position of the field in pixels
 	 * @param width specifies the width of the field in pixels
@@ -48,9 +50,10 @@ public class Field {
 	 * @param knownData relative path to the knownData subdirectory
 	 * @param projectID the id of the project this field belongs to
 	 */
-	public Field(String title, int xCoord,
+	public Field(int fieldNumber, String title, int xCoord,
 			int width, String helpHTML, String knownData, int projectID) {
 
+		setFieldNumber(fieldNumber);
 		setTitle(title);
 		setxCoord(xCoord);
 		setWidth(width);
@@ -65,6 +68,20 @@ public class Field {
 	public void setId(int fieldId) {
 		this.id = fieldId;
 	}
+	/**
+	 * @return the fieldNumber
+	 */
+	public int getFieldNumber() {
+		return fieldNumber;
+	}
+
+	/**
+	 * @param fieldNumber the fieldNumber to set
+	 */
+	public void setFieldNumber(int fieldNumber) {
+		this.fieldNumber = fieldNumber;
+	}
+
 	public String getTitle() {
 		return title;
 	}

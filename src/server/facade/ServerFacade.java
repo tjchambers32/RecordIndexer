@@ -106,11 +106,26 @@ public class ServerFacade {
 		List<Record> records = params.getRecords();
 		List<Value> values = params.getValues();
 
+		/* 
+		 * if each record has 4 fields, we need to go through values list 4 times
+		 * then get the next record and continue where we left off in the values list
+		 */
+		
+		int j = 0; // index of List<Value> values
+		int lastFieldNumber; // keeps track of last field number so we know when we hit a new record
 		for (int i = 0; i < records.size(); i++) {
 			db.getRecordDAO().add(records.get(i));
-		}
-		for (int i = 0; i < values.size(); i++) {
-			db.getValueDAO().add(values.get(i));
+			int recordID = records.get(i).getId();
+			int fieldNumber = 1;
+			for (; j < values.size(); j++) {
+				lastFieldNumber = values.get(j).getFieldNumber();
+				if (fieldNumber > lastFieldNumber) {
+					break;
+				}
+				fieldNumber = values.get(j).getFieldNumber();
+				values.get(j).setRecordID(recordID);
+				db.getValueDAO().add(values.get(j));
+			}
 		}
 
 		db.endTransaction(true);
@@ -279,11 +294,10 @@ public class ServerFacade {
 	 * @param params
 	 * @return
 	 * @throws ServerFacadeException
-	 * @throws ModelException
 	 * @throws DatabaseException
 	 */
 	public ArrayList<Search_Result> search(Search_Params params)
-			throws ServerFacadeException, ModelException, DatabaseException {
+			throws ServerFacadeException, DatabaseException {
 		
 		ArrayList<Search_Result> results = new ArrayList<Search_Result>();
 		Database db = new Database();
@@ -304,7 +318,7 @@ public class ServerFacade {
 			db.endTransaction(true);
 		} catch (DatabaseException e) {
 			db.endTransaction(false);
-			throw new ModelException(e.getMessage(), e);
+			throw new ServerFacadeException(e.getMessage(), e);
 		}
 
 		return results;
@@ -371,6 +385,102 @@ public class ServerFacade {
 		}
 	}
 
+	/**
+	 * @param user
+	 * @throws DatabaseException 
+	 * @throws ServerFacadeException 
+	 */
+	public static void addUser(User user) throws DatabaseException, ServerFacadeException {
+		Database db = new Database();
+		
+		try {
+			db.startTransaction();
+			db.getUserDAO().add(user);
+			db.endTransaction(true);
+		}
+		catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new ServerFacadeException(e.getMessage(), e);
+		}
+		
+	}
+	
+	/**
+	 * @param project
+	 * @throws DatabaseException 
+	 * @throws ModelException 
+	 */
+	public static void addProject(Project project) throws DatabaseException, ServerFacadeException {
+		Database db = new Database();
+		
+		try {
+			db.startTransaction();
+			db.getProjectDAO().add(project);
+			db.endTransaction(true);
+		}
+		catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new ServerFacadeException(e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * @param image
+	 * @throws DatabaseException 
+	 * @throws ModelException 
+	 */
+	public static void addImage(Image image) throws DatabaseException, ServerFacadeException {
+		Database db = new Database();
+		
+		try {
+			db.startTransaction();
+			db.getImageDAO().add(image);
+			db.endTransaction(true);
+		}
+		catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new ServerFacadeException(e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * @param record
+	 * @throws DatabaseException 
+	 * @throws ModelException 
+	 */
+	public static void addRecord(Record record) throws DatabaseException, ServerFacadeException {
+		Database db = new Database();
+		
+		try {
+			db.startTransaction();
+			db.getRecordDAO().add(record);
+			db.endTransaction(true);
+		}
+		catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new ServerFacadeException(e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * @param value
+	 * @throws ModelException 
+	 * @throws DatabaseException 
+	 */
+	public static void addValue(Value value) throws ServerFacadeException, DatabaseException {
+		Database db = new Database();
+		
+		try {
+			db.startTransaction();
+			db.getValueDAO().add(value);
+			db.endTransaction(true);
+		}
+		catch (DatabaseException e) {
+			db.endTransaction(false);
+			throw new ServerFacadeException(e.getMessage(), e);
+		}		
+	}
+	
 	public static void clear() {
 
 		Database db = new Database();

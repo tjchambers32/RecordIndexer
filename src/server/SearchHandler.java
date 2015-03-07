@@ -1,6 +1,3 @@
-/**
- * 
- */
 package server;
 
 import java.io.IOException;
@@ -10,16 +7,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import server.database.DatabaseException;
-import server.facade.ServerFacade;
-import server.facade.ServerFacadeException;
-import shared.communication.Search_Params;
-import shared.communication.Search_Result;
-import shared.communication.SubmitBatch_Params;
-import shared.communication.SubmitBatch_Result;
-import shared.model.ModelException;
+import server.facade.*;
+import shared.communication.*;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.*;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
@@ -44,7 +35,7 @@ public class SearchHandler implements HttpHandler {
 		try {
 			results = facade.search(params);
 		}
-		catch (DatabaseException | ServerFacadeException | ModelException e) {
+		catch (DatabaseException | ServerFacadeException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, -1);
 			return;

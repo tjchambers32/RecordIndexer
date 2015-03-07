@@ -9,6 +9,7 @@ public class Record {
 	private int id;
 	private int imageID;
 	private int rowNumber;
+	
 	/**
 	 * Constructor WITH recordID
 	 * @param id the id of the record;
@@ -53,5 +54,4 @@ public class Record {
 	public void setRowNumber(int rowNumber) {
 		this.rowNumber = rowNumber;
 	}
-	
 }

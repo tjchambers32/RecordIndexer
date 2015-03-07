@@ -3,8 +3,6 @@
  */
 package shared.communication;
 
-import java.util.ArrayList;
-
 /**
  * @author tchambs
  *

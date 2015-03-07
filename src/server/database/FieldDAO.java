@@ -27,16 +27,17 @@ public class FieldDAO {
 		ResultSet keyRS = null;
 		try {
 			String query = "INSERT INTO fields"
-				+ "(title, xCoord, width, helpHTML, knownData, projectID) "
-				+ "VALUES (?, ?, ?, ?, ?, ?)";
+				+ "(fieldNumber, title, xCoord, width, helpHTML, knownData, projectID) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 			stmt = db.getConnection().prepareStatement(query);
 			
-			stmt.setString(1, field.getTitle());
-			stmt.setInt(2, field.getxCoord());
-			stmt.setInt(3, field.getWidth());
-			stmt.setString(4, field.getHelpHTML());
-			stmt.setString(5, field.getKnownData());
-			stmt.setInt(6, field.getProjectID());
+			stmt.setInt(1, field.getFieldNumber());
+			stmt.setString(2, field.getTitle());
+			stmt.setInt(3, field.getxCoord());
+			stmt.setInt(4, field.getWidth());
+			stmt.setString(5, field.getHelpHTML());
+			stmt.setString(6, field.getKnownData());
+			stmt.setInt(7, field.getProjectID());
 			
 			if (stmt.executeUpdate() == 1) {
 				keyStmt = db.getConnection().createStatement();
@@ -112,11 +113,11 @@ public class FieldDAO {
 				int test = search_values.size();
 				for (int i = 0; i < test; i++) {
 					String value = search_values.get(i);
-					String query = "SELECT DISTINCT records.imageID, images.filepath, records.rowNumber, fields.id "
+					String query = "SELECT records.imageID, images.filepath, records.rowNumber, fields.id "
 							+ "FROM images, records, fields, value "
 							+ "WHERE images.id = records.imageID "
 							+ "AND images.projectID = fields.projectID "
-							+ "AND fields.id =  value.fieldID "
+							+ "AND fields.fieldNumber =  value.fieldNumber "
 							+ "AND fields.id = ? " + "AND value.text = ? ";
 
 					stmt = db.getConnection().prepareStatement(query);
