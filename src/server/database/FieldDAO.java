@@ -110,15 +110,18 @@ public class FieldDAO {
 
 		try {
 			
+			//TODO: Operation failed when it shouldn't have!!!
+			
 			for (int id : fields) {
 				int test = search_values.size();
 				for (int i = 0; i < test; i++) {
 					String value = search_values.get(i);
-					String query = "SELECT records.imageID, images.filepath, records.rowNumber, fields.id "
+					String query = "SELECT DISTINCT records.imageID, images.filepath, records.rowNumber, fields.id "
 							+ "FROM images, records, fields, value "
 							+ "WHERE images.id = records.imageID "
 							+ "AND images.projectID = fields.projectID "
 							+ "AND fields.fieldNumber =  value.fieldNumber "
+							+ "AND value.recordID = records.id "
 							+ "AND fields.id = ? " + "AND value.text = ? ";
 
 					stmt = db.getConnection().prepareStatement(query);

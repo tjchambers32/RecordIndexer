@@ -125,7 +125,6 @@ public class ServerFacade {
 				}
 				fieldNumber = values.get(j).getFieldNumber();
 				values.get(j).setRecordID(recordID);
-				int rID = values.get(j).getRecordID();
 				db.getValueDAO().add(values.get(j));
 			}
 		}
