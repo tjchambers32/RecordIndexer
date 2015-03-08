@@ -265,7 +265,7 @@ public class DataImporter {
 					.getElementsByTagName("value").item(0);
 			String text = textElem.getTextContent();
 
-			Value value = new Value(recordID, text, fieldNumber + 1);
+			Value value = new Value(recordID, text.toLowerCase(), fieldNumber + 1);
 			ServerFacade.addValue(value);
 		}
 	}

@@ -135,10 +135,10 @@ public class UserDAO {
 				String lastName = rs.getString(5);
 				String email = rs.getString(6);
 				int recordsIndexed = rs.getInt(7);
-				int selectedImage = rs.getInt(8);
+				int imageID = rs.getInt(8);
 
 				result = new User(id, username, password, firstName, lastName,
-						email, recordsIndexed, selectedImage);
+						email, recordsIndexed, imageID);
 			}
 		} catch (Exception e) {
 			throw new DatabaseException(e.getMessage(), e);

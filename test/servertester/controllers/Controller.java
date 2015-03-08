@@ -311,7 +311,6 @@ public class Controller implements IController {
 				searchValues.add(s.toLowerCase());
 		}
 
-		// Print out Results
 		ArrayList<Search_Result> result = null;
 		if (fields.size() != 0 && searchValues.size() != 0) {
 			Search_Params params = new Search_Params(user, fields, searchValues);

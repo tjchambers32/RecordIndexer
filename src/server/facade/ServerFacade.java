@@ -88,6 +88,10 @@ public class ServerFacade {
 
 		Image image = db.getImageDAO().getImage(user.getImageID());
 
+		if (image == null) {
+			db.endTransaction(false);
+			throw new ServerFacadeException("Error, user doesn't have a checked out image");
+		}
 		if (image.getAvailability() == 1) {
 			db.endTransaction(false);
 			throw new ServerFacadeException(

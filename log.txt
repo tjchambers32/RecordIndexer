@@ -1,14 +1,14 @@
-Mar 07, 2015 2:29:52 PM server.Server run
+Mar 07, 2015 5:19:17 PM server.Server run
 INFO: Initializing Database
-Mar 07, 2015 2:29:52 PM server.Server run
+Mar 07, 2015 5:19:17 PM server.Server run
 INFO: Initializing HTTP Server
-Mar 07, 2015 2:29:52 PM server.Server run
+Mar 07, 2015 5:19:17 PM server.Server run
 INFO: Starting HTTP Server
-Mar 07, 2015 2:33:04 PM server.SearchHandler handle
-SEVERE: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-server.facade.ServerFacadeException: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-	at server.facade.ServerFacade.search(ServerFacade.java:322)
-	at server.SearchHandler.handle(SearchHandler.java:36)
+Mar 07, 2015 5:37:55 PM server.SubmitBatchHandler handle
+SEVERE: Error, image returned null in ServerFacade submitBatch
+server.facade.ServerFacadeException: Error, image returned null in ServerFacade submitBatch
+	at server.facade.ServerFacade.submitBatch(ServerFacade.java:93)
+	at server.SubmitBatchHandler.handle(SubmitBatchHandler.java:41)
 	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
 	at sun.net.httpserver.AuthFilter.doFilter(AuthFilter.java:83)
 	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:80)
@@ -19,28 +19,12 @@ server.facade.ServerFacadeException: [SQLITE_ERROR] SQL error or missing databas
 	at sun.net.httpserver.ServerImpl$Dispatcher.handle(ServerImpl.java:433)
 	at sun.net.httpserver.ServerImpl$Dispatcher.run(ServerImpl.java:398)
 	at java.lang.Thread.run(Thread.java:745)
-Caused by: server.database.DatabaseException: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-	at server.database.FieldDAO.search(FieldDAO.java:142)
-	at server.facade.ServerFacade.search(ServerFacade.java:318)
-	... 11 more
-Caused by: java.sql.SQLException: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-	at org.sqlite.DB.newSQLException(DB.java:383)
-	at org.sqlite.DB.newSQLException(DB.java:387)
-	at org.sqlite.DB.throwex(DB.java:374)
-	at org.sqlite.NativeDB.prepare(Native Method)
-	at org.sqlite.DB.prepare(DB.java:123)
-	at org.sqlite.PrepStmt.<init>(PrepStmt.java:42)
-	at org.sqlite.Conn.prepareStatement(Conn.java:404)
-	at org.sqlite.Conn.prepareStatement(Conn.java:399)
-	at org.sqlite.Conn.prepareStatement(Conn.java:383)
-	at server.database.FieldDAO.search(FieldDAO.java:125)
-	... 12 more
 
-Mar 07, 2015 2:33:10 PM server.SearchHandler handle
-SEVERE: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-server.facade.ServerFacadeException: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-	at server.facade.ServerFacade.search(ServerFacade.java:322)
-	at server.SearchHandler.handle(SearchHandler.java:36)
+Mar 07, 2015 5:41:12 PM server.SubmitBatchHandler handle
+SEVERE: Error, image returned null in ServerFacade submitBatch
+server.facade.ServerFacadeException: Error, image returned null in ServerFacade submitBatch
+	at server.facade.ServerFacade.submitBatch(ServerFacade.java:93)
+	at server.SubmitBatchHandler.handle(SubmitBatchHandler.java:41)
 	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
 	at sun.net.httpserver.AuthFilter.doFilter(AuthFilter.java:83)
 	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:80)
@@ -51,28 +35,12 @@ server.facade.ServerFacadeException: [SQLITE_ERROR] SQL error or missing databas
 	at sun.net.httpserver.ServerImpl$Dispatcher.handle(ServerImpl.java:433)
 	at sun.net.httpserver.ServerImpl$Dispatcher.run(ServerImpl.java:398)
 	at java.lang.Thread.run(Thread.java:745)
-Caused by: server.database.DatabaseException: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-	at server.database.FieldDAO.search(FieldDAO.java:142)
-	at server.facade.ServerFacade.search(ServerFacade.java:318)
-	... 11 more
-Caused by: java.sql.SQLException: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-	at org.sqlite.DB.newSQLException(DB.java:383)
-	at org.sqlite.DB.newSQLException(DB.java:387)
-	at org.sqlite.DB.throwex(DB.java:374)
-	at org.sqlite.NativeDB.prepare(Native Method)
-	at org.sqlite.DB.prepare(DB.java:123)
-	at org.sqlite.PrepStmt.<init>(PrepStmt.java:42)
-	at org.sqlite.Conn.prepareStatement(Conn.java:404)
-	at org.sqlite.Conn.prepareStatement(Conn.java:399)
-	at org.sqlite.Conn.prepareStatement(Conn.java:383)
-	at server.database.FieldDAO.search(FieldDAO.java:125)
-	... 12 more
 
-Mar 07, 2015 2:33:20 PM server.SearchHandler handle
-SEVERE: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-server.facade.ServerFacadeException: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-	at server.facade.ServerFacade.search(ServerFacade.java:322)
-	at server.SearchHandler.handle(SearchHandler.java:36)
+Mar 07, 2015 5:45:30 PM server.SubmitBatchHandler handle
+SEVERE: Error, image returned null in ServerFacade submitBatch
+server.facade.ServerFacadeException: Error, image returned null in ServerFacade submitBatch
+	at server.facade.ServerFacade.submitBatch(ServerFacade.java:93)
+	at server.SubmitBatchHandler.handle(SubmitBatchHandler.java:41)
 	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
 	at sun.net.httpserver.AuthFilter.doFilter(AuthFilter.java:83)
 	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:80)
@@ -83,28 +51,12 @@ server.facade.ServerFacadeException: [SQLITE_ERROR] SQL error or missing databas
 	at sun.net.httpserver.ServerImpl$Dispatcher.handle(ServerImpl.java:433)
 	at sun.net.httpserver.ServerImpl$Dispatcher.run(ServerImpl.java:398)
 	at java.lang.Thread.run(Thread.java:745)
-Caused by: server.database.DatabaseException: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-	at server.database.FieldDAO.search(FieldDAO.java:142)
-	at server.facade.ServerFacade.search(ServerFacade.java:318)
-	... 11 more
-Caused by: java.sql.SQLException: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-	at org.sqlite.DB.newSQLException(DB.java:383)
-	at org.sqlite.DB.newSQLException(DB.java:387)
-	at org.sqlite.DB.throwex(DB.java:374)
-	at org.sqlite.NativeDB.prepare(Native Method)
-	at org.sqlite.DB.prepare(DB.java:123)
-	at org.sqlite.PrepStmt.<init>(PrepStmt.java:42)
-	at org.sqlite.Conn.prepareStatement(Conn.java:404)
-	at org.sqlite.Conn.prepareStatement(Conn.java:399)
-	at org.sqlite.Conn.prepareStatement(Conn.java:383)
-	at server.database.FieldDAO.search(FieldDAO.java:125)
-	... 12 more
 
-Mar 07, 2015 2:34:36 PM server.SearchHandler handle
-SEVERE: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-server.facade.ServerFacadeException: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-	at server.facade.ServerFacade.search(ServerFacade.java:322)
-	at server.SearchHandler.handle(SearchHandler.java:36)
+Mar 07, 2015 5:48:12 PM server.SubmitBatchHandler handle
+SEVERE: Error, image returned null in ServerFacade submitBatch
+server.facade.ServerFacadeException: Error, image returned null in ServerFacade submitBatch
+	at server.facade.ServerFacade.submitBatch(ServerFacade.java:93)
+	at server.SubmitBatchHandler.handle(SubmitBatchHandler.java:41)
 	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
 	at sun.net.httpserver.AuthFilter.doFilter(AuthFilter.java:83)
 	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:80)
@@ -115,20 +67,36 @@ server.facade.ServerFacadeException: [SQLITE_ERROR] SQL error or missing databas
 	at sun.net.httpserver.ServerImpl$Dispatcher.handle(ServerImpl.java:433)
 	at sun.net.httpserver.ServerImpl$Dispatcher.run(ServerImpl.java:398)
 	at java.lang.Thread.run(Thread.java:745)
-Caused by: server.database.DatabaseException: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-	at server.database.FieldDAO.search(FieldDAO.java:142)
-	at server.facade.ServerFacade.search(ServerFacade.java:318)
-	... 11 more
-Caused by: java.sql.SQLException: [SQLITE_ERROR] SQL error or missing database (near "fields": syntax error)
-	at org.sqlite.DB.newSQLException(DB.java:383)
-	at org.sqlite.DB.newSQLException(DB.java:387)
-	at org.sqlite.DB.throwex(DB.java:374)
-	at org.sqlite.NativeDB.prepare(Native Method)
-	at org.sqlite.DB.prepare(DB.java:123)
-	at org.sqlite.PrepStmt.<init>(PrepStmt.java:42)
-	at org.sqlite.Conn.prepareStatement(Conn.java:404)
-	at org.sqlite.Conn.prepareStatement(Conn.java:399)
-	at org.sqlite.Conn.prepareStatement(Conn.java:383)
-	at server.database.FieldDAO.search(FieldDAO.java:125)
-	... 12 more
+
+Mar 07, 2015 5:48:18 PM server.SubmitBatchHandler handle
+SEVERE: Error, image returned null in ServerFacade submitBatch
+server.facade.ServerFacadeException: Error, image returned null in ServerFacade submitBatch
+	at server.facade.ServerFacade.submitBatch(ServerFacade.java:93)
+	at server.SubmitBatchHandler.handle(SubmitBatchHandler.java:41)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.AuthFilter.doFilter(AuthFilter.java:83)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:80)
+	at sun.net.httpserver.ServerImpl$Exchange$LinkHandler.handle(ServerImpl.java:677)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.ServerImpl$Exchange.run(ServerImpl.java:649)
+	at sun.net.httpserver.ServerImpl$DefaultExecutor.execute(ServerImpl.java:158)
+	at sun.net.httpserver.ServerImpl$Dispatcher.handle(ServerImpl.java:433)
+	at sun.net.httpserver.ServerImpl$Dispatcher.run(ServerImpl.java:398)
+	at java.lang.Thread.run(Thread.java:745)
+
+Mar 07, 2015 5:49:01 PM server.SubmitBatchHandler handle
+SEVERE: Error, image returned null in ServerFacade submitBatch
+server.facade.ServerFacadeException: Error, image returned null in ServerFacade submitBatch
+	at server.facade.ServerFacade.submitBatch(ServerFacade.java:93)
+	at server.SubmitBatchHandler.handle(SubmitBatchHandler.java:41)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.AuthFilter.doFilter(AuthFilter.java:83)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:80)
+	at sun.net.httpserver.ServerImpl$Exchange$LinkHandler.handle(ServerImpl.java:677)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.ServerImpl$Exchange.run(ServerImpl.java:649)
+	at sun.net.httpserver.ServerImpl$DefaultExecutor.execute(ServerImpl.java:158)
+	at sun.net.httpserver.ServerImpl$Dispatcher.handle(ServerImpl.java:433)
+	at sun.net.httpserver.ServerImpl$Dispatcher.run(ServerImpl.java:398)
+	at java.lang.Thread.run(Thread.java:745)
 

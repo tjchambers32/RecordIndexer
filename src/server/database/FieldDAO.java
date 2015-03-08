@@ -111,7 +111,8 @@ public class FieldDAO {
 		try {
 			
 			//TODO: Operation failed when it shouldn't have!!! 
-			//Removed DISTINCT. Try passoff again as is!
+			// Fields: 4,5
+			// Search: Mr. Incredible, Bob Parr
 			
 			for (int id : fields) {
 				int test = search_values.size();
