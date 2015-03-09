@@ -11,72 +11,103 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import client.ClientException;
+import shared.*;
+import shared.communication.*;
+import shared.model.*;
+
 /**
  * @author tchambs
  *
  */
 public class ClientCommunicatorTest {
 
-	//TODO: IMPLEMENT CLIENTCOMMUNICATORTEST
+	ClientCommunicator comm;
+	static DataImporter importer;
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		importer = new DataImporter();
+		importer.doImport("Records/Records.xml");
 	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
+	
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		importer = null;
 	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
+	
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
+		comm = new ClientCommunicator("localhost", 39640);
 	}
+	
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@After
-	public void tearDown() throws Exception {
-	}
-
-	/**
-	 * Test method for {@link client.communication.ClientCommunicator#ClientCommunicator()}.
-	 */
-	@Test
-	public void testClientCommunicator() {
-		fail("Not yet implemented"); // TODO
+	public void tearDown() {
+		comm = null;
 	}
 
 	/**
 	 * Test method for {@link client.communication.ClientCommunicator#ValidateUser(shared.communication.ValidateUser_Params)}.
+	 * @throws ClientException 
 	 */
 	@Test
-	public void testValidateUser() {
-		fail("Not yet implemented"); // TODO
+	public void testValidateUser() throws ClientException {
+		//invalid user
+		User user = new User("username", "password", "user", "name", "username@password.com", 100, -1);
+		ValidateUser_Params params = new ValidateUser_Params(user);
+		ValidateUser_Result result = comm.ValidateUser(params);
+		
+		assertEquals(null, result.getResult());
+		
+		//valid username and password
+		user.setUsername("test1");
+		user.setPassword("test1");
+		
+		params.setParams(user);
+		result = comm.ValidateUser(params);
+		
+		assertEquals(result.getResult().getUsername(), "test1");
+		assertEquals(result.getResult().getPassword(), "test1");
+		
+		assertEquals(result.getResult().getEmail(), "test1@gmail.com");
+		
 	}
 
 	/**
 	 * Test method for {@link client.communication.ClientCommunicator#getProjects(shared.communication.GetProjects_Params)}.
+	 * @throws ClientException 
 	 */
 	@Test
-	public void testGetProjects() {
-		fail("Not yet implemented"); // TODO
+	public void testGetProjects() throws ClientException {
+		User user = new User("test1", "test1", "Test", "One", "test1@gmail.com", 0, -1);
+		GetProjects_Params params = new GetProjects_Params(user);
+		GetProjects_Result result = comm.getProjects(params);
+		
+		assertEquals(3, result.getProjects().size());
 	}
 
 	/**
 	 * Test method for {@link client.communication.ClientCommunicator#getSampleImage(shared.communication.GetSampleImage_Params)}.
+	 * @throws ClientException 
 	 */
 	@Test
-	public void testGetSampleImage() {
-		fail("Not yet implemented"); // TODO
+	public void testGetSampleImage() throws ClientException {
+		User user = new User("test1", "test1", "Test", "One", "test1@gmail.com", 0, -1);
+		GetSampleImage_Params params = new GetSampleImage_Params(user, 1);
+		GetSampleImage_Result result = comm.getSampleImage(params);
+		
+		assertEquals(result.getImageURL(), "images/1890_image19.png");
+		
+		params = new GetSampleImage_Params(user, 2);
+		result = comm.getSampleImage(params);
+		
+		assertEquals(result.getImageURL(), "images/1900_image19.png");
+		
+		params = new GetSampleImage_Params(user, 3);
+		result = comm.getSampleImage(params);
+		
+		assertEquals(result.getImageURL(), "images/draft_image19.png");
 	}
 
 	/**

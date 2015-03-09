@@ -30,6 +30,7 @@ public class ValidateUser_Result {
 	}
 	
 	public String toString() {
+
 		StringBuilder result = new StringBuilder();
 		User user = this.result;
 		

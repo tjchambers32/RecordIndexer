@@ -36,7 +36,7 @@ public class DataImporter {
 	 * @param filepath
 	 * @throws Exception
 	 */
-	private void doImport(String filepath) throws Exception {
+	public void doImport(String filepath) throws Exception {
 
 		File newFile = new File(filepath);
 		File dest = new File(databasePath);
