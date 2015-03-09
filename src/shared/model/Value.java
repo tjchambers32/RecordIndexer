@@ -20,6 +20,7 @@ public class Value {
 	 * @param id the id of the value
 	 * @param recordID the recordID the value belongs to
 	 * @param text the actual text
+	 * @param fieldNumber xCoord of the text
 	 */
 	public Value(int id, int recordID, String text, int fieldNumber) {
 		setId(id);
@@ -30,12 +31,11 @@ public class Value {
 	
 	/**
 	 * Constructor WITHOUT id
-	 * @param id the id of the value
 	 * @param recordID the recordID the value belongs to
 	 * @param text the actual text
+	 * @param fieldNumber xCoord of the text
 	 */
 	public Value(int recordID, String text, int fieldNumber) {
-		setId(id);
 		setRecordID(recordID);
 		setText(text);
 		setFieldNumber(fieldNumber);

@@ -253,7 +253,7 @@ public class DataImporter {
 	 */
 	private void parseValues(Document doc, int recordID, Element recordElem)
 			throws ServerFacadeException, DatabaseException {
-		NodeList valueList = recordElem.getElementsByTagName("record");
+		NodeList valueList = recordElem.getElementsByTagName("value");
 
 		if (valueList == null)
 			return;
@@ -261,9 +261,7 @@ public class DataImporter {
 		for (int fieldNumber = 0; fieldNumber < valueList.getLength(); fieldNumber++) {
 			Element valueElem = (Element) valueList.item(fieldNumber);
 
-			Element textElem = (Element) valueElem
-					.getElementsByTagName("value").item(0);
-			String text = textElem.getTextContent();
+			String text = valueElem.getTextContent();
 
 			Value value = new Value(recordID, text.toLowerCase(), fieldNumber + 1);
 			ServerFacade.addValue(value);
