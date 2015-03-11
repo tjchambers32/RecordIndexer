@@ -109,11 +109,7 @@ public class FieldDAO {
 		ResultSet rs = null;
 
 		try {
-			
-			//TODO: Operation failed when it shouldn't have!!! 
-			// Fields: 4,5
-			// Search: Mr. Incredible, Bob Parr
-			
+						
 			for (int id : fields) {
 				int test = search_values.size();
 				for (int i = 0; i < test; i++) {

@@ -45,7 +45,7 @@ public class GetSampleImageHandler implements HttpHandler {
 		
 		exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0); //0 means read until the end
 		xmlStream.toXML(result, exchange.getResponseBody());
-		exchange.getResponseBody().close(); //TODO: WHY DID THIS FAIL LIKE 10000 TIMES IN A ROW AND WORKS NOW????
+		exchange.getResponseBody().close(); //if this fails, the server is unavailable/database is locked, restart both.
 	}
 
 }
