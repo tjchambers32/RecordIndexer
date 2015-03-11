@@ -111,8 +111,6 @@ public class Controller implements IController {
 		User user = new User(paramValues[0], paramValues[1]);
 
 		ValidateUser_Params params = new ValidateUser_Params(user);
-
-		// Print out Results
 		ValidateUser_Result result = null;
 		try {
 			result = communicator.ValidateUser(params);
@@ -137,7 +135,6 @@ public class Controller implements IController {
 
 		GetProjects_Params params = new GetProjects_Params(user);
 
-		// Print out Results
 		GetProjects_Result result = null;
 		try {
 			result = communicator.getProjects(params);
@@ -165,7 +162,6 @@ public class Controller implements IController {
 		GetSampleImage_Params params = new GetSampleImage_Params(user,
 				Integer.parseInt(paramValues[2]));
 
-		// Print out Results
 		GetSampleImage_Result result = null;
 		try {
 			result = communicator.getSampleImage(params);
@@ -194,7 +190,6 @@ public class Controller implements IController {
 		DownloadBatch_Params params = new DownloadBatch_Params(user,
 				Integer.parseInt(paramValues[2]));
 
-		// Print out Results
 		DownloadBatch_Result result = null;
 		try {
 			result = communicator.downloadBatch(params);
@@ -225,7 +220,6 @@ public class Controller implements IController {
 
 		GetFields_Params params = new GetFields_Params(user, projectID);
 
-		// Print out Results
 		GetFields_Result result = null;
 		try {
 			result = communicator.getFields(params);
@@ -253,8 +247,6 @@ public class Controller implements IController {
 
 		ArrayList<Record> records = new ArrayList<Record>();
 		ArrayList<Value> valueList = new ArrayList<Value>();
-
-		//TODO: Get a recordID so I can attach it to each value
 		
 		String[] recordString = paramValues[3].split("\\s*(;)\\s*");
 		int rowNumber = 0;
@@ -272,7 +264,7 @@ public class Controller implements IController {
 		SubmitBatch_Params params = new SubmitBatch_Params(user, records,
 				valueList);
 
-		// Print out Results
+
 		SubmitBatch_Result result = null;
 		try {
 			result = communicator.submitBatch(params);

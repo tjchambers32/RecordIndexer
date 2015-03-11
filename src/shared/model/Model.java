@@ -42,7 +42,6 @@ public class Model {
 	public GetProjects_Result getProjects(GetProjects_Params params) throws ModelException, DatabaseException {
 
 		User user = params.getParams();
-		//TODO: check if user is valid??
 		
 		List<Project> returnProjects = null;
 		try {
