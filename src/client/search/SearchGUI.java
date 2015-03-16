@@ -43,7 +43,7 @@ public class SearchGUI extends JFrame {
 	String password;
 	private JButton loginButton;
 	private JMenuItem exitMenuItem;
-	
+
 	/**
 	 * @param string
 	 */
@@ -65,11 +65,10 @@ public class SearchGUI extends JFrame {
 		JMenu menu = new JMenu("File");
 		menu.setMnemonic('c');
 		menuBar.add(menu);
-		
-		
+
 		exitMenuItem = new JMenuItem("Exit", KeyEvent.VK_X);
-        exitMenuItem.addActionListener(actionListener);
-        menu.add(exitMenuItem);
+		exitMenuItem.addActionListener(actionListener);
+		menu.add(exitMenuItem);
 
 		JLabel hostLabel = new JLabel("Host Name: ");
 
@@ -79,31 +78,29 @@ public class SearchGUI extends JFrame {
 		hostField.setPreferredSize(new Dimension(50, 20));
 
 		JLabel portLabel = new JLabel("Port Number: ");
-		
+
 		portField = new JTextField(50);
 		portField.setOpaque(true);
 		portField.setBackground(Color.white);
 		portField.setPreferredSize(new Dimension(50, 20));
-		
+
 		JLabel userLabel = new JLabel("Username: ");
-		
+
 		userField = new JTextField(50);
 		userField.setOpaque(true);
 		userField.setBackground(Color.white);
 		userField.setPreferredSize(new Dimension(50, 20));
 
 		JLabel passwordLabel = new JLabel("Password: ");
-		
+
 		passwordField = new JTextField(50);
 		passwordField.setOpaque(true);
 		passwordField.setBackground(Color.white);
 		passwordField.setPreferredSize(new Dimension(50, 20));
 
-		
 		loginButton = new JButton("Login");
 		loginButton.addActionListener(actionListener);
 
-		
 		JPanel loginPanel = new JPanel();
 		loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.X_AXIS));
 		loginPanel.setMaximumSize(new Dimension(1000, 1000));
@@ -116,29 +113,29 @@ public class SearchGUI extends JFrame {
 		loginPanel.add(passwordLabel);
 		loginPanel.add(passwordField);
 		loginPanel.add(loginButton);
-		
-		
+
 		GridBagConstraints gbc = new GridBagConstraints();
-		
-		//TODO: Implement image panel
+
+		// TODO: Implement image panel
 		JPanel imagePanel = new JPanel();
 		imagePanel.setLayout(new GridBagLayout());
 		imagePanel.add(new JLabel("implement image panel"), gbc);
 		imagePanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+		imagePanel.setPreferredSize(new Dimension(1000,500));
 		
 		ProjectPanel projectPanel = new ProjectPanel();
 		projectPanel.setLayout(new GridBagLayout());
-		projectPanel.setMinimumSize(new Dimension(1000, 250));
-		projectPanel.setMaximumSize(new Dimension(1000, 400));
+//		projectPanel.setMinimumSize(new Dimension(1000, 250));
+//		projectPanel.setMaximumSize(new Dimension(2000, 400));
 		projectPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-		
+
 		JPanel rootPanel = new JPanel();
 		rootPanel.setLayout(new BoxLayout(rootPanel, BoxLayout.Y_AXIS));
-        rootPanel.add(loginPanel);
-        rootPanel.add(projectPanel);
-        rootPanel.add(imagePanel);
-        
-        this.add(rootPanel);
+		rootPanel.add(loginPanel);
+		rootPanel.add(projectPanel);
+		rootPanel.add(imagePanel);
+
+		this.add(rootPanel);
 	}
 
 	private ActionListener actionListener = new ActionListener() {
@@ -146,15 +143,23 @@ public class SearchGUI extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 
 			if (e.getSource() == loginButton) {
+				try {
 				host = hostField.getText();
 				port = Integer.parseInt(portField.getText());
 				username = userField.getText();
 				password = passwordField.getText();
+				} catch (Exception exc) {
+					System.out.println("Malformed input. Try again.");
+					System.out.println("USAGE: Hostname [String] Port [Integer] Username [String] Password [String]");
+				}
+				
+				//TODO: Implement LOGIN
+				
+			} else if (e.getSource() == exitMenuItem) {
+				System.exit(0);
 			}
-	        else if (e.getSource() == exitMenuItem) {
-	            System.exit(0);
-	        }
 		}
+
 	};
 
 	private WindowAdapter windowAdapter = new WindowAdapter() {
@@ -170,8 +175,8 @@ public class SearchGUI extends JFrame {
 			public void run() {
 				SearchGUI frame = new SearchGUI("SearchGUI");
 
-				//frame.pack();
-				frame.setSize(1000,700);
+				// frame.pack();
+				frame.setSize(1250, 700);
 				frame.setVisible(true);
 			}
 		});

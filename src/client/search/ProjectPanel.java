@@ -28,8 +28,11 @@ public class ProjectPanel extends JPanel {
 
 	JButton searchButton;
 	JTextArea searchArea;
+	JTextArea imageArea;
 	ArrayList<String> searchValues;
-	
+	JList<String> fields;
+	JList<String> images;
+
 	public ProjectPanel() {
 		super();
 
@@ -40,7 +43,7 @@ public class ProjectPanel extends JPanel {
 
 		this.setLayout((LayoutManager) new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
-		
+
 		// Projects
 		JLabel projectsLabel = new JLabel("Projects:");
 
@@ -60,15 +63,14 @@ public class ProjectPanel extends JPanel {
 		// Fields
 		JLabel fieldsLabel = new JLabel("Fields to Search:");
 
-		DefaultListModel<String> listModel;
-		listModel = new DefaultListModel<String>();
+		DefaultListModel<String> fieldModel;
+		fieldModel = new DefaultListModel<String>();
 
-		JList<String> fieldsList = new JList<String>(listModel);
-		fieldsList
-				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		fieldsList.setSelectedIndex(0);
-		fieldsList.setVisibleRowCount(5);
-		JScrollPane fieldsScroll = new JScrollPane(fieldsList);
+		fields = new JList<String>(fieldModel);
+		fields.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		fields.setSelectedIndex(0);
+		fields.setVisibleRowCount(5);
+		JScrollPane fieldsScroll = new JScrollPane(fields);
 
 		this.add(fieldsLabel);
 		this.add(Box.createRigidArea(new Dimension(0, 3)));
@@ -77,36 +79,64 @@ public class ProjectPanel extends JPanel {
 
 		// Search
 		JLabel searchLabel = new JLabel("Search Values: ");
-		
+
 		searchArea = new JTextArea();
 		JScrollPane searchScroll = new JScrollPane(searchArea);
 		searchArea.setOpaque(true);
 		searchArea.setBackground(Color.WHITE);
 		searchArea.setEditable(true);
 		searchArea.setPreferredSize(new Dimension(150, 60));
-		
+
 		searchButton = new JButton("Search");
 		searchButton.addActionListener(actionListener);
-		
+
 		this.add(Box.createVerticalGlue());
 		this.add(searchLabel);
-		this.add(Box.createRigidArea(new Dimension(0,3)));
+		this.add(Box.createRigidArea(new Dimension(0, 3)));
 		this.add(searchScroll);
+		this.add(Box.createVerticalGlue());
+		this.add(searchButton);
+		this.add(Box.createVerticalGlue());
+
+		// Images
+		JLabel imageLabel = new JLabel("Images: ");
+
+		DefaultListModel<String> imageModel;
+		imageModel = new DefaultListModel<String>();
+
+		images = new JList<String>(imageModel);
+
+		images.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		images.setSelectedIndex(0);
+		images.setVisibleRowCount(5);
+		JScrollPane imageScroll = new JScrollPane(images);
+		
+		this.add(imageLabel);
+		this.add(Box.createRigidArea(new Dimension(0, 3)));
+		this.add(imageScroll);
 		this.add(Box.createVerticalGlue());
 		
 	}
-	
+
 	private ActionListener actionListener = new ActionListener() {
 
 		public void actionPerformed(ActionEvent e) {
 
 			if (e.getSource() == searchButton) {
+				searchValues = new ArrayList<String>();
 				String searchText = searchArea.getText();
-				
-				String[] searchStrings = searchText.split("\\s*{,}\\s*");
+
+				String[] searchStrings = searchText.split("\\s*[,]\\s*");
 				for (String s : searchStrings) {
 					searchValues.add(s);
 				}
+
+				ArrayList<Integer> searchFields = new ArrayList<Integer>();
+				for (int i : fields.getSelectedIndices()) {
+					searchFields.add(i + 1);
+				}
+				
+				//TODO: Implement SEARCH
 				
 			}
 		}
