@@ -32,7 +32,9 @@ public class ProjectPanel extends JPanel {
 	ArrayList<String> searchValues;
 	JList<String> fields;
 	JList<String> images;
-
+	JList<String> projects;
+	JTextArea projectsArea;
+	
 	public ProjectPanel() {
 		super();
 
@@ -47,7 +49,7 @@ public class ProjectPanel extends JPanel {
 		// Projects
 		JLabel projectsLabel = new JLabel("Projects:");
 
-		JTextArea projectsArea = new JTextArea();
+		projectsArea = new JTextArea();
 		JScrollPane projectScroll = new JScrollPane(projectsArea);
 		projectsArea.setOpaque(true);
 		projectsArea.setBackground(Color.WHITE);
@@ -141,4 +143,22 @@ public class ProjectPanel extends JPanel {
 			}
 		}
 	};
+	
+	public void setProjects(ArrayList<String> projects) {
+		StringBuilder sb = new StringBuilder();
+		for (String s : projects) {
+			sb.append(s + "\n");
+		}
+		projectsArea.setText(sb.toString());
+	}
+	
+	public void setFields(ArrayList<String> inputFields) {
+		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		
+		for (String s : inputFields) {
+			listModel.addElement(s);
+		}
+		fields.setModel(listModel);
+	}
+
 }

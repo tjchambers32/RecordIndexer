@@ -11,7 +11,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
+import client.ClientException;
 import client.communication.ClientCommunicator;
 
 import javax.swing.BorderFactory;
@@ -21,9 +23,13 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+
+import shared.communication.*;
+import shared.model.*;
 
 /**
  * @author tchambs
@@ -43,6 +49,7 @@ public class SearchGUI extends JFrame {
 	String password;
 	private JButton loginButton;
 	private JMenuItem exitMenuItem;
+	ProjectPanel projectPanel;
 
 	/**
 	 * @param string
@@ -76,6 +83,7 @@ public class SearchGUI extends JFrame {
 		hostField.setOpaque(true);
 		hostField.setBackground(Color.white);
 		hostField.setPreferredSize(new Dimension(50, 20));
+		hostField.setText("localhost"); // default value to speed up testing
 
 		JLabel portLabel = new JLabel("Port Number: ");
 
@@ -83,6 +91,7 @@ public class SearchGUI extends JFrame {
 		portField.setOpaque(true);
 		portField.setBackground(Color.white);
 		portField.setPreferredSize(new Dimension(50, 20));
+		portField.setText("39640"); // default value to speed up testing
 
 		JLabel userLabel = new JLabel("Username: ");
 
@@ -90,6 +99,7 @@ public class SearchGUI extends JFrame {
 		userField.setOpaque(true);
 		userField.setBackground(Color.white);
 		userField.setPreferredSize(new Dimension(50, 20));
+		userField.setText("sheila"); // default value to speed up testing
 
 		JLabel passwordLabel = new JLabel("Password: ");
 
@@ -97,7 +107,8 @@ public class SearchGUI extends JFrame {
 		passwordField.setOpaque(true);
 		passwordField.setBackground(Color.white);
 		passwordField.setPreferredSize(new Dimension(50, 20));
-
+		passwordField.setText("parker"); // default value to speed up testing
+		
 		loginButton = new JButton("Login");
 		loginButton.addActionListener(actionListener);
 
@@ -121,12 +132,12 @@ public class SearchGUI extends JFrame {
 		imagePanel.setLayout(new GridBagLayout());
 		imagePanel.add(new JLabel("implement image panel"), gbc);
 		imagePanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-		imagePanel.setPreferredSize(new Dimension(1000,500));
-		
-		ProjectPanel projectPanel = new ProjectPanel();
+		imagePanel.setPreferredSize(new Dimension(1000, 500));
+
+		projectPanel = new ProjectPanel();
 		projectPanel.setLayout(new GridBagLayout());
-//		projectPanel.setMinimumSize(new Dimension(1000, 250));
-//		projectPanel.setMaximumSize(new Dimension(2000, 400));
+		// projectPanel.setMinimumSize(new Dimension(1000, 250));
+		// projectPanel.setMaximumSize(new Dimension(2000, 400));
 		projectPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 
 		JPanel rootPanel = new JPanel();
@@ -144,17 +155,21 @@ public class SearchGUI extends JFrame {
 
 			if (e.getSource() == loginButton) {
 				try {
-				host = hostField.getText();
-				port = Integer.parseInt(portField.getText());
-				username = userField.getText();
-				password = passwordField.getText();
+					host = hostField.getText();
+					port = Integer.parseInt(portField.getText());
+					username = userField.getText();
+					password = passwordField.getText();
 				} catch (Exception exc) {
-					System.out.println("Malformed input. Try again.");
-					System.out.println("USAGE: Hostname [String] Port [Integer] Username [String] Password [String]");
+					JOptionPane
+							.showMessageDialog(
+									null,
+									"Malformed input. Try again.\n"
+											+ "USAGE: Hostname [String] Port [Integer] Username [String] Password [String]",
+									"Input Error", JOptionPane.ERROR_MESSAGE);
 				}
-				
-				//TODO: Implement LOGIN
-				
+
+				login();
+
 			} else if (e.getSource() == exitMenuItem) {
 				System.exit(0);
 			}
@@ -168,6 +183,65 @@ public class SearchGUI extends JFrame {
 			System.exit(0);
 		}
 	};
+
+	public void login() {
+		ClientCommunicator comm = new ClientCommunicator(host, port);
+
+		User user = new User(username, password);
+		ValidateUser_Params params = new ValidateUser_Params(user);
+		ValidateUser_Result result = null;
+
+		try {
+			result = comm.ValidateUser(params);
+		} catch (Exception e) {
+			if (e.getCause().toString().contains("Connect")) {
+				JOptionPane.showMessageDialog(null, "Check server",
+						"Connection Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(null, "Invalid User Credentials",
+						"Input Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		if (result.getResult() == null) {
+			JOptionPane.showMessageDialog(null, "Invalid User Credentials",
+					"Input Error", JOptionPane.ERROR_MESSAGE);
+			
+			return;
+		}
+		
+		GetProjects_Params projParams = new GetProjects_Params(user);
+		GetProjects_Result projResult = null;
+		
+		try {
+			projResult = comm.getProjects(projParams);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Could not get project list",
+					"Input Error", JOptionPane.ERROR_MESSAGE);
+		}
+		
+		ArrayList<String> projects = new ArrayList<String>();
+		for (Project p : projResult.getProjects()) {
+			projects.add(p.getTitle());
+		}
+		projectPanel.setProjects(projects);
+		
+			
+		GetFields_Params fieldParams = new GetFields_Params(user, -1); //-1 gets all fields
+		GetFields_Result fieldResult = null;
+		
+		try {
+			fieldResult = comm.getFields(fieldParams);
+		} catch (ClientException e) {
+			JOptionPane.showMessageDialog(null, "Could not get fields list",
+					"Input Error", JOptionPane.ERROR_MESSAGE);
+		}
+		
+		ArrayList<String> fields = new ArrayList<String>();
+		for (Field f : fieldResult.getFields()) {
+			fields.add(f.getTitle());
+		}
+		projectPanel.setFields(fields);
+	}
 
 	public static void main(String[] args) {
 
