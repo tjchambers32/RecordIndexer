@@ -1,6 +1,6 @@
-Mar 16, 2015 5:35:47 PM server.Server run
+Mar 17, 2015 8:53:54 AM server.Server run
 INFO: Initializing Database
-Mar 16, 2015 5:35:47 PM server.Server run
+Mar 17, 2015 8:53:54 AM server.Server run
 INFO: Initializing HTTP Server
-Mar 16, 2015 5:35:47 PM server.Server run
+Mar 17, 2015 8:53:54 AM server.Server run
 INFO: Starting HTTP Server

@@ -5,19 +5,36 @@ import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import client.ClientException;
+import client.communication.*;
+import shared.communication.*;
+import shared.model.*;
 
 /**
  * @author tchambs
@@ -34,6 +51,8 @@ public class ProjectPanel extends JPanel {
 	JList<String> images;
 	JList<String> projects;
 	JTextArea projectsArea;
+	User user = null;
+	ClientCommunicator comm = null;
 	
 	public ProjectPanel() {
 		super();
@@ -49,13 +68,15 @@ public class ProjectPanel extends JPanel {
 		// Projects
 		JLabel projectsLabel = new JLabel("Projects:");
 
-		projectsArea = new JTextArea();
-		JScrollPane projectScroll = new JScrollPane(projectsArea);
-		projectsArea.setOpaque(true);
-		projectsArea.setBackground(Color.WHITE);
-		projectsArea.setEditable(false);
-		projectsArea.setPreferredSize(new Dimension(100, 60));
-
+		DefaultListModel<String> projectsModel = new DefaultListModel<String>();
+		
+		projects = new JList<String>(projectsModel);
+		projects.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		projects.setSelectedIndex(0);
+		projects.setVisibleRowCount(3);
+		projects.addListSelectionListener(projectsListener);
+		JScrollPane projectScroll = new JScrollPane(projects);
+		
 		this.add(Box.createVerticalGlue());
 		this.add(projectsLabel);
 		this.add(Box.createRigidArea(new Dimension(0, 3)));
@@ -65,8 +86,7 @@ public class ProjectPanel extends JPanel {
 		// Fields
 		JLabel fieldsLabel = new JLabel("Fields to Search:");
 
-		DefaultListModel<String> fieldModel;
-		fieldModel = new DefaultListModel<String>();
+		DefaultListModel<String> fieldModel = new DefaultListModel<String>();
 
 		fields = new JList<String>(fieldModel);
 		fields.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -99,27 +119,57 @@ public class ProjectPanel extends JPanel {
 		this.add(Box.createVerticalGlue());
 		this.add(searchButton);
 		this.add(Box.createVerticalGlue());
+		this.add(Box.createRigidArea(new Dimension(0, 3)));
 
 		// Images
-		JLabel imageLabel = new JLabel("Images: ");
+		JLabel imageLabel = new JLabel("Image Results: ");
 
-		DefaultListModel<String> imageModel;
-		imageModel = new DefaultListModel<String>();
-
+		DefaultListModel<String> imageModel = new DefaultListModel<String>();
 		images = new JList<String>(imageModel);
-
 		images.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		images.setSelectedIndex(0);
 		images.setVisibleRowCount(5);
+		images.addListSelectionListener(imageListener);
 		JScrollPane imageScroll = new JScrollPane(images);
-		
+
 		this.add(imageLabel);
 		this.add(Box.createRigidArea(new Dimension(0, 3)));
 		this.add(imageScroll);
 		this.add(Box.createVerticalGlue());
-		
+
 	}
 
+	private ListSelectionListener imageListener = new ListSelectionListener() {
+
+		public void valueChanged(ListSelectionEvent e) {
+			
+			String imageURL = images.getSelectedValue();
+			BufferedImage image = null;
+			try {
+				image = ImageIO.read(new URL(imageURL));
+				ImageIcon icon = new ImageIcon(image);
+				SearchGUI.redrawImage(icon);
+			} catch (MalformedURLException e1) {
+				JOptionPane.showMessageDialog(null, "Invalid URL.",
+						"Image Display Error", JOptionPane.ERROR_MESSAGE);
+			} catch (IOException e1) {
+				JOptionPane.showMessageDialog(null, "IOException Occurred.",
+						"Image Display Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		
+	};
+	
+	private ListSelectionListener projectsListener = new ListSelectionListener() {
+
+		public void valueChanged(ListSelectionEvent e) {
+			
+			String selectedProject = projects.getSelectedValue();
+			//TODO: Implement individual project searching
+		}
+		
+	};
+	
 	private ActionListener actionListener = new ActionListener() {
 
 		public void actionPerformed(ActionEvent e) {
@@ -137,28 +187,73 @@ public class ProjectPanel extends JPanel {
 				for (int i : fields.getSelectedIndices()) {
 					searchFields.add(i + 1);
 				}
-				
-				//TODO: Implement SEARCH
-				
+
+				search(searchFields, searchStrings);
+
 			}
 		}
 	};
-	
-	public void setProjects(ArrayList<String> projects) {
-		StringBuilder sb = new StringBuilder();
-		for (String s : projects) {
-			sb.append(s + "\n");
+
+	public void search(ArrayList<Integer> searchFields, String[] searchStrings) {
+
+		if (user == null) {
+			JOptionPane.showMessageDialog(null, "Login required.",
+					"Search Error", JOptionPane.ERROR_MESSAGE);
+
+			return;
 		}
-		projectsArea.setText(sb.toString());
+
+		Search_Params params = new Search_Params(user, searchFields,
+				searchValues);
+		ArrayList<Search_Result> result = new ArrayList<Search_Result>();
+
+		try {
+			result = comm.search(params);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,
+					"Search failed. Exception caught.", "Search Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
+
+		ArrayList<String> imageResults = new ArrayList<String>();
+		for (int i = 0; i < result.size(); i++) {
+			imageResults.add(result.get(i).getImageURL());
+		}
+		this.setImages(imageResults);
+	}
+
+	public void setProjects(ArrayList<String> inputProjects) {
+		DefaultListModel<String> projectModel = new DefaultListModel<String>();
+		
+		for (String s : inputProjects) {
+			projectModel.addElement(s);
+		}
+		projects.setModel(projectModel);
+	}
+
+	public void setImages(ArrayList<String> inputImages) {
+		DefaultListModel<String> imageModel = new DefaultListModel<String>();
+
+		for (String s : inputImages) {
+			imageModel.addElement(comm.getURL_PREFIX()+ File.separator + s);
+		}
+		images.setModel(imageModel);
 	}
 	
 	public void setFields(ArrayList<String> inputFields) {
-		DefaultListModel<String> listModel = new DefaultListModel<String>();
-		
+		DefaultListModel<String> fieldModel = new DefaultListModel<String>();
+
 		for (String s : inputFields) {
-			listModel.addElement(s);
+			fieldModel.addElement(s);
 		}
-		fields.setModel(listModel);
+		fields.setModel(fieldModel);
 	}
 
+	public void setUser(User inputUser) {
+		this.user = inputUser;
+	}
+
+	public void setComm(ClientCommunicator comm) {
+		this.comm = comm;
+	}
 }

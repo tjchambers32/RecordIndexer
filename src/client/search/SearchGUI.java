@@ -18,6 +18,7 @@ import client.communication.ClientCommunicator;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -50,7 +51,8 @@ public class SearchGUI extends JFrame {
 	private JButton loginButton;
 	private JMenuItem exitMenuItem;
 	ProjectPanel projectPanel;
-
+	static JPanel imagePanel;
+	static JLabel imagePanelLabel;
 	/**
 	 * @param string
 	 */
@@ -128,16 +130,15 @@ public class SearchGUI extends JFrame {
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		// TODO: Implement image panel
-		JPanel imagePanel = new JPanel();
+		imagePanel = new JPanel();
 		imagePanel.setLayout(new GridBagLayout());
-		imagePanel.add(new JLabel("implement image panel"), gbc);
+		imagePanelLabel = new JLabel("No Image Selected");
+		imagePanel.add(imagePanelLabel, gbc);
 		imagePanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 		imagePanel.setPreferredSize(new Dimension(1000, 500));
 
 		projectPanel = new ProjectPanel();
 		projectPanel.setLayout(new GridBagLayout());
-		// projectPanel.setMinimumSize(new Dimension(1000, 250));
-		// projectPanel.setMaximumSize(new Dimension(2000, 400));
 		projectPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 
 		JPanel rootPanel = new JPanel();
@@ -186,7 +187,8 @@ public class SearchGUI extends JFrame {
 
 	public void login() {
 		ClientCommunicator comm = new ClientCommunicator(host, port);
-
+		projectPanel.setComm(comm);
+		
 		User user = new User(username, password);
 		ValidateUser_Params params = new ValidateUser_Params(user);
 		ValidateUser_Result result = null;
@@ -208,6 +210,8 @@ public class SearchGUI extends JFrame {
 			
 			return;
 		}
+		
+		projectPanel.setUser(user);
 		
 		GetProjects_Params projParams = new GetProjects_Params(user);
 		GetProjects_Result projResult = null;
@@ -240,9 +244,16 @@ public class SearchGUI extends JFrame {
 		for (Field f : fieldResult.getFields()) {
 			fields.add(f.getTitle());
 		}
-		projectPanel.setFields(fields);
+//		projectPanel.setFields(fields);
 	}
 
+	public static void redrawImage(ImageIcon newImage) {
+		imagePanelLabel.setText(null);
+		imagePanelLabel.setIcon(newImage);
+		imagePanel.revalidate();
+		imagePanel.repaint();
+	}
+	
 	public static void main(String[] args) {
 
 		EventQueue.invokeLater(new Runnable() {
@@ -250,7 +261,7 @@ public class SearchGUI extends JFrame {
 				SearchGUI frame = new SearchGUI("SearchGUI");
 
 				// frame.pack();
-				frame.setSize(1250, 700);
+				frame.setSize(1500, 800);
 				frame.setVisible(true);
 			}
 		});
