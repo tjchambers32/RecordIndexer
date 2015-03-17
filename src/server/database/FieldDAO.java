@@ -109,7 +109,7 @@ public class FieldDAO {
 		ResultSet rs = null;
 
 		try {
-						
+			//TODO: FIX broken search when searching all fields and FOX in searchGUI			
 			for (int id : fields) {
 				int test = search_values.size();
 				for (int i = 0; i < test; i++) {

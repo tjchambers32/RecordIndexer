@@ -229,7 +229,6 @@ public class SearchGUI extends JFrame {
 		}
 		projectPanel.setProjects(projects);
 		
-			
 		GetFields_Params fieldParams = new GetFields_Params(user, -1); //-1 gets all fields
 		GetFields_Result fieldResult = null;
 		
@@ -244,7 +243,7 @@ public class SearchGUI extends JFrame {
 		for (Field f : fieldResult.getFields()) {
 			fields.add(f.getTitle());
 		}
-//		projectPanel.setFields(fields);
+		projectPanel.setFields(fields);
 	}
 
 	public static void redrawImage(ImageIcon newImage) {

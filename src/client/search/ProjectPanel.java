@@ -53,7 +53,7 @@ public class ProjectPanel extends JPanel {
 	JTextArea projectsArea;
 	User user = null;
 	ClientCommunicator comm = null;
-	
+
 	public ProjectPanel() {
 		super();
 
@@ -69,14 +69,14 @@ public class ProjectPanel extends JPanel {
 		JLabel projectsLabel = new JLabel("Projects:");
 
 		DefaultListModel<String> projectsModel = new DefaultListModel<String>();
-		
+
 		projects = new JList<String>(projectsModel);
 		projects.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		projects.setSelectedIndex(0);
 		projects.setVisibleRowCount(3);
 		projects.addListSelectionListener(projectsListener);
 		JScrollPane projectScroll = new JScrollPane(projects);
-		
+
 		this.add(Box.createVerticalGlue());
 		this.add(projectsLabel);
 		this.add(Box.createRigidArea(new Dimension(0, 3)));
@@ -142,34 +142,36 @@ public class ProjectPanel extends JPanel {
 	private ListSelectionListener imageListener = new ListSelectionListener() {
 
 		public void valueChanged(ListSelectionEvent e) {
-			
-			String imageURL = images.getSelectedValue();
-			BufferedImage image = null;
-			try {
-				image = ImageIO.read(new URL(imageURL));
-				ImageIcon icon = new ImageIcon(image);
-				SearchGUI.redrawImage(icon);
-			} catch (MalformedURLException e1) {
-				JOptionPane.showMessageDialog(null, "Invalid URL.",
-						"Image Display Error", JOptionPane.ERROR_MESSAGE);
-			} catch (IOException e1) {
-				JOptionPane.showMessageDialog(null, "IOException Occurred.",
-						"Image Display Error", JOptionPane.ERROR_MESSAGE);
+			if (e.getValueIsAdjusting()) {
+				String imageURL = images.getSelectedValue();
+				BufferedImage image = null;
+				try {
+					image = ImageIO.read(new URL(imageURL));
+					ImageIcon icon = new ImageIcon(image);
+					SearchGUI.redrawImage(icon);
+				} catch (MalformedURLException e1) {
+					JOptionPane.showMessageDialog(null, "Invalid URL.",
+							"Image Display Error", JOptionPane.ERROR_MESSAGE);
+				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(null,
+							"IOException Occurred.", "Image Display Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		}
-		
+
 	};
-	
+
 	private ListSelectionListener projectsListener = new ListSelectionListener() {
 
 		public void valueChanged(ListSelectionEvent e) {
-			
+
 			String selectedProject = projects.getSelectedValue();
-			//TODO: Implement individual project searching
+			// TODO: Implement individual project searching
 		}
-		
+
 	};
-	
+
 	private ActionListener actionListener = new ActionListener() {
 
 		public void actionPerformed(ActionEvent e) {
@@ -224,7 +226,7 @@ public class ProjectPanel extends JPanel {
 
 	public void setProjects(ArrayList<String> inputProjects) {
 		DefaultListModel<String> projectModel = new DefaultListModel<String>();
-		
+
 		for (String s : inputProjects) {
 			projectModel.addElement(s);
 		}
@@ -235,11 +237,11 @@ public class ProjectPanel extends JPanel {
 		DefaultListModel<String> imageModel = new DefaultListModel<String>();
 
 		for (String s : inputImages) {
-			imageModel.addElement(comm.getURL_PREFIX()+ File.separator + s);
+			imageModel.addElement(comm.getURL_PREFIX() + File.separator + s);
 		}
 		images.setModel(imageModel);
 	}
-	
+
 	public void setFields(ArrayList<String> inputFields) {
 		DefaultListModel<String> fieldModel = new DefaultListModel<String>();
 
