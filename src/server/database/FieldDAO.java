@@ -109,7 +109,7 @@ public class FieldDAO {
 		ResultSet rs = null;
 
 		try {
-			//TODO: FIX broken search when searching all fields and FOX in searchGUI			
+			//TODO: FIX bug in search when searching all fields and FOX in searchGUI - 2 images show up when only 1 should		
 			for (int id : fields) {
 				int test = search_values.size();
 				for (int i = 0; i < test; i++) {
