@@ -50,7 +50,7 @@ public class IndexerFrame extends JFrame{
 				
 				//frame.pack();
 				frame.setSize(500,500);
-				
+				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
 			}
 		});
