@@ -66,7 +66,6 @@ public class User {
 	 * Constructor for username with JUST username and password
 	 */
 	public User(String username, String password) {
-		
 		setUsername(username);
 		setPassword(password);
 	}

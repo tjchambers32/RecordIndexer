@@ -18,9 +18,8 @@ import client.gui.dialog.LoginDialog;
 @SuppressWarnings("serial")
 public class IndexerFrame extends JFrame{
 
-	private int port = 39460;
-	private String hostname = "localhost";
-	private ClientCommunicator comm;
+	public int port = 39460;
+	public String hostname = "localhost";
 	private LoginDialog loginDialog;
 	
 	IndexerFrame(String title, String[] args) {
@@ -28,9 +27,8 @@ public class IndexerFrame extends JFrame{
 		
 		this.hostname = args[0];
 		this.port = Integer.parseInt(args[1]);
-		comm = new ClientCommunicator(hostname, port);
 		
-		loginDialog = new LoginDialog();
+		loginDialog = new LoginDialog(hostname, port);
 		
 	}
 	

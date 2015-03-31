@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -14,8 +16,13 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import shared.communication.*;
+import shared.model.*;
+import client.communication.*;
 
 /**
  * @author tchambs
@@ -27,10 +34,16 @@ public class LoginDialog extends JDialog {
 	JButton exitButton;
 	JTextField userField;
 	JTextField passField;
+	private String host;
+	private int port;
+	String username;
+	String password;
 	
-	public LoginDialog() {
+	public LoginDialog(String hostname, int port) {
 		super();
 
+		this.host = hostname;
+		this.port = port;
 		createComponents();
 	}
 
@@ -62,8 +75,10 @@ public class LoginDialog extends JDialog {
 		
 		//TODO add button functionality
 		loginButton = new JButton("Login");
+		loginButton.addActionListener(loginListener);
 		
 		exitButton = new JButton("Exit");
+		exitButton.addActionListener(loginListener);
 		
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -86,5 +101,55 @@ public class LoginDialog extends JDialog {
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
+	private ActionListener loginListener = new ActionListener() {
 
+		public void actionPerformed(ActionEvent e) {
+			if (e.getSource() == loginButton) {
+				try {
+					username = userField.getText();
+					password = passField.getText();
+				} catch (Exception exc) {
+					JOptionPane
+							.showMessageDialog(
+									null,
+									"Malformed input. Try again.\n"
+											+ "USAGE: Hostname [String] Port [Integer] Username [String] Password [String]",
+									"Input Error", JOptionPane.ERROR_MESSAGE);
+				}
+
+				login();
+
+			} else if (e.getSource() == exitButton) {
+				System.exit(0);
+			}
+		}
+	};
+	
+	private void login() {
+		
+		ClientCommunicator comm = new ClientCommunicator(host, port);
+		
+		User user = new User(username, password);
+		ValidateUser_Params params = new ValidateUser_Params(user);
+		ValidateUser_Result result = null;
+
+		try {
+			result = comm.ValidateUser(params);
+		} catch (Exception e) {
+			if (e.getCause().toString().contains("Connect")) {
+				JOptionPane.showMessageDialog(null, "Check server",
+						"Connection Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(null, "Invalid User Credentials",
+						"Input Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		if (result.getResult() == null) {
+			JOptionPane.showMessageDialog(null, "Invalid User Credentials",
+					"Input Error", JOptionPane.ERROR_MESSAGE);	
+			return;
+		}
+		
+		
+	}
 }
