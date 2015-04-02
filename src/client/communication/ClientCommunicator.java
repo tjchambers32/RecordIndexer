@@ -25,7 +25,7 @@ public class ClientCommunicator {
 	private XStream xmlStream;
 
 	public ClientCommunicator() {
-		setURL_PREFIX("http://localhost:8080");
+		setURL_PREFIX("http://localhost:39640");
 		xmlStream = new XStream(new DomDriver());
 	}
 
@@ -233,8 +233,8 @@ public class ClientCommunicator {
 	 * Searches the indexed records for the specified strings <br>
 	 * <br>
 	 * The user specifies one or more fields to be searched, and one or more
-	 * strings to search for. The fields to be searched are specified by “field
-	 * ID”. (Note, field IDs are unique across all fields in the system.) <br>
+	 * strings to search for. The fields to be searched are specified by field
+	 * ID. (Note, field IDs are unique across all fields in the system.) <br>
 	 * <br>
 	 * The Server searches all indexed records containing the specified fields
 	 * for the specified strings, and returns a list of all matches. In order to
