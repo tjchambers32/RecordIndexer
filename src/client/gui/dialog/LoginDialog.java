@@ -26,6 +26,7 @@ import shared.communication.*;
 import shared.model.*;
 import client.communication.*;
 import client.gui.IndexerFrame;
+import client.gui.batchstate.BatchState;
 
 /**
  * @author tchambs
@@ -39,17 +40,16 @@ public class LoginDialog extends JDialog {
 	JButton exitButton;
 	JTextField userField;
 	JTextField passField;
-	private String host;
-	private int port;
 	String username;
 	String password;
+	
+	BatchState batchState;
 
-	public LoginDialog(String hostname, int port, IndexerFrame inputFrame) {
+	public LoginDialog(BatchState batchState, IndexerFrame inputFrame) {
 		super();
 
 		this.frame = inputFrame;
-		this.host = hostname;
-		this.port = port;
+		this.batchState = batchState;
 		createComponents();
 	}
 
@@ -150,7 +150,7 @@ public class LoginDialog extends JDialog {
 
 	private void login() {
 
-		ClientCommunicator comm = new ClientCommunicator(host, port);
+		ClientCommunicator comm = new ClientCommunicator(batchState.getHostname(), batchState.getPort());
 
 		User user = new User(username, password);
 		ValidateUser_Params params = new ValidateUser_Params(user);
@@ -179,6 +179,8 @@ public class LoginDialog extends JDialog {
 				+ result.getResult().getRecordsIndexed() + " records",
 				"Welcome", JOptionPane.INFORMATION_MESSAGE);
 
+		batchState.setUser(result.getResult());
+		
 		this.setVisible(false);
 		frame.setVisible(true);
 	}

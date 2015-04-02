@@ -4,6 +4,7 @@
 package client.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,19 +24,28 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import client.communication.*;
-import client.gui.dialog.LoginDialog;
+import client.gui.batchstate.BatchState;
+import client.gui.batchstate.BatchStateListener;
+import client.gui.batchstate.Cell;
+import client.gui.dialog.*;
+import client.gui.panel.*;
 
 /**
  * @author tchambs
  * 
  */
 @SuppressWarnings("serial")
-public class IndexerFrame extends JFrame{
+public class IndexerFrame extends JFrame implements BatchStateListener{
 
 	
 	public int port = 39460;
 	public String hostname = "localhost";
+	
+	BatchState batchState;
+	
 	private LoginDialog loginDialog;
+	private DownloadBatchDialog downloadBatchDialog;
+	
 	JMenuItem exitMenuItem;
 	JMenuItem downloadBatchMenuItem;
 	JMenuItem logoutMenuItem;
@@ -60,7 +70,10 @@ public class IndexerFrame extends JFrame{
 	
 		this.addWindowListener(windowAdapter);
 		
-		loginDialog = new LoginDialog(hostname, port, this);
+		batchState = new BatchState(hostname, port);
+ 	   	batchState.addListener(this);
+		
+		loginDialog = new LoginDialog(batchState, this);
 		
 		createComponents();
 	}
@@ -86,23 +99,31 @@ public class IndexerFrame extends JFrame{
 		exitMenuItem.addActionListener(actionListener);
 		menu.add(exitMenuItem);
 		
-		buttonPanel = new ButtonPanel();
+		buttonPanel = new ButtonPanel(this);
+		
 		imagePanel = new ImagePanel();
-		BLentryPanel = new EntryPanel();
+		imagePanel.setPreferredSize(new Dimension(800, 500));
+		imagePanel.setMinimumSize(new Dimension(300, 250));
+		
 		tableEntryPanel = new TableEntryPanel();
 		formEntryPanel = new FormEntryPanel();
-		
-		BLentryPanel.addTab("Table Entry", tableEntryPanel);
-		BLentryPanel.addTab("Form Entry", formEntryPanel);
-		
 		fieldHelpPanel = new FieldHelpPanel();
 		imageNavigatorPanel = new ImageNavigatorPanel();
 		
+		BLentryPanel = new EntryPanel();
+		BLentryPanel.setMinimumSize(new Dimension(300,100));
+		BLentryPanel.setPreferredSize(new Dimension(400,200));
+		BLentryPanel.addTab("Table Entry", tableEntryPanel);
+		BLentryPanel.addTab("Form Entry", formEntryPanel);
+		
 		BRentryPanel = new EntryPanel();
+		BRentryPanel.setMinimumSize(new Dimension(200,100));
+		BRentryPanel.setPreferredSize(new Dimension(400,200));
 		BRentryPanel.addTab("Field Help", fieldHelpPanel);
 		BRentryPanel.addTab("Image Navigator", imageNavigatorPanel);
 		
 		horizontalSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, BLentryPanel, BRentryPanel);
+		horizontalSplit.setPreferredSize(new Dimension(100,100));
 		
 		verticalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, imagePanel, horizontalSplit);
 		
@@ -139,11 +160,17 @@ public class IndexerFrame extends JFrame{
 	};
 	
 	private void logout() {
-		//TODO implement
+		
+		//save state
+		
+		//return to login dialog
+		
+		this.setVisible(false);
+		loginDialog = new LoginDialog(batchState, this);
 	}
 	
 	private void downloadBatch() {
-		//TODO implement
+		downloadBatchDialog = new DownloadBatchDialog(batchState);
 	}
 	
 	public static void main(final String[] args) {
@@ -160,10 +187,62 @@ public class IndexerFrame extends JFrame{
 				}
 				
 				//frame.pack();
-				frame.setSize(500,500);
+				frame.setSize(800,800);
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
 			}
 		});
+	}
+
+	/**
+	 * @return
+	 */
+	public BatchState getBatchState() {
+		return batchState;
+	}
+
+	/* (non-Javadoc)
+	 * @see client.gui.batchstate.BatchStateListener#valueChanged(client.gui.batchstate.Cell, java.lang.String)
+	 */
+	@Override
+	public void valueChanged(Cell cell, String newValue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see client.gui.batchstate.BatchStateListener#selectedCellChanged(client.gui.batchstate.Cell)
+	 */
+	@Override
+	public void selectedCellChanged(Cell newSelectedCell) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see client.gui.batchstate.BatchStateListener#invertImageChanged()
+	 */
+	@Override
+	public void invertImageChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see client.gui.batchstate.BatchStateListener#highlightsVisibleChanged()
+	 */
+	@Override
+	public void highlightsVisibleChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see client.gui.batchstate.BatchStateListener#zoomChanged()
+	 */
+	@Override
+	public void zoomChanged() {
+		// TODO Auto-generated method stub
+		
 	}
 }

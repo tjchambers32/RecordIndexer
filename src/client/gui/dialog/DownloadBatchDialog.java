@@ -4,14 +4,33 @@
 package client.gui.dialog;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import shared.communication.DownloadBatch_Params;
+import shared.communication.DownloadBatch_Result;
+import shared.model.Project;
+import shared.model.User;
+import client.ClientException;
+import client.gui.batchstate.BatchState;
+import client.search.SearchGUI;
 
 /**
  * @author tchambs
@@ -20,15 +39,25 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class DownloadBatchDialog extends JDialog{
 
-	String hostname;
-	int port;
+	BatchState batchState;
 	
-	public DownloadBatchDialog(String hostname, int port) {
+	Project selectedProject;
+	int projectID;
+	
+	JButton viewSampleButton;
+	JButton cancelButton;
+	JButton downloadButton;
+	JComboBox<String> projectsComboBox;
+	
+	String[] projectList = {"1890 Census", "1900 Census", "Draft Records"};
+	
+	
+	public DownloadBatchDialog(BatchState batchState) {
 		super();
 		
-		this.hostname = hostname;
-		this.port = port;
-		
+		this.batchState = batchState;
+
+		this.setLocationRelativeTo(null);
 		this.setModal(true);
 		this.setTitle("Download Batch");
 		this.setResizable(false);
@@ -39,12 +68,15 @@ public class DownloadBatchDialog extends JDialog{
 	private void createComponents() {
 		
 		JLabel projectLabel = new JLabel("Project:");
-		JButton viewSampleButton = new JButton("View Sample");
-		JButton cancelButton = new JButton("Cancel");
-		JButton downloadButton = new JButton("Download");
+		viewSampleButton = new JButton("View Sample");
+		viewSampleButton.addActionListener(actionListener);
+		cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(actionListener);
+		downloadButton = new JButton("Download");
+		downloadButton.addActionListener(actionListener);
 		
-		String[] projectList = {"1890 Census", "1900 Census", "Draft Records"};
-		JComboBox projectsComboBox = new JComboBox(projectList);
+		//TODO: GET ACTUAL PROJECTS LIST
+		projectsComboBox = new JComboBox<String>(projectList);
 		
 		JPanel selectionPanel = new JPanel();
 		selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.X_AXIS));
@@ -80,4 +112,31 @@ public class DownloadBatchDialog extends JDialog{
 		this.setSize(330, 100);
 		this.setVisible(true);
 	}
+	
+	private ActionListener actionListener = new ActionListener() {
+
+		public void actionPerformed(ActionEvent e) {
+
+			if (e.getSource() == viewSampleButton) {
+				
+			} else if (e.getSource() == cancelButton) {
+				
+			} else if (e.getSource() == downloadButton) {
+				projectID = projectsComboBox.getSelectedIndex() + 1;
+				User user = batchState.getUser();
+				DownloadBatch_Params params = new DownloadBatch_Params(user, projectID);
+				
+				try {
+					DownloadBatch_Result result = batchState.getComm().downloadBatch(params);
+				} catch (ClientException e1) {
+					e1.printStackTrace();
+				}
+				
+			}
+			
+			System.out.println(e.getSource() + "\n");
+			
+			System.out.println(e.toString() + "\n");
+		}
+	};
 }

@@ -2,12 +2,16 @@ package client.gui.panel;
 
 import javax.swing.JPanel;
 
+import client.gui.ImageComponent;
 import client.gui.batchstate.BatchStateListener;
 import client.gui.batchstate.Cell;
 
 @SuppressWarnings("serial")
 public class ImagePanel extends JPanel implements BatchStateListener{
 
+	ImageComponent downloadedImage;
+	String imageURL;
+	
 	public ImagePanel() {
 		super();
 		
@@ -16,6 +20,7 @@ public class ImagePanel extends JPanel implements BatchStateListener{
 
 	private void createComponents() {
 		
+//		downloadedImage = new ImageComponent(imageURL); 
 	}
 
 	/* (non-Javadoc)
@@ -61,5 +66,13 @@ public class ImagePanel extends JPanel implements BatchStateListener{
 	public void zoomChanged() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
 	}
 }

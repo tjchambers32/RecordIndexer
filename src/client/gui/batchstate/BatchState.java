@@ -6,6 +6,7 @@ package client.gui.batchstate;
 import java.util.ArrayList;
 import java.util.List;
 
+import shared.model.User;
 import client.communication.ClientCommunicator;
 
 /**
@@ -20,6 +21,7 @@ public class BatchState implements BatchStateListener{
 	private ClientCommunicator comm;
 	private String hostname;
 	private int port;
+	private User user;
 
 	//persistent user state variables
 	private String[][] values;
@@ -35,7 +37,8 @@ public class BatchState implements BatchStateListener{
 	private int horizontalDivider;
 	private int verticalDivider;
 	
-	//
+	private String imageURL;
+	
 	
 	public BatchState(String hostname, int port) {
 		
@@ -114,4 +117,38 @@ public class BatchState implements BatchStateListener{
 		// TODO Auto-generated method stub
 		
 	}
+
+	public ClientCommunicator getComm() {
+		return comm;
+	}
+
+	public void setComm(ClientCommunicator comm) {
+		this.comm = comm;
+	}
+
+	public String getHostname() {
+		return hostname;
+	}
+
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+	
 }
