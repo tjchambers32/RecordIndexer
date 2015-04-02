@@ -66,20 +66,24 @@ public class LoginDialog extends JDialog {
 
 		JPanel userPanel = new JPanel();
 		userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.X_AXIS));
+		userPanel.add(Box.createRigidArea(new Dimension(5,0)));
 		userPanel.add(usernameLabel);
 		userPanel.add(Box.createRigidArea(new Dimension(10, 0)));
 		userPanel.add(userField);
-
+		userPanel.add(Box.createRigidArea(new Dimension(5,0)));
+		
 		passField = new JTextField(20);
 		passField.setPreferredSize(new Dimension(150, 20));
 
 		JPanel passPanel = new JPanel();
 		passPanel.setLayout(new BoxLayout(passPanel, BoxLayout.X_AXIS));
+		
+		passPanel.add(Box.createRigidArea(new Dimension(5,0)));
 		passPanel.add(passwordLabel);
 		passPanel.add(Box.createRigidArea(new Dimension(10, 0)));
 		passPanel.add(passField);
-
-		// TODO add button functionality
+		passPanel.add(Box.createRigidArea(new Dimension(5,0)));
+		
 		loginButton = new JButton("Login");
 		loginButton.addActionListener(loginListener);
 
@@ -90,7 +94,7 @@ public class LoginDialog extends JDialog {
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		buttonPanel.add(Box.createRigidArea(new Dimension(45, 0)));
 		buttonPanel.add(loginButton);
-		buttonPanel.add(Box.createRigidArea(new Dimension(3, 0)));
+		buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 		buttonPanel.add(exitButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(50, 0)));
 
@@ -98,15 +102,17 @@ public class LoginDialog extends JDialog {
 				BoxLayout.Y_AXIS);
 		this.setLayout(layout);
 
+		this.add(Box.createRigidArea(new Dimension(0, 5)));
 		this.add(userPanel);
-		this.add(Box.createRigidArea(new Dimension(0, 25)));
+		this.add(Box.createRigidArea(new Dimension(0, 10)));
 		this.add(passPanel);
-		this.add(Box.createRigidArea(new Dimension(0, 25)));
+		this.add(Box.createRigidArea(new Dimension(0, 10)));
 		this.add(buttonPanel);
+		this.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		this.addWindowListener(windowAdapter);
 
-		this.setSize(400, 150);
+		this.setSize(375, 125);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
