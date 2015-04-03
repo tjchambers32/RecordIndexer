@@ -25,6 +25,7 @@ public class DataImporter {
 
 		if (args.length != 1) {
 			System.out.println("USAGE: DataImporter [filepath]");
+			return;
 		}
 
 		di.doImport(args[0]);

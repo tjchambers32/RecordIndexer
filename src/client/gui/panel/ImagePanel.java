@@ -28,8 +28,7 @@ public class ImagePanel extends JPanel implements BatchStateListener{
 	}
 
 	private void createComponents() {
-		
-//		downloadedImage = new ImageComponent(imageURL); 
+			
 	}
 
 	public String getImageURL() {
@@ -49,6 +48,9 @@ public class ImagePanel extends JPanel implements BatchStateListener{
 			int yCoord = batchState.getFirstYCoord() + batchState.getRecordHeight() * batchState.getSelectedCell().getRecord();
 			highlightedCell = new Rectangle(xCoord, yCoord, width, height);
 			
+			if (batchState.getHasDownloadedBatch())
+				downloadedImage = new ImageComponent(batchState.getImageURL());
+		
 			//TODO finish imagepanel stateChanged stuff
 			//check for zooming
 			//check for inverted

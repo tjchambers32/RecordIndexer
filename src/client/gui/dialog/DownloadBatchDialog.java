@@ -120,7 +120,7 @@ public class DownloadBatchDialog extends JDialog{
 			if (e.getSource() == viewSampleButton) {
 				
 			} else if (e.getSource() == cancelButton) {
-				
+				DownloadBatchDialog.this.dispose();
 			} else if (e.getSource() == downloadButton) {
 				projectID = projectsComboBox.getSelectedIndex() + 1;
 				User user = batchState.getUser();
@@ -136,13 +136,9 @@ public class DownloadBatchDialog extends JDialog{
 					return; //TODO implement joptionpanel that explains no batch available
 			
 				batchState.setDownloadedBatch(result);
-				
+				DownloadBatchDialog.this.dispose();
 				
 			}
-			
-			System.out.println(e.getSource() + "\n");
-			
-			System.out.println(e.toString() + "\n");
 		}
 	};
 }
