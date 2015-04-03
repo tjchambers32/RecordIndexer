@@ -125,12 +125,17 @@ public class DownloadBatchDialog extends JDialog{
 				projectID = projectsComboBox.getSelectedIndex() + 1;
 				User user = batchState.getUser();
 				DownloadBatch_Params params = new DownloadBatch_Params(user, projectID);
-				
+				DownloadBatch_Result result = null;
 				try {
-					DownloadBatch_Result result = batchState.getComm().downloadBatch(params);
+					result = batchState.getComm().downloadBatch(params);
 				} catch (ClientException e1) {
 					e1.printStackTrace();
 				}
+				
+				if (result == null)
+					return; //TODO implement joptionpanel that explains no batches available
+			
+				batchState.setImageURL(result.getImage().getFilepath());
 				
 			}
 			

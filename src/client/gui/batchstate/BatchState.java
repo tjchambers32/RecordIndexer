@@ -37,8 +37,7 @@ public class BatchState implements BatchStateListener{
 	private int horizontalDivider;
 	private int verticalDivider;
 	
-	private String imageURL;
-	
+	private String imageURL; //relative filepath to an image
 	
 	public BatchState(String hostname, int port) {
 		
@@ -148,6 +147,14 @@ public class BatchState implements BatchStateListener{
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
 	}
 	
 	
