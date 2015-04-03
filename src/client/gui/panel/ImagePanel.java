@@ -23,6 +23,7 @@ public class ImagePanel extends JPanel implements BatchStateListener{
 		super();
 		
 		this.batchState = batchState;
+		batchState.addListener(this);
 		
 		createComponents();
 	}
@@ -41,6 +42,8 @@ public class ImagePanel extends JPanel implements BatchStateListener{
 
 	@Override
 	public void stateChanged() {
+		
+		System.out.println("Image Panel recognizes state changed");
 		if (batchState.getHasDownloadedBatch()) {
 			int width = batchState.getFields().get(batchState.getSelectedCell().getField()).getWidth();
 			int height = batchState.getRecordHeight();
