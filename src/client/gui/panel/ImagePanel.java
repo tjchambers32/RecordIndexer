@@ -1,8 +1,12 @@
 package client.gui.panel;
 
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
+
 import javax.swing.JPanel;
 
 import client.gui.ImageComponent;
+import client.gui.batchstate.BatchState;
 import client.gui.batchstate.BatchStateListener;
 import client.gui.batchstate.Cell;
 
@@ -11,9 +15,14 @@ public class ImagePanel extends JPanel implements BatchStateListener{
 
 	ImageComponent downloadedImage;
 	String imageURL;
+	Rectangle2D highlightedCell;
 	
-	public ImagePanel() {
+	BatchState batchState;
+	
+	public ImagePanel(BatchState batchState) {
 		super();
+		
+		this.batchState = batchState;
 		
 		createComponents();
 	}
@@ -23,56 +32,28 @@ public class ImagePanel extends JPanel implements BatchStateListener{
 //		downloadedImage = new ImageComponent(imageURL); 
 	}
 
-	/* (non-Javadoc)
-	 * @see client.gui.batchstate.BatchStateListener#valueChanged(client.gui.batchstate.Cell, java.lang.String)
-	 */
-	@Override
-	public void valueChanged(Cell cell, String newValue) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see client.gui.batchstate.BatchStateListener#selectedCellChanged(client.gui.batchstate.Cell)
-	 */
-	@Override
-	public void selectedCellChanged(Cell newSelectedCell) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see client.gui.batchstate.BatchStateListener#invertImageChanged()
-	 */
-	@Override
-	public void invertImageChanged() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see client.gui.batchstate.BatchStateListener#highlightsVisibleChanged()
-	 */
-	@Override
-	public void highlightsVisibleChanged() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see client.gui.batchstate.BatchStateListener#zoomChanged()
-	 */
-	@Override
-	public void zoomChanged() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public String getImageURL() {
 		return imageURL;
 	}
 
 	public void setImageURL(String imageURL) {
 		this.imageURL = imageURL;
+	}
+
+	@Override
+	public void stateChanged() {
+		if (batchState.getHasDownloadedBatch()) {
+			int width = batchState.getFields().get(batchState.getSelectedCell().getField()).getWidth();
+			int height = batchState.getRecordHeight();
+			int xCoord = batchState.getFields().get(batchState.getSelectedCell().getField()).getxCoord();
+			int yCoord = batchState.getFirstYCoord() + batchState.getRecordHeight() * batchState.getSelectedCell().getRecord();
+			highlightedCell = new Rectangle(xCoord, yCoord, width, height);
+			
+			//TODO finish imagepanel stateChanged stuff
+			//check for zooming
+			//check for inverted
+			
+		}
+		
 	}
 }

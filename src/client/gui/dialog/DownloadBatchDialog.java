@@ -133,9 +133,10 @@ public class DownloadBatchDialog extends JDialog{
 				}
 				
 				if (result == null)
-					return; //TODO implement joptionpanel that explains no batches available
+					return; //TODO implement joptionpanel that explains no batch available
 			
-				batchState.setImageURL(result.getImage().getFilepath());
+				batchState.setDownloadedBatch(result);
+				
 				
 			}
 			

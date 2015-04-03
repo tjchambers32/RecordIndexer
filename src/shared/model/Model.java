@@ -40,8 +40,6 @@ public class Model {
 	}
 	
 	public GetProjects_Result getProjects(GetProjects_Params params) throws ModelException, DatabaseException {
-
-		User user = params.getParams();
 		
 		List<Project> returnProjects = null;
 		try {

@@ -3,9 +3,12 @@
  */
 package client.gui.batchstate;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import shared.communication.DownloadBatch_Result;
+import shared.model.Field;
 import shared.model.User;
 import client.communication.ClientCommunicator;
 
@@ -13,7 +16,6 @@ import client.communication.ClientCommunicator;
  * @author tchambs
  *
  */
-
 public class BatchState implements BatchStateListener{
 
 	//utility variables
@@ -36,8 +38,17 @@ public class BatchState implements BatchStateListener{
 	private int windowSizeY;
 	private int horizontalDivider;
 	private int verticalDivider;
+	private int numberOfRows;
+	private int numberOfColumns;
 	
 	private String imageURL; //relative filepath to an image
+	private int projectID;
+	ArrayList<Field> fields;
+	private boolean hasDownloadedBatch;
+	private int firstYCoord;
+	private int recordHeight;
+	
+	
 	
 	public BatchState(String hostname, int port) {
 		
@@ -57,7 +68,7 @@ public class BatchState implements BatchStateListener{
 		values[cell.record][cell.field] = value;
 		
 		for (BatchStateListener l : listeners) {
-			l.valueChanged(cell, value);
+			l.stateChanged();
 		}
 	}
 	
@@ -70,7 +81,7 @@ public class BatchState implements BatchStateListener{
 		selectedCell = selCell;
 		
 		for (BatchStateListener l : listeners) {
-			l.selectedCellChanged(selCell);
+			l.stateChanged();
 		}
 	}
 	
@@ -79,41 +90,25 @@ public class BatchState implements BatchStateListener{
 	}
 
 	@Override
-	public void valueChanged(Cell cell, String newValue) {
+	public void stateChanged() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public void selectedCellChanged(Cell newSelectedCell) {
-		// TODO Auto-generated method stub
+	
+	public void setDownloadedBatch(DownloadBatch_Result result) {
+		this.setImageURL("http://" + hostname + ":" + port + File.separator + result.getImage().getFilepath());
+		this.setNumberOfRows(result.getProject().getRecordsPerImage());
+		this.setFields(result.getFields());
+		this.setHasDownloadedBatch(true);
+		this.firstYCoord = result.getProject().getFirstYCoord();
+		this.recordHeight = result.getProject().getRecordHeight();
 		
-	}
-
-	/* (non-Javadoc)
-	 * @see client.gui.batchstate.BatchStateListener#invertImageChanged()
-	 */
-	@Override
-	public void invertImageChanged() {
-		// TODO Auto-generated method stub
+		this.selectedCell = new Cell(1,1);
 		
-	}
-
-	/* (non-Javadoc)
-	 * @see client.gui.batchstate.BatchStateListener#highlightsVisibleChanged()
-	 */
-	@Override
-	public void highlightsVisibleChanged() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see client.gui.batchstate.BatchStateListener#zoomChanged()
-	 */
-	@Override
-	public void zoomChanged() {
-		// TODO Auto-generated method stub
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 		
 	}
 
@@ -156,6 +151,93 @@ public class BatchState implements BatchStateListener{
 	public void setImageURL(String imageURL) {
 		this.imageURL = imageURL;
 	}
+
+	public int getProjectID() {
+		return projectID;
+	}
+
+	public void setProjectID(int projectID) {
+		this.projectID = projectID;
+	}
 	
+	public ArrayList<Field> getFields() {
+		return fields;
+	}
+
+	public void setFields(ArrayList<Field> fields) {
+		this.fields = fields;
+	}
+
+	public void setNumberOfRows(int recordsPerImage) {
+		this.numberOfColumns = recordsPerImage;
+	}
+
+	public boolean getHasDownloadedBatch() {
+		return hasDownloadedBatch;
+	}
+
+	public void setHasDownloadedBatch(boolean hasDownloadedBatch) {
+		this.hasDownloadedBatch = hasDownloadedBatch;
+	}
 	
+	public List<BatchStateListener> getListeners() {
+		return listeners;
+	}
+
+	public void setListeners(List<BatchStateListener> listeners) {
+		this.listeners = listeners;
+	}
+
+	public boolean isHighlightsVisible() {
+		return highlightsVisible;
+	}
+
+	public void setHighlightsVisible(boolean highlightsVisible) {
+		this.highlightsVisible = highlightsVisible;
+	}
+
+	public boolean isImageInverted() {
+		return imageInverted;
+	}
+
+	public void setImageInverted(boolean imageInverted) {
+		this.imageInverted = imageInverted;
+	}
+
+	public int getHorizontalDivider() {
+		return horizontalDivider;
+	}
+
+	public void setHorizontalDivider(int horizontalDivider) {
+		this.horizontalDivider = horizontalDivider;
+	}
+
+	public int getNumberOfColumns() {
+		return numberOfColumns;
+	}
+
+	public void setNumberOfColumns(int numberOfColumns) {
+		this.numberOfColumns = numberOfColumns;
+	}
+
+	public int getFirstYCoord() {
+		return firstYCoord;
+	}
+
+	public void setFirstYCoord(int firstYCoord) {
+		this.firstYCoord = firstYCoord;
+	}
+
+	public int getRecordHeight() {
+		return recordHeight;
+	}
+
+	public void setRecordHeight(int recordHeight) {
+		this.recordHeight = recordHeight;
+	}
+
+	public int getNumberOfRows() {
+		return numberOfRows;
+	}
+
 }
