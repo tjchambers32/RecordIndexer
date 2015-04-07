@@ -101,7 +101,7 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 		
 		buttonPanel = new ButtonPanel(this);
 		
-		imagePanel = new ImagePanel(batchState);
+		imagePanel = new ImagePanel(batchState, null);
 		imagePanel.setPreferredSize(new Dimension(800, 500));
 		imagePanel.setMinimumSize(new Dimension(300, 250));
 		
@@ -163,9 +163,10 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 		
 		//save state
 		
-		//return to login dialog
-		
+		//hide main indexer window
 		this.setVisible(false);
+		
+		//show login dialog
 		loginDialog = new LoginDialog(batchState, this);
 	}
 	
@@ -203,7 +204,11 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 
 	@Override
 	public void stateChanged() {
-		// TODO Auto-generated method stub
+		
+		if (this.batchState.getHasDownloadedBatch() == true) {
+			this.downloadBatchMenuItem.setEnabled(false);
+		}
+			
 		
 	}
 }

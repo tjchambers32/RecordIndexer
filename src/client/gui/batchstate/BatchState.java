@@ -97,7 +97,7 @@ public class BatchState implements BatchStateListener{
 
 	
 	public void setDownloadedBatch(DownloadBatch_Result result) {
-		this.setImageURL("http://" + hostname + ":" + port + File.separator + result.getImage().getFilepath());
+		this.setImageURL("http://" + hostname + ":" + port + "/" + result.getImage().getFilepath());
 		this.setNumberOfRows(result.getProject().getRecordsPerImage());
 		this.setFields(result.getFields());
 		this.setHasDownloadedBatch(true);
@@ -109,7 +109,6 @@ public class BatchState implements BatchStateListener{
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
-		
 	}
 
 	public ClientCommunicator getComm() {
