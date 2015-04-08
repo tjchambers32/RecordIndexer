@@ -105,7 +105,7 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 		imagePanel.setPreferredSize(new Dimension(800, 500));
 		imagePanel.setMinimumSize(new Dimension(300, 250));
 		
-		tableEntryPanel = new TableEntryPanel();
+		tableEntryPanel = new TableEntryPanel(batchState);
 		formEntryPanel = new FormEntryPanel();
 		fieldHelpPanel = new FieldHelpPanel();
 		imageNavigatorPanel = new ImageNavigatorPanel();

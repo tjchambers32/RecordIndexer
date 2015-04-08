@@ -3,8 +3,14 @@
  */
 package client.gui.batchstate;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import shared.communication.DownloadBatch_Result;
 import shared.model.Field;
@@ -101,7 +107,15 @@ public class BatchState implements BatchStateListener{
 	}
 
 	public void save() {
-		//TODO IMPLEMENT save in batchState
+		
+		XStream xstream = new XStream(new DomDriver());
+		
+		File savedBatchState = new File("savedBatches/" + user.getUsername() + ".xml");
+		try {
+			xstream.toXML(this, new FileWriter(savedBatchState));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void submitBatch() {
@@ -345,6 +359,11 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageHeight(int imageHeight) {
 		this.imageHeight = imageHeight;
+	}
+
+	public boolean checkMisspelled(Cell cell) {
+		
+		return false;
 	}
 
 }

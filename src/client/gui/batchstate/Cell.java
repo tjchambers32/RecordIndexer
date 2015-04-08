@@ -12,7 +12,7 @@ public class Cell {
 	int record;
 	int field;
 	
-	Cell(int record, int field) {
+	public Cell(int record, int field) {
 		this.record = record;
 		this.field = field;
 	}
