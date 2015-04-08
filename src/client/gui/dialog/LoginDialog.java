@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -21,6 +22,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import shared.communication.*;
 import shared.model.*;
@@ -180,6 +184,19 @@ public class LoginDialog extends JDialog {
 				"Welcome", JOptionPane.INFORMATION_MESSAGE);
 
 		batchState.setUser(result.getResult());
+		
+		//read in saved batchstate if possible
+		XStream xstream = new XStream(new DomDriver());
+		
+		File savedBatch = new File("savedBatches/" + batchState.getUser().getUsername() + ".xml");
+		
+		if (savedBatch.exists()) {
+			BatchState savedState = (BatchState) xstream.fromXML(savedBatch);
+			batchState = savedState; //double check this actually works
+			batchState.setUser(result.getResult());
+		} else {
+			
+		}
 		
 		this.setVisible(false);
 		frame.setVisible(true);

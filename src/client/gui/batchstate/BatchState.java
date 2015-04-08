@@ -68,6 +68,9 @@ public class BatchState implements BatchStateListener{
 		
 		comm = new ClientCommunicator(hostname, port);
 		listeners = new ArrayList<BatchStateListener>();
+		
+		imageX = 0;
+		imageY = 0;
 	}
 	
 	public void addListener(BatchStateListener l) {
@@ -102,8 +105,7 @@ public class BatchState implements BatchStateListener{
 
 	@Override
 	public void stateChanged() {
-		// TODO Auto-generated method stub
-		
+		//do nothing
 	}
 
 	public void save() {
@@ -167,6 +169,10 @@ public class BatchState implements BatchStateListener{
 
 	public void setUser(User user) {
 		this.user = user;
+		
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 	}
 
 	public String getImageURL() {
@@ -175,6 +181,10 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageURL(String imageURL) {
 		this.imageURL = imageURL;
+		
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 	}
 
 	public int getProjectID() {
@@ -183,6 +193,7 @@ public class BatchState implements BatchStateListener{
 
 	public void setProjectID(int projectID) {
 		this.projectID = projectID;
+		
 	}
 	
 	public ArrayList<Field> getFields() {
@@ -194,7 +205,7 @@ public class BatchState implements BatchStateListener{
 	}
 
 	public void setNumberOfRows(int recordsPerImage) {
-		this.numberOfColumns = recordsPerImage;
+		this.numberOfRows = recordsPerImage;
 	}
 
 	public boolean getHasDownloadedBatch() {
@@ -219,6 +230,10 @@ public class BatchState implements BatchStateListener{
 
 	public void setHighlightsVisible(boolean highlightsVisible) {
 		this.highlightsVisible = highlightsVisible;
+		
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 	}
 
 	public boolean isImageInverted() {
@@ -227,6 +242,10 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageInverted(boolean imageInverted) {
 		this.imageInverted = imageInverted;
+		
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 	}
 
 	public int getHorizontalDivider() {
@@ -271,6 +290,10 @@ public class BatchState implements BatchStateListener{
 
 	public void setZoomLevel(double zoomLevel) {
 		this.zoomLevel = zoomLevel;
+		
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 	}
 
 	public String[][] getValues() {
@@ -279,6 +302,10 @@ public class BatchState implements BatchStateListener{
 
 	public void setValues(String[][] values) {
 		this.values = values;
+		
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 	}
 
 	public int getScrollPosition() {
@@ -335,6 +362,10 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageX(int imageX) {
 		this.imageX = imageX;
+		
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 	}
 
 	public int getImageY() {
@@ -343,6 +374,10 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageY(int imageY) {
 		this.imageY = imageY;
+		
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 	}
 
 	public int getImageWidth() {
@@ -351,6 +386,10 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageWidth(int imageWidth) {
 		this.imageWidth = imageWidth;
+		
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 	}
 
 	public int getImageHeight() {
@@ -359,6 +398,10 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageHeight(int imageHeight) {
 		this.imageHeight = imageHeight;
+		
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 	}
 
 	public boolean checkMisspelled(Cell cell) {

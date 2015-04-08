@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -32,6 +33,7 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 	private Image downloadedImage;
 	String imageURL;
 	Rectangle2D highlightedCell;
+	private boolean imageInverted;
 	
 	private static Image NULL_IMAGE = new BufferedImage(10, 10,
 			BufferedImage.TYPE_INT_ARGB);
@@ -59,7 +61,8 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 		w_originX = batchState.getImageX();
 		w_originY = batchState.getImageY();
 		scale = .5;
-
+		imageInverted = false;
+		
 		initDrag();
 
 		this.setPreferredSize(new Dimension(700, 700));
@@ -326,6 +329,7 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 			if (downloadedImage == null) {
 				w_originX = batchState.getImageX();
 				w_originY = batchState.getImageY();
+				imageInverted = false;
 				String url = batchState.getImageURL();
 				loadImage(url);
 			} else {
@@ -334,8 +338,18 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 				}
 			}
 			
-			repaint();
+			if (batchState.isImageInverted() != imageInverted) {
+				imageInverted = !imageInverted; //toggle 
+				RescaleOp op = new RescaleOp(-1.0f, 255f, null);
+				BufferedImage negative = op.filter((BufferedImage) downloadedImage, null);
+				downloadedImage = negative;
+			}
 			
+		} else {
+			downloadedImage = null;
+			highlightedCell = null;
 		}
+		
+		repaint();
 	}
 }

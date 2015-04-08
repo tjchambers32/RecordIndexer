@@ -27,9 +27,10 @@ public class SampleImageDialog extends JDialog{
 		
 		this.setModal(true);
 		this.setLocationRelativeTo(null);
+		this.setSize(new Dimension(600, 450));
 		this.imageURL = imageURL;
 		this.setTitle(projectTitle);
-		
+		this.setOpacity(1.0f);
 		
 		createComponents();
 	}
@@ -57,7 +58,6 @@ public class SampleImageDialog extends JDialog{
         
         this.add(rootPanel);
         this.setResizable(false);
-        this.pack();
 	}
 	
 	private ActionListener actionListener = new ActionListener() {

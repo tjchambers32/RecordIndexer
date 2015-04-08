@@ -15,8 +15,13 @@ public class SuggestionsDialog extends JDialog{
 		this.setTitle("Suggestions");
 		this.setModal(true);
 		this.setResizable(false);
-		
 		this.batchState = batchState;
+		
+		createComponents();
+	}
+	
+	private void createComponents() {
+		
 	}
 
 }
