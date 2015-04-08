@@ -28,7 +28,9 @@ public class BatchState implements BatchStateListener{
 	//persistent user state variables
 	private String[][] values;
 	private Cell selectedCell;
+	
 	private double zoomLevel;
+	
 	private int scrollPosition;
 	private boolean highlightsVisible;
 	private boolean imageInverted;
@@ -237,6 +239,14 @@ public class BatchState implements BatchStateListener{
 
 	public int getNumberOfRows() {
 		return numberOfRows;
+	}
+
+	public double getZoomLevel() {
+		return zoomLevel;
+	}
+
+	public void setZoomLevel(double zoomLevel) {
+		this.zoomLevel = zoomLevel;
 	}
 
 }

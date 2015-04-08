@@ -1,5 +1,6 @@
 package client.gui.panel;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -28,7 +29,7 @@ import client.gui.batchstate.BatchStateListener;
 @SuppressWarnings("serial")
 public class ImagePanel extends JPanel implements BatchStateListener {
 
-	private BufferedImage downloadedImage;
+	private Image downloadedImage;
 	String imageURL;
 	Rectangle2D highlightedCell;
 	
@@ -50,25 +51,25 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 	public ImagePanel(BatchState batchState, String URL) {
 		super();
 
+		
+		
 		this.batchState = batchState;
 		batchState.addListener(this);
 
 		w_originX = 0;
 		w_originY = 0;
-		scale = 1.0;
+		scale = .5;
 
 		initDrag();
 
-		this.setBackground(new Color(178, 223, 210));
 		this.setPreferredSize(new Dimension(700, 700));
 		this.setMinimumSize(new Dimension(100, 100));
 		this.setMaximumSize(new Dimension(1000, 1000));
 
 		this.addMouseListener(mouseAdapter);
 		this.addMouseMotionListener(mouseAdapter);
+		this.addMouseWheelListener(mouseAdapter);
 		
-		
-
 	}
 
 	private void initDrag() {
@@ -79,27 +80,39 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 		w_dragStartOriginY = 0;
 	}
 
-	private Image loadImage(String imageFile) {
+	private void loadImage(String imageFile) {
+		
 		try {
-			return ImageIO.read(new File(imageFile));
+			downloadedImage = ImageIO.read(new URL(imageFile));
 		} catch (IOException | NullPointerException e) {
-			return NULL_IMAGE;
+			downloadedImage = NULL_IMAGE;
+			System.out.println("ERROR DOWNLOADING IMAGE");
 		}
+		
 	}
 
+	//Override Paint Component
+	@Override
+	public void paintComponent(Graphics g) {
+		
+		if (downloadedImage != null) {
+			Graphics2D graphics = (Graphics2D)g.create();
+			graphics.setBackground(Color.DARK_GRAY);
+			graphics.translate(getWidth()/2, getHeight()/2);
+			graphics.scale(scale, scale);
+			graphics.translate(-w_originX, -w_originY);
+			graphics.drawImage(downloadedImage, 0, 0, null);
+			if (batchState.isHighlightsVisible()) {
+				graphics.setColor(Color.blue);
+				AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f);
+				graphics.setComposite(ac);
+				graphics.fill(highlightedCell);
+			}
+		}
+	}
 	public void setScale(double newScale) {
 		scale = newScale;
 		this.repaint();
-	}
-
-	@Override
-	protected void paintComponent(Graphics g) {
-
-		super.paintComponent(g);
-
-		Graphics2D g2 = (Graphics2D) g;
-		drawBackground(g2);
-		
 	}
 
 	private void drawBackground(Graphics2D g2) {
@@ -161,6 +174,15 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
+			
+			if (e.getWheelRotation() < 0) {
+				if (batchState.getZoomLevel() > 0.3)
+					batchState.setZoomLevel(batchState.getZoomLevel() - 0.05);
+			} else {
+				if (batchState.getZoomLevel() < 3.0)
+					batchState.setZoomLevel(batchState.getZoomLevel() + 0.05);
+			}
+			
 			return;
 		}
 	};
@@ -297,10 +319,20 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 
 			
 			if (downloadedImage == null) {
-				loadImage(batchState.getImageURL());
+				String url = batchState.getImageURL();
+				loadImage(url);
+			}
+			
+			if (downloadedImage != null) {
+				
+				if (scale != batchState.getZoomLevel()) {
+					
+					scale = batchState.getZoomLevel();
+				}
 			}
 			
 			repaint();
+			
 			// TODO finish imagepanel stateChanged stuff
 			// check for zooming
 			// check for inverted

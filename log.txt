@@ -1,10 +1,10 @@
-Apr 06, 2015 10:25:00 PM server.Server run
+Apr 07, 2015 6:52:31 PM server.Server run
 INFO: Initializing Database
-Apr 06, 2015 10:25:00 PM server.Server run
+Apr 07, 2015 6:52:31 PM server.Server run
 INFO: Initializing HTTP Server
-Apr 06, 2015 10:25:00 PM server.Server run
+Apr 07, 2015 6:52:31 PM server.Server run
 INFO: Starting HTTP Server
-Apr 06, 2015 11:02:51 PM server.DownloadBatchHandler handle
+Apr 07, 2015 6:57:34 PM server.DownloadBatchHandler handle
 SEVERE: User can only have one batch checked out at a time
 server.facade.ServerFacadeException: User can only have one batch checked out at a time
 	at server.facade.ServerFacade.downloadBatch(ServerFacade.java:204)
@@ -20,7 +20,23 @@ server.facade.ServerFacadeException: User can only have one batch checked out at
 	at sun.net.httpserver.ServerImpl$Dispatcher.run(Unknown Source)
 	at java.lang.Thread.run(Unknown Source)
 
-Apr 06, 2015 11:06:50 PM server.DownloadBatchHandler handle
+Apr 07, 2015 7:33:26 PM server.DownloadBatchHandler handle
+SEVERE: User can only have one batch checked out at a time
+server.facade.ServerFacadeException: User can only have one batch checked out at a time
+	at server.facade.ServerFacade.downloadBatch(ServerFacade.java:204)
+	at server.DownloadBatchHandler.handle(DownloadBatchHandler.java:40)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Unknown Source)
+	at sun.net.httpserver.AuthFilter.doFilter(Unknown Source)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Unknown Source)
+	at sun.net.httpserver.ServerImpl$Exchange$LinkHandler.handle(Unknown Source)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Unknown Source)
+	at sun.net.httpserver.ServerImpl$Exchange.run(Unknown Source)
+	at sun.net.httpserver.ServerImpl$DefaultExecutor.execute(Unknown Source)
+	at sun.net.httpserver.ServerImpl$Dispatcher.handle(Unknown Source)
+	at sun.net.httpserver.ServerImpl$Dispatcher.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Apr 07, 2015 7:33:37 PM server.DownloadBatchHandler handle
 SEVERE: User can only have one batch checked out at a time
 server.facade.ServerFacadeException: User can only have one batch checked out at a time
 	at server.facade.ServerFacade.downloadBatch(ServerFacade.java:204)
