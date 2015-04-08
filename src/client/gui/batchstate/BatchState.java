@@ -3,11 +3,15 @@
  */
 package client.gui.batchstate;
 
+import java.awt.Image;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -182,9 +186,13 @@ public class BatchState implements BatchStateListener{
 	public void setImageURL(String imageURL) {
 		this.imageURL = imageURL;
 		
-		for (BatchStateListener l : listeners) {
-			l.stateChanged();
-		}
+		try {
+			Image testImage = ImageIO.read(new URL(imageURL));
+			imageX = testImage.getWidth(null)/2;
+			imageY = testImage.getHeight(null)/2;
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
 	}
 
 	public int getProjectID() {

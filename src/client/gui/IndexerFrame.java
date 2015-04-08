@@ -76,6 +76,7 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 		loginDialog = new LoginDialog(batchState, this);
 		
 		createComponents();
+		repaint();
 	}
 	
 	private void createComponents() {
@@ -208,7 +209,8 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 		if (this.batchState.getHasDownloadedBatch() == true) {
 			this.downloadBatchMenuItem.setEnabled(false);
 		}
-			
+		
+		repaint();
 		
 	}
 }
