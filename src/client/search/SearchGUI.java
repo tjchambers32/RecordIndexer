@@ -128,7 +128,6 @@ public class SearchGUI extends JFrame {
 
 		GridBagConstraints gbc = new GridBagConstraints();
 
-		// TODO: Implement image panel
 		imagePanel = new JPanel();
 		imagePanel.setLayout(new GridBagLayout());
 		imagePanelLabel = new JLabel("No Image Selected");

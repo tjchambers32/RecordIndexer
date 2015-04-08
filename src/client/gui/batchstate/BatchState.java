@@ -3,7 +3,6 @@
  */
 package client.gui.batchstate;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +43,10 @@ public class BatchState implements BatchStateListener{
 	private int numberOfColumns;
 	
 	private String imageURL; //relative filepath to an image
+	private int imageX;
+	private int imageY;
+	private int imageWidth;
+	private int imageHeight;
 	private int projectID;
 	ArrayList<Field> fields;
 	private boolean hasDownloadedBatch;
@@ -97,6 +100,13 @@ public class BatchState implements BatchStateListener{
 		
 	}
 
+	public void save() {
+		//TODO IMPLEMENT save in batchState
+	}
+	
+	public void submitBatch() {
+		//TODO IMPLEMENT submitBatch in batchState
+	}
 	
 	public void setDownloadedBatch(DownloadBatch_Result result) {
 		this.setImageURL("http://" + hostname + ":" + port + "/" + result.getImage().getFilepath());
@@ -247,6 +257,94 @@ public class BatchState implements BatchStateListener{
 
 	public void setZoomLevel(double zoomLevel) {
 		this.zoomLevel = zoomLevel;
+	}
+
+	public String[][] getValues() {
+		return values;
+	}
+
+	public void setValues(String[][] values) {
+		this.values = values;
+	}
+
+	public int getScrollPosition() {
+		return scrollPosition;
+	}
+
+	public void setScrollPosition(int scrollPosition) {
+		this.scrollPosition = scrollPosition;
+	}
+
+	public int getWindowPositionX() {
+		return windowPositionX;
+	}
+
+	public void setWindowPositionX(int windowPositionX) {
+		this.windowPositionX = windowPositionX;
+	}
+
+	public int getWindowPositionY() {
+		return windowPositionY;
+	}
+
+	public void setWindowPositionY(int windowPositionY) {
+		this.windowPositionY = windowPositionY;
+	}
+
+	public int getWindowSizeX() {
+		return windowSizeX;
+	}
+
+	public void setWindowSizeX(int windowSizeX) {
+		this.windowSizeX = windowSizeX;
+	}
+
+	public int getWindowSizeY() {
+		return windowSizeY;
+	}
+
+	public void setWindowSizeY(int windowSizeY) {
+		this.windowSizeY = windowSizeY;
+	}
+
+	public int getVerticalDivider() {
+		return verticalDivider;
+	}
+
+	public void setVerticalDivider(int verticalDivider) {
+		this.verticalDivider = verticalDivider;
+	}
+
+	public int getImageX() {
+		return imageX;
+	}
+
+	public void setImageX(int imageX) {
+		this.imageX = imageX;
+	}
+
+	public int getImageY() {
+		return imageY;
+	}
+
+	public void setImageY(int imageY) {
+		this.imageY = imageY;
+	}
+
+	public int getImageWidth() {
+		return imageWidth;
+	}
+
+	public void setImageWidth(int imageWidth) {
+		this.imageWidth = imageWidth;
+	}
+
+	public int getImageHeight() {
+		return imageHeight;
+	}
+
+	public void setImageHeight(int imageHeight) {
+		this.imageHeight = imageHeight;
 	}
 
 }

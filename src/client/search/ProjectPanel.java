@@ -167,7 +167,6 @@ public class ProjectPanel extends JPanel {
 		public void valueChanged(ListSelectionEvent e) {
 
 			String selectedProject = projects.getSelectedValue();
-			// TODO: Implement individual project searching
 		}
 
 	};

@@ -56,8 +56,8 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 		this.batchState = batchState;
 		batchState.addListener(this);
 
-		w_originX = 0;
-		w_originY = 0;
+		w_originX = batchState.getImageX();
+		w_originY = batchState.getImageY();
 		scale = .5;
 
 		initDrag();
@@ -163,6 +163,9 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 				w_originX = w_dragStartOriginX - w_deltaX;
 				w_originY = w_dragStartOriginY - w_deltaY;
 
+				batchState.setImageX(w_originX);
+				batchState.setImageY(w_originY);
+				
 				repaint();
 			}
 		}
@@ -317,27 +320,22 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 					* batchState.getSelectedCell().getRecord();
 			highlightedCell = new Rectangle(xCoord, yCoord, width, height);
 
-			
+			// TODO finish imagepanel stateChanged stuff
+			// check for inverted
+
 			if (downloadedImage == null) {
+				w_originX = batchState.getImageX();
+				w_originY = batchState.getImageY();
 				String url = batchState.getImageURL();
 				loadImage(url);
-			}
-			
-			if (downloadedImage != null) {
-				
+			} else {
 				if (scale != batchState.getZoomLevel()) {
-					
 					scale = batchState.getZoomLevel();
 				}
 			}
 			
 			repaint();
 			
-			// TODO finish imagepanel stateChanged stuff
-			// check for zooming
-			// check for inverted
-
 		}
-
 	}
 }
