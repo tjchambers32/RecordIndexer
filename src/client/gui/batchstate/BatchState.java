@@ -64,6 +64,7 @@ public class BatchState implements BatchStateListener{
 	private int recordHeight;
 	
 	private boolean loggingIn;
+	private boolean downloadingBatch;
 	
 	public BatchState(String hostname, int port) {
 		
@@ -94,6 +95,7 @@ public class BatchState implements BatchStateListener{
 		verticalDivider = 400;
 		
 		loggingIn = false;
+		downloadingBatch = false;
 	}
 	
 	public void addListener(BatchStateListener l) {
@@ -148,6 +150,7 @@ public class BatchState implements BatchStateListener{
 	}
 	
 	public void setDownloadedBatch(DownloadBatch_Result result) {
+
 		this.setImageURL("http://" + hostname + ":" + port + "/" + result.getImage().getFilepath());
 		this.setNumberOfRows(result.getProject().getRecordsPerImage());
 		this.setFields(result.getFields());
@@ -176,9 +179,12 @@ public class BatchState implements BatchStateListener{
 		
 		this.selectedCell = new Cell(1,1);
 		
+		downloadingBatch = true;
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
+		downloadingBatch = false;
+		
 	}
 
 	public ClientCommunicator getComm() {
@@ -463,6 +469,14 @@ public class BatchState implements BatchStateListener{
 
 	public void setLoggingIn(boolean loggingIn) {
 		this.loggingIn = loggingIn;
+	}
+
+	public boolean isDownloadingBatch() {
+		return downloadingBatch;
+	}
+
+	public void setDownloadingBatch(boolean downloadingBatch) {
+		this.downloadingBatch = downloadingBatch;
 	}
 
 	/**

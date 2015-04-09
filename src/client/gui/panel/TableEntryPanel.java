@@ -40,12 +40,14 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 		this.batchState = batchState;
 		tableEntryModel = null;
 		entryTable = null;
+
 		batchState.addListener(this);
 		
 //		createComponents();
 	}
 
 	private void createComponents() {
+		
 		
 		tableEntryModel = new TableEntryModel(batchState);
 		entryTable = new JTable(tableEntryModel);
@@ -75,7 +77,7 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 	@Override
 	public void stateChanged() {
 		
-		if (entryTable == null) {
+		if (entryTable == null || batchState.isDownloadingBatch()) {
 			
 			//create table
 			createComponents();
@@ -94,11 +96,11 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 		} else if (!batchState.isLoggingIn() && entryTable != null) {
 			if (batchState.getHasDownloadedBatch()){
 			
-				entryTable.changeSelection(batchState.getSelectedCell().getRecord(), batchState.getSelectedCell().getField(), false, false);
+//				entryTable.changeSelection(batchState.getSelectedCell().getRecord(), batchState.getSelectedCell().getField(), false, false);
 			
-				if (batchState.getValue(new Cell(row, column)) != tableEntryModel.getValueAt(row, column)) {
-					tableEntryModel.fireTableDataChanged();
-				}
+//				if (batchState.getValue(new Cell(row, column)) != tableEntryModel.getValueAt(row, column)) {
+//					tableEntryModel.fireTableDataChanged();
+//				}
 			}
 		}
 	}
