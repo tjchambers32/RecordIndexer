@@ -30,7 +30,10 @@ public class TableEntryModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return batchState.getFields().get(columns).getTitle();
+		if (columnIndex == 0)
+			return rowIndex + 1;
+		
+		return batchState.getFields().get(columnIndex-1).getTitle();
 	}
 	
 	@Override

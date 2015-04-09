@@ -1,6 +1,22 @@
-Apr 08, 2015 10:58:55 PM server.Server run
+Apr 08, 2015 11:14:39 PM server.Server run
 INFO: Initializing Database
-Apr 08, 2015 10:58:55 PM server.Server run
+Apr 08, 2015 11:14:39 PM server.Server run
 INFO: Initializing HTTP Server
-Apr 08, 2015 10:58:55 PM server.Server run
+Apr 08, 2015 11:14:39 PM server.Server run
 INFO: Starting HTTP Server
+Apr 08, 2015 11:20:08 PM server.DownloadBatchHandler handle
+SEVERE: User can only have one batch checked out at a time
+server.facade.ServerFacadeException: User can only have one batch checked out at a time
+	at server.facade.ServerFacade.downloadBatch(ServerFacade.java:204)
+	at server.DownloadBatchHandler.handle(DownloadBatchHandler.java:40)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Unknown Source)
+	at sun.net.httpserver.AuthFilter.doFilter(Unknown Source)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Unknown Source)
+	at sun.net.httpserver.ServerImpl$Exchange$LinkHandler.handle(Unknown Source)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Unknown Source)
+	at sun.net.httpserver.ServerImpl$Exchange.run(Unknown Source)
+	at sun.net.httpserver.ServerImpl$DefaultExecutor.execute(Unknown Source)
+	at sun.net.httpserver.ServerImpl$Dispatcher.handle(Unknown Source)
+	at sun.net.httpserver.ServerImpl$Dispatcher.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
