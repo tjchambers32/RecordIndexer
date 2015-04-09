@@ -21,7 +21,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 
 import client.communication.*;
 import client.gui.batchstate.BatchState;
@@ -52,8 +54,8 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 	
 	ButtonPanel buttonPanel;
 	ImagePanel imagePanel;
-	EntryPanel BLentryPanel;
-	EntryPanel BRentryPanel;
+	JTabbedPane BLentryPanel;
+	JTabbedPane BRentryPanel;
 	TableEntryPanel tableEntryPanel;
 	FormEntryPanel formEntryPanel;
 	FieldHelpPanel fieldHelpPanel;
@@ -76,7 +78,6 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 		loginDialog = new LoginDialog(batchState, this);
 		
 		createComponents();
-		repaint();
 	}
 	
 	private void createComponents() {
@@ -107,17 +108,19 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 		imagePanel.setMinimumSize(new Dimension(300, 250));
 		
 		tableEntryPanel = new TableEntryPanel(batchState);
-		formEntryPanel = new FormEntryPanel();
+		formEntryPanel = new FormEntryPanel(batchState);
 		fieldHelpPanel = new FieldHelpPanel();
 		imageNavigatorPanel = new ImageNavigatorPanel();
 		
-		BLentryPanel = new EntryPanel();
+		BLentryPanel = new JTabbedPane();
 		BLentryPanel.setMinimumSize(new Dimension(300,100));
 		BLentryPanel.setPreferredSize(new Dimension(400,200));
-		BLentryPanel.addTab("Table Entry", tableEntryPanel);
+		JScrollPane tableScroll = new JScrollPane(tableEntryPanel);
+		tableScroll.getVerticalScrollBar().setUnitIncrement(10);
+		BLentryPanel.addTab("Table Entry", tableScroll);
 		BLentryPanel.addTab("Form Entry", formEntryPanel);
 		
-		BRentryPanel = new EntryPanel();
+		BRentryPanel = new JTabbedPane();
 		BRentryPanel.setMinimumSize(new Dimension(200,100));
 		BRentryPanel.setPreferredSize(new Dimension(400,200));
 		BRentryPanel.addTab("Field Help", fieldHelpPanel);
@@ -134,8 +137,10 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 		
 		rootPanel.add(buttonPanel, BorderLayout.NORTH);
 		rootPanel.add(verticalSplit, BorderLayout.CENTER);
+		this.pack();
 		
 		this.add(rootPanel);
+
 	}
 	
 	private ActionListener actionListener = new ActionListener() {

@@ -15,6 +15,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -50,7 +51,7 @@ public class DownloadBatchDialog extends JDialog {
 	JComboBox<String> projectsComboBox;
 	SampleImageDialog sampleImageDialog;
 
-	String[] projectList = { "1890 Census", "1900 Census", "Draft Records" };
+	String[] projectList;
 
 	public DownloadBatchDialog(BatchState batchState) {
 		super();
@@ -76,6 +77,20 @@ public class DownloadBatchDialog extends JDialog {
 		downloadButton.addActionListener(actionListener);
 
 		// TODO: GET ACTUAL PROJECTS LIST
+		GetProjects_Params params = new GetProjects_Params(batchState.getUser());
+		GetProjects_Result result = null;
+		try {
+			result = batchState.getComm().getProjects(params);
+		} catch (ClientException e) {
+			JOptionPane.showMessageDialog(null, "Check server",
+					"Connection Error", JOptionPane.ERROR_MESSAGE);
+		}
+		
+		projectList = new String[result.getProjects().size()];
+		for (int i = 0; i < result.getProjects().size(); i++) {
+			projectList[i] = result.getProjects().get(i).getTitle();
+		}
+		
 		projectsComboBox = new JComboBox<String>(projectList);
 
 		JPanel selectionPanel = new JPanel();
@@ -155,7 +170,10 @@ public class DownloadBatchDialog extends JDialog {
 				try {
 					result = batchState.getComm().downloadBatch(params);
 				} catch (ClientException e1) {
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null,
+						    "You must submit the current batch before you can download another.",
+						    "Unable to Download Batch",
+						    JOptionPane.ERROR_MESSAGE);
 				}
 
 				if (result == null)

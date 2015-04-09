@@ -1,27 +1,170 @@
 package client.gui.panel;
 
-import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import shared.model.Field;
+import client.gui.batchstate.BatchState;
 import client.gui.batchstate.BatchStateListener;
 import client.gui.batchstate.Cell;
 
 @SuppressWarnings("serial")
 public class FormEntryPanel extends JPanel implements BatchStateListener{
 
-	public FormEntryPanel() {
+	private BatchState batchState;
+	private int row;
+	private int column;
+	private JList<Integer> recordList;
+	private List<JTextField> textFields;
+	
+	public FormEntryPanel(BatchState batchState) {
 		super();
+		
+		this.batchState = batchState;
+		
+		this.batchState.addListener(this);
 		
 		createComponents();
 	}
 
 	private void createComponents() {
 		
+		DefaultListModel<Integer> listItems = new DefaultListModel<Integer>();
+		
+		for (int i = 0; i < batchState.getNumberOfRows(); i++) {
+			listItems.addElement(i + 1);
+		}
+		
+		recordList = new JList<Integer>(listItems);
+		recordList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		recordList.setPreferredSize(new Dimension(50, 150));
+		recordList.addListSelectionListener(lsListener);
+		
+		JScrollPane recordScroll = new JScrollPane(recordList);
+		recordScroll.getVerticalScrollBar().setUnitIncrement(10);
+		
+		JPanel dataEntryPanel = new JPanel();
+		dataEntryPanel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		
+		List<Field> fieldList = batchState.getFields();
+		textFields = new ArrayList<JTextField>();
+		for (int i = 1; i < batchState.getNumberOfColumns(); i++) {
+			JLabel fieldLabel = new JLabel(fieldList.get(i).getTitle());
+			JTextField fieldText = new JTextField(20);
+			fieldText.setName(fieldList.get(i).getTitle());
+			textFields.add(fieldText);
+			
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.gridx = 1;
+			gbc.gridy = i;
+			gbc.weightx = 0.0;
+			gbc.insets = new Insets(5, 10, 5, 10);
+			dataEntryPanel.add(fieldLabel, gbc);
+			
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.gridx = 3;
+			gbc.gridy = i;
+			gbc.weightx = 0.0;
+			gbc.insets = new Insets(5, 10, 5, 10);
+			dataEntryPanel.add(fieldText, gbc);
+			
+			fieldText.addFocusListener(focusListener);
+			fieldText.addMouseListener(mouseAdapter);
+		}
+		
+		JScrollPane fieldScroll = new JScrollPane(dataEntryPanel);
+		fieldScroll.getVerticalScrollBar().setUnitIncrement(10);
+		
+		JPanel rootPanel = new JPanel(new BorderLayout());
+		rootPanel.add(recordScroll, BorderLayout.WEST);
+		rootPanel.add(fieldScroll, BorderLayout.CENTER);
+		
+		this.setLayout(new BorderLayout());
+		this.add(rootPanel, BorderLayout.CENTER);
 	}
+	
 
+	private FocusListener focusListener = new FocusListener() {
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			for (int i = 0; i < batchState.getFields().size(); i++) {
+				if (batchState.getFields().get(i).getTitle().equals(((JTextField)e.getSource()).getName())) {
+					column = i;
+					break;
+				}
+			}
+			row = recordList.getSelectedIndex();
+			
+			batchState.setSelectedCell(new Cell(row, column));
+			
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			String value = ((JTextField)e.getSource()).getText();
+			
+			batchState.setValue(new Cell(row, column), value);
+			//TODO add logic for quality checker
+		}
+		
+	};
+	
+	private MouseAdapter mouseAdapter = new MouseAdapter() {
+		
+		public void mouseRelease(MouseEvent e) {
+			//TODO add logic for right click to show JPopupMenu
+		}
+	};
+	
 	@Override
 	public void stateChanged() {
-		// TODO Auto-generated method stub
+		if (batchState.getHasDownloadedBatch()) {
+			column = batchState.getSelectedCell().getField();
+			row = batchState.getSelectedCell().getRecord();
+			
+			recordList.setSelectedIndex(row);
+			
+			if (textFields.size() != 0) {
+				textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
+				//TODO add logic to check for mispelled and show red/white
+			}
+		}
 		
 	}
+	private ListSelectionListener lsListener = new ListSelectionListener() {
 
+		@Override
+		public void valueChanged(ListSelectionEvent arg0) {
+			row = recordList.getSelectedIndex();
+			batchState.setSelectedCell(new Cell(row, column));
+			
+			//Initialize the proper data
+			for (int i = 0; i < batchState.getNumberOfColumns()-1; i++) {
+				textFields.get(i).setText(batchState.getValue(new Cell(row, i+1)));
+				if (batchState.checkMisspelled(new Cell(row, i+1))) {
+					textFields.get(i).setBackground(Color.red);
+				}
+				else {
+					textFields.get(i).setBackground(Color.white);
+				}
+			}
+		}
+		
+	};
 }

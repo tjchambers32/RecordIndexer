@@ -73,8 +73,25 @@ public class BatchState implements BatchStateListener{
 		comm = new ClientCommunicator(hostname, port);
 		listeners = new ArrayList<BatchStateListener>();
 		
+		numberOfRows = 0;
+		numberOfColumns = 0;
+		values = new String[numberOfRows][numberOfColumns];
+		selectedCell = new Cell(1,1);
+		imageURL = "";
+		user = null;
+		
+		fields = new ArrayList<Field>();
+		
+		hasDownloadedBatch = false;
+		
 		imageX = 0;
 		imageY = 0;
+		zoomLevel = .6;
+		highlightsVisible = true;
+		imageInverted = false;
+		
+		horizontalDivider = 400;
+		verticalDivider = 400;
 	}
 	
 	public void addListener(BatchStateListener l) {
@@ -82,8 +99,7 @@ public class BatchState implements BatchStateListener{
 	}
 	
 	public void setValue(Cell cell, String value) {
-		
-		values[cell.record][cell.field] = value;
+		values[cell.getRecord()][cell.getField()] = value;
 		
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
@@ -132,6 +148,25 @@ public class BatchState implements BatchStateListener{
 		this.setImageURL("http://" + hostname + ":" + port + "/" + result.getImage().getFilepath());
 		this.setNumberOfRows(result.getProject().getRecordsPerImage());
 		this.setFields(result.getFields());
+		
+		Field recordNumber = new Field();
+		recordNumber.setTitle("Record Number");
+		fields.add(0, recordNumber);
+		
+		this.setNumberOfColumns(result.getFields().size());
+		this.values = new String[numberOfRows][numberOfColumns];
+		
+		for (int i = 0; i < numberOfRows; i++) {
+			for (int j = 0; j < numberOfColumns; j++) {
+				values[i][j] = "";
+			}
+		}
+		
+		//Initialize RecordNumber Values
+		for (int i = 0; i < numberOfRows; i++) {
+			values[i][0] = "" + (i+1);
+		}
+		
 		this.setHasDownloadedBatch(true);
 		this.firstYCoord = result.getProject().getFirstYCoord();
 		this.recordHeight = result.getProject().getRecordHeight();

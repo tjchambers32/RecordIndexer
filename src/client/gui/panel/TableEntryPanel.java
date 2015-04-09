@@ -1,16 +1,25 @@
 package client.gui.panel;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.Border;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import client.gui.batchstate.BatchState;
 import client.gui.batchstate.BatchStateListener;
@@ -27,7 +36,6 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 	int column;
 	
 	public TableEntryPanel(BatchState batchState) {
-		super();
 
 		this.batchState = batchState;
 		tableEntryModel = new TableEntryModel(batchState);
@@ -43,12 +51,40 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 		entryTable.setCellSelectionEnabled(true);
 		entryTable.getTableHeader().setReorderingAllowed(false);
 		entryTable.addMouseListener(mouseAdapter);
+		
+		TableColumnModel columnModel = entryTable.getColumnModel();
+		for (int i = 0; i < tableEntryModel.getColumnCount(); ++i) {
+			TableColumn column = columnModel.getColumn(i);
+			column.setPreferredWidth(80);
+		}
+		for (int i = 1; i < tableEntryModel.getColumnCount(); ++i) {
+			TableColumn column = columnModel.getColumn(i);
+			column.setCellRenderer(new EntryCellRenderer(batchState));
+		}
+		JPanel rootPanel = new JPanel(new BorderLayout());
+		rootPanel.add(entryTable.getTableHeader(), BorderLayout.NORTH);
+		rootPanel.add(entryTable, BorderLayout.CENTER);
+		
+		this.add(rootPanel);
+		this.setVisible(true);
+		
 	}
 
 	@Override
 	public void stateChanged() {
-		// TODO Auto-generated method stub
+		entryTable.changeSelection(batchState.getSelectedCell().getRecord(), batchState.getSelectedCell().getField(), false, false);
 		
+		if (batchState.getHasDownloadedBatch()) {
+			TableColumnModel columnModel = entryTable.getColumnModel();
+			for (int i = 0; i < tableEntryModel.getColumnCount(); ++i) {
+				TableColumn column = columnModel.getColumn(i);
+				column.setPreferredWidth(80);
+			}
+			for (int i = 1; i < tableEntryModel.getColumnCount(); ++i) {
+				TableColumn column = columnModel.getColumn(i);
+				column.setCellRenderer(new EntryCellRenderer(batchState));
+			}
+		}
 	}
 
 	private MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -59,13 +95,13 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 			column = entryTable.columnAtPoint(e.getPoint());
 			batchState.setSelectedCell(new Cell(row, column));
 			JPopupMenu popup = null;
-			JMenuItem seeSuggest = null;
+			JMenuItem seeSuggestions = null;
 			if (e.getButton() == MouseEvent.BUTTON3) {
 				if (batchState.checkMisspelled(new Cell(row, column))) {
 					popup = new JPopupMenu();
-					seeSuggest = new JMenuItem("See Suggestions.");
-					seeSuggest.addActionListener(actionListener);
-					popup.add(seeSuggest);
+					seeSuggestions = new JMenuItem("See Suggestions.");
+					seeSuggestions.addActionListener(actionListener);
+					popup.add(seeSuggestions);
 					popup.show(e.getComponent(), e.getX(), e.getY());
 				}
 			}
@@ -82,4 +118,38 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 		}
 		
 	};
+}
+
+@SuppressWarnings("serial")
+class EntryCellRenderer extends JLabel implements TableCellRenderer {
+
+	private Border unselectedBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
+	private Border selectedBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
+	private BatchState batchState;
+	
+	public EntryCellRenderer(BatchState batchState) {
+		this.batchState = batchState;
+		setOpaque(true);
+		setFont(getFont().deriveFont(16.0f));
+	}
+
+	public Component getTableCellRendererComponent(JTable table,
+			Object value, boolean isSelected, boolean hasFocus, int row,
+			int column) {
+		
+		if (isSelected) {
+			this.setBorder(selectedBorder);
+			Cell selectedCell = new Cell(row, column);
+			batchState.setSelectedCell(selectedCell);
+		}
+		else {
+			this.setBorder(unselectedBorder);
+		}
+		
+		//TODO add logic for quality checker here
+		
+		this.setText((String)value);
+		return this;
+	}
+
 }

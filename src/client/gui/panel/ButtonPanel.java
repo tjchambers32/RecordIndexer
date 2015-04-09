@@ -94,10 +94,10 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 
 			if (e.getSource() == zoomInButton) {
 				if (batchState.getZoomLevel() < 2.5)
-					batchState.setZoomLevel(batchState.getZoomLevel() + .05);
+					batchState.setZoomLevel(batchState.getZoomLevel() + .15);
 			} else if (e.getSource() == zoomOutButton) {
-				if (batchState.getZoomLevel() > .3)
-					batchState.setZoomLevel(batchState.getZoomLevel() - .05);
+				if (batchState.getZoomLevel() > .1)
+					batchState.setZoomLevel(batchState.getZoomLevel() - .15);
 			} else if (e.getSource() == invertImageButton) {
 				batchState.setImageInverted(!batchState.isImageInverted());
 			} else if (e.getSource() == toggleHighlightsButton) {

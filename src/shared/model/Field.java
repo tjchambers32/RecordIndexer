@@ -62,6 +62,11 @@ public class Field {
 		setProjectID(projectID);
 	}
 	
+	//empty constructor
+	public Field() {
+		
+	}
+	
 	public int getId() {
 		return id;
 	}
