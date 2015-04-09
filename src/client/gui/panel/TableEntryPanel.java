@@ -38,13 +38,16 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 	public TableEntryPanel(BatchState batchState) {
 
 		this.batchState = batchState;
-		tableEntryModel = new TableEntryModel(batchState);
+		tableEntryModel = null;
+		entryTable = null;
 		batchState.addListener(this);
 		
-		createComponents();
+//		createComponents();
 	}
 
 	private void createComponents() {
+		
+		tableEntryModel = new TableEntryModel(batchState);
 		entryTable = new JTable(tableEntryModel);
 		entryTable.setRowHeight(20);
 		entryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -52,15 +55,15 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 		entryTable.getTableHeader().setReorderingAllowed(false);
 		entryTable.addMouseListener(mouseAdapter);
 		
-//		TableColumnModel columnModel = entryTable.getColumnModel();
-//		for (int i = 0; i < tableEntryModel.getColumnCount(); ++i) {
-//			TableColumn column = columnModel.getColumn(i);
-//			column.setPreferredWidth(80);
-//		}
-//		for (int i = 1; i < tableEntryModel.getColumnCount(); ++i) {
-//			TableColumn column = columnModel.getColumn(i);
-//			column.setCellRenderer(new EntryCellRenderer(batchState));
-//		}
+		TableColumnModel columnModel = entryTable.getColumnModel();
+		for (int i = 0; i < tableEntryModel.getColumnCount(); ++i) {
+			TableColumn column = columnModel.getColumn(i);
+			column.setPreferredWidth(80);
+		}
+		for (int i = 1; i < tableEntryModel.getColumnCount(); ++i) {
+			TableColumn column = columnModel.getColumn(i);
+			column.setCellRenderer(new EntryCellRenderer(batchState));
+		}
 		JPanel rootPanel = new JPanel(new BorderLayout());
 		rootPanel.add(entryTable.getTableHeader(), BorderLayout.NORTH);
 		rootPanel.add(entryTable, BorderLayout.CENTER);
@@ -72,22 +75,17 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 
 	@Override
 	public void stateChanged() {
+		if (entryTable != null)
+			entryTable.changeSelection(batchState.getSelectedCell().getRecord(), batchState.getSelectedCell().getField(), false, false);
 		
-		entryTable.changeSelection(batchState.getSelectedCell().getRecord(), batchState.getSelectedCell().getField(), false, false);
-		
-		if (batchState.getHasDownloadedBatch()) {
-			tableEntryModel = new TableEntryModel(batchState);
-			entryTable.setModel(tableEntryModel);
-			TableColumnModel columnModel = entryTable.getColumnModel();
-			for (int i = 0; i < tableEntryModel.getColumnCount(); ++i) {
-				TableColumn column = columnModel.getColumn(i);
-				column.setPreferredWidth(80);
-			}
-			for (int i = 1; i < tableEntryModel.getColumnCount(); ++i) {
-				TableColumn column = columnModel.getColumn(i);
-				column.setCellRenderer(new EntryCellRenderer(batchState));
-			}
+		if (batchState.getHasDownloadedBatch() && entryTable == null) {
+			createComponents();	
 		}
+		
+		if (batchState.getValue(new Cell(row, column)) != tableEntryModel.getValueAt(row, column)) {
+			tableEntryModel.fireTableDataChanged();
+		}
+			
 	}
 
 	private MouseAdapter mouseAdapter = new MouseAdapter() {

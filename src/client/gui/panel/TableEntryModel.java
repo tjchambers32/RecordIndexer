@@ -37,6 +37,14 @@ public class TableEntryModel extends AbstractTableModel {
 	}
 	
 	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		if (columnIndex < 1)
+			return false;
+		else
+			return true;
+	}
+	
+	@Override
 	public void setValueAt(Object inputValue, int inputRow, int inputColumn) {
 		Cell selectedCell = new Cell(inputRow, inputColumn);
 		batchState.setValue(selectedCell,  (String) inputValue);

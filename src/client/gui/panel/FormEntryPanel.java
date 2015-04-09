@@ -37,8 +37,9 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		this.batchState = batchState;
 		
 		this.batchState.addListener(this);
-		
-		createComponents();
+		recordList = null;
+
+//		createComponents();
 	}
 
 	private void createComponents() {
@@ -53,6 +54,8 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		recordList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		recordList.setPreferredSize(new Dimension(50, 150));
 		recordList.addListSelectionListener(lsListener);
+		
+		recordList.setSelectedIndex(0);
 		
 		JScrollPane recordScroll = new JScrollPane(recordList);
 		recordScroll.getVerticalScrollBar().setUnitIncrement(10);
@@ -117,9 +120,12 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 
 		@Override
 		public void focusLost(FocusEvent e) {
-			String value = ((JTextField)e.getSource()).getText();
-			
-			batchState.setValue(new Cell(row, column), value);
+			for (int i = 0; i < textFields.size(); i++) {
+				JTextField jText = textFields.get(i);
+				if (e.getSource() == jText) {
+					batchState.setValue(new Cell(recordList.getSelectedIndex(), i), jText.getText());
+				}
+			}
 			//TODO add logic for quality checker
 		}
 		
@@ -134,36 +140,50 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 	
 	@Override
 	public void stateChanged() {
-		if (batchState.getHasDownloadedBatch()) {
-			column = batchState.getSelectedCell().getField();
-			row = batchState.getSelectedCell().getRecord();
-			
+		
+		column = batchState.getSelectedCell().getField();
+		row = batchState.getSelectedCell().getRecord();
+		
+		if (batchState.getHasDownloadedBatch() && recordList == null) {
+			createComponents();
+		} else if (recordList.getSelectedIndex() != row) {
 			recordList.setSelectedIndex(row);
-			
-			if (textFields.size() != 0) {
-				textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
-				//TODO add logic to check for mispelled and show red/white
-			}
 		}
 		
+//			
+//			if (textFields.size() != 0) {
+//				textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
+//				//TODO add logic to check for mispelled and show red/white
+//			}
+//		}
+		repaint();
 	}
 	private ListSelectionListener lsListener = new ListSelectionListener() {
 
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
-			row = recordList.getSelectedIndex();
-			batchState.setSelectedCell(new Cell(row, column));
+			if (arg0.getSource() != recordList)
+				return;
+			if (textFields == null)
+				return;
 			
+			row = recordList.getSelectedIndex();
+		
+			if (row < 0)
+				return;
 			//Initialize the proper data
-			for (int i = 0; i < batchState.getNumberOfColumns()-1; i++) {
-				textFields.get(i).setText(batchState.getValue(new Cell(row, i+1)));
+			for (int i = 0; i < textFields.size(); i++) {
 				if (batchState.checkMisspelled(new Cell(row, i+1))) {
 					textFields.get(i).setBackground(Color.red);
 				}
 				else {
 					textFields.get(i).setBackground(Color.white);
 				}
+				
+				textFields.get(i).setText(batchState.getValue(new Cell(row, i+1)));
+
 			}
+			batchState.setSelectedCell(new Cell(row, column));
 		}
 		
 	};

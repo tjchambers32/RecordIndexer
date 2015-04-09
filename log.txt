@@ -1,10 +1,10 @@
-Apr 08, 2015 11:14:39 PM server.Server run
+Apr 09, 2015 12:04:29 AM server.Server run
 INFO: Initializing Database
-Apr 08, 2015 11:14:39 PM server.Server run
+Apr 09, 2015 12:04:29 AM server.Server run
 INFO: Initializing HTTP Server
-Apr 08, 2015 11:14:39 PM server.Server run
+Apr 09, 2015 12:04:29 AM server.Server run
 INFO: Starting HTTP Server
-Apr 08, 2015 11:20:08 PM server.DownloadBatchHandler handle
+Apr 09, 2015 12:23:30 AM server.DownloadBatchHandler handle
 SEVERE: User can only have one batch checked out at a time
 server.facade.ServerFacadeException: User can only have one batch checked out at a time
 	at server.facade.ServerFacade.downloadBatch(ServerFacade.java:204)
