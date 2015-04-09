@@ -138,6 +138,8 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 	private WindowAdapter windowAdapter = new WindowAdapter() {
 
 		public void windowClosing(WindowEvent e) {
+			saveWindowLocation();
+			batchState.save();
 			System.exit(0);
 		}
 	};

@@ -476,8 +476,6 @@ public class BatchState implements BatchStateListener{
 		this.values = savedState.values;
 		this.selectedCell = savedState.selectedCell;
 		
-		this.zoomLevel = savedState.zoomLevel;
-		
 		this.scrollPosition = savedState.scrollPosition;
 		this.highlightsVisible = savedState.highlightsVisible;
 		this.imageInverted = savedState.imageInverted;
@@ -504,5 +502,6 @@ public class BatchState implements BatchStateListener{
 		this.loggingIn = savedState.loggingIn;
 		
 		this.setUser(savedState.user); //will run through all the listeners
+		setZoomLevel(savedState.zoomLevel); //runs through listeners again
 	}
 }
