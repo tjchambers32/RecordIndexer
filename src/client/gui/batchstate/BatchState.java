@@ -28,7 +28,7 @@ import client.communication.ClientCommunicator;
 public class BatchState implements BatchStateListener{
 
 	//utility variables
-	private List<BatchStateListener> listeners;
+	transient private List<BatchStateListener> listeners;
 	private ClientCommunicator comm;
 	private String hostname;
 	private int port;

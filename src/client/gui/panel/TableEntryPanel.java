@@ -75,9 +75,10 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 	@Override
 	public void stateChanged() {
 		
-		if (batchState.isLoggingIn()) {
+		if (batchState.isLoggingIn() || entryTable == null) {
 			createComponents();
-		} else {
+		} else if (batchState.getHasDownloadedBatch()){
+			
 			entryTable.changeSelection(batchState.getSelectedCell().getRecord(), batchState.getSelectedCell().getField(), false, false);
 			
 			if (batchState.getValue(new Cell(row, column)) != tableEntryModel.getValueAt(row, column)) {

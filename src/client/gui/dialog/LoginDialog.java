@@ -4,16 +4,13 @@
 package client.gui.dialog;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.*;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -21,6 +18,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import com.thoughtworks.xstream.XStream;
@@ -31,6 +29,7 @@ import shared.model.*;
 import client.communication.*;
 import client.gui.IndexerFrame;
 import client.gui.batchstate.BatchState;
+import client.gui.batchstate.BatchStateListener;
 
 /**
  * @author tchambs
@@ -43,7 +42,7 @@ public class LoginDialog extends JDialog {
 	JButton loginButton;
 	JButton exitButton;
 	JTextField userField;
-	JTextField passField;
+	JPasswordField passField;
 	String username;
 	String password;
 	
@@ -76,7 +75,7 @@ public class LoginDialog extends JDialog {
 		userPanel.add(userField);
 		userPanel.add(Box.createRigidArea(new Dimension(5,0)));
 		
-		passField = new JTextField(20);
+		passField = new JPasswordField(20);
 		passField.setPreferredSize(new Dimension(150, 20));
 
 		JPanel passPanel = new JPanel();
@@ -134,7 +133,8 @@ public class LoginDialog extends JDialog {
 			if (e.getSource() == loginButton) {
 				try {
 					username = userField.getText();
-					password = passField.getText();
+					char[] passwordChars = passField.getPassword();
+					password = new String(passwordChars);
 				} catch (Exception exc) {
 					JOptionPane
 							.showMessageDialog(
@@ -166,12 +166,15 @@ public class LoginDialog extends JDialog {
 			if (e.getCause().toString().contains("Connect")) {
 				JOptionPane.showMessageDialog(null, "Check server",
 						"Connection Error", JOptionPane.ERROR_MESSAGE);
+				return;
 			} else {
 				JOptionPane.showMessageDialog(null, "Invalid User Credentials",
 						"Input Error", JOptionPane.ERROR_MESSAGE);
+				return;
 			}
 		}
-		if (result.getResult() == null) {
+		
+		if (result == null || result.getResult() == null) {
 			JOptionPane.showMessageDialog(null, "Invalid User Credentials",
 					"Input Error", JOptionPane.ERROR_MESSAGE);
 			return;
@@ -188,14 +191,20 @@ public class LoginDialog extends JDialog {
 		//read in saved batchstate if possible
 		XStream xstream = new XStream(new DomDriver());
 		
-		File savedBatch = new File("savedBatches/" + batchState.getUser().getUsername() + ".xml");
+		File savedBatch = new File("savedBatches/" + result.getResult().getUsername() + ".xml");
 		
 		if (savedBatch.exists()) {
 			BatchState savedState = (BatchState) xstream.fromXML(savedBatch);
-			batchState = savedState; //double check this actually works
+			savedState.setListeners(new ArrayList<BatchStateListener>());
+			savedState.setUser(result.getResult());
+			frame.setBatchState(savedState);
+			frame.getBatchState().setUser(result.getResult());
+		} else {
+			BatchState emptyState = new BatchState(batchState.getHostname(), batchState.getPort());
+			emptyState.setUser(result.getResult());
+			frame.setBatchState(emptyState);
+			frame.getBatchState().setUser(result.getResult());
 		}
-		
-		batchState.setUser(result.getResult());
 		
 		this.setVisible(false);
 		frame.setVisible(true);

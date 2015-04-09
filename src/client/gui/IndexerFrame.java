@@ -150,6 +150,7 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 			if (e.getSource() == logoutMenuItem) {
 				logout();
 			} else if (e.getSource() == exitMenuItem) {
+				saveWindowLocation();
 				System.exit(0);
 			} else if (e.getSource() == downloadBatchMenuItem) {
 				downloadBatch();
@@ -168,6 +169,8 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 	private void logout() {
 		
 		//save state
+		saveWindowLocation();
+		batchState.save();
 		
 		//hide main indexer window
 		this.setVisible(false);
@@ -178,6 +181,17 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 	
 	private void downloadBatch() {
 		downloadBatchDialog = new DownloadBatchDialog(batchState);
+	}
+	
+	private void saveWindowLocation() {
+		
+		batchState.setWindowPositionX(IndexerFrame.this.getX());
+		batchState.setWindowPositionY(IndexerFrame.this.getY());
+		batchState.setWindowSizeX(IndexerFrame.this.getWidth());
+		batchState.setWindowSizeY(IndexerFrame.this.getHeight());
+		
+		batchState.setHorizontalDivider(horizontalSplit.getDividerLocation());
+		batchState.setVerticalDivider(verticalSplit.getDividerLocation());
 	}
 	
 	public static void main(final String[] args) {
@@ -206,6 +220,10 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 	 */
 	public BatchState getBatchState() {
 		return batchState;
+	}
+	
+	public void setBatchState(BatchState batchState) {
+		this.batchState = batchState;
 	}
 
 	@Override

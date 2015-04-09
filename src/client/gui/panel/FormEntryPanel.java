@@ -144,7 +144,7 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		column = batchState.getSelectedCell().getField();
 		row = batchState.getSelectedCell().getRecord();
 		
-		if (batchState.isLoggingIn()) {
+		if (batchState.isLoggingIn() || recordList == null) {
 			createComponents();
 		} else if (recordList.getSelectedIndex() != row) {
 			recordList.setSelectedIndex(row);
@@ -169,6 +169,7 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		
 			if (row < 0)
 				return;
+			
 			//Initialize the proper data
 			for (int i = 0; i < textFields.size(); i++) {
 				if (batchState.checkMisspelled(new Cell(row, i+1))) {
