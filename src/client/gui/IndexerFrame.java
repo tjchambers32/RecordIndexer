@@ -115,6 +115,8 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 		this.pack();
 		
 		this.add(rootPanel);
+		
+		batchState.setZoomLevel(batchState.getZoomLevel());
 
 	}
 	

@@ -36,7 +36,7 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		
 		this.batchState = batchState;
 		
-		this.batchState.addListener(this);
+		batchState.addListener(this);
 		recordList = null;
 
 //		createComponents();
@@ -161,13 +161,14 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
+			
 			if (arg0.getSource() != recordList)
 				return;
 			if (textFields == null)
 				return;
 			
 			row = recordList.getSelectedIndex();
-		
+//			row = recordList.getSelectedValue();
 			if (row < 0)
 				return;
 			
@@ -180,9 +181,9 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 					textFields.get(i).setBackground(Color.white);
 				}
 				
-//				textFields.get(i).setText(batchState.getValue(new Cell(row, i+1)));
+				textFields.get(i).setText(batchState.getValue(new Cell(row, i+1)));
 			}
-//			batchState.setSelectedCell(new Cell(row, column));
+			batchState.setSelectedCell(new Cell(row, column));
 		}
 		
 	};

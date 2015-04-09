@@ -206,5 +206,6 @@ public class LoginDialog extends JDialog {
 		
 		this.setVisible(false);
 		frame.setVisible(true);
+
 	}
 }
