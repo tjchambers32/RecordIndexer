@@ -144,17 +144,18 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		column = batchState.getSelectedCell().getField();
 		row = batchState.getSelectedCell().getRecord();
 		
-		if (batchState.isLoggingIn() || recordList == null) {
+		if (recordList == null){
 			createComponents();
+		} else if (batchState.isLoggingIn() && recordList != null) {
+			
 		} else if (recordList.getSelectedIndex() != row) {
 			recordList.setSelectedIndex(row);
 		}
-		
-			
-			if (textFields.size() != 0) {
-				textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
-				//TODO add logic to check for mispelled and show red/white
-			}
+
+		if (textFields.size() != 0) {
+			textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
+			//TODO add logic to check for mispelled and show red/white
+		}
 	}
 	private ListSelectionListener lsListener = new ListSelectionListener() {
 
@@ -179,10 +180,9 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 					textFields.get(i).setBackground(Color.white);
 				}
 				
-				textFields.get(i).setText(batchState.getValue(new Cell(row, i+1)));
-
+//				textFields.get(i).setText(batchState.getValue(new Cell(row, i+1)));
 			}
-			batchState.setSelectedCell(new Cell(row, column));
+//			batchState.setSelectedCell(new Cell(row, column));
 		}
 		
 	};

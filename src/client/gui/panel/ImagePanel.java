@@ -311,7 +311,7 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 
 	@Override
 	public void stateChanged() {
-
+		
 		if (batchState.getHasDownloadedBatch()) {
 			int width = batchState.getFields()
 					.get(batchState.getSelectedCell().getField()).getWidth();

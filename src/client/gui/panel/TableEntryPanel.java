@@ -71,18 +71,34 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 		this.setVisible(true);
 		
 	}
-
+	
 	@Override
 	public void stateChanged() {
 		
-		if (batchState.isLoggingIn() || entryTable == null) {
+		if (entryTable == null) {
+			
+			//create table
 			createComponents();
-		} else if (batchState.getHasDownloadedBatch()){
+		} 
+		
+		if (batchState.isLoggingIn() && entryTable != null) {
 			
-			entryTable.changeSelection(batchState.getSelectedCell().getRecord(), batchState.getSelectedCell().getField(), false, false);
+			//just update table structure
+			TableColumnModel columnModel = entryTable.getColumnModel();
+			for (int i = 0; i < tableEntryModel.getColumnCount(); ++i) {
+				TableColumn column = columnModel.getColumn(i);
+				if (i > 0)
+					column.setCellRenderer(new EntryCellRenderer(batchState));
+				column.setPreferredWidth(100);
+			}
+		} else if (!batchState.isLoggingIn() && entryTable != null) {
+			if (batchState.getHasDownloadedBatch()){
 			
-			if (batchState.getValue(new Cell(row, column)) != tableEntryModel.getValueAt(row, column)) {
-				tableEntryModel.fireTableDataChanged();
+				entryTable.changeSelection(batchState.getSelectedCell().getRecord(), batchState.getSelectedCell().getField(), false, false);
+			
+				if (batchState.getValue(new Cell(row, column)) != tableEntryModel.getValueAt(row, column)) {
+					tableEntryModel.fireTableDataChanged();
+				}
 			}
 		}
 	}

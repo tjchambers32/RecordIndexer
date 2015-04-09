@@ -1,34 +1,9 @@
-/**
- * 
- */
 package client.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-
-import client.communication.*;
-import client.gui.batchstate.BatchState;
-import client.gui.batchstate.BatchStateListener;
-import client.gui.batchstate.Cell;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import client.gui.batchstate.*;
 import client.gui.dialog.*;
 import client.gui.panel.*;
 
@@ -151,6 +126,7 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 				logout();
 			} else if (e.getSource() == exitMenuItem) {
 				saveWindowLocation();
+				batchState.save();
 				System.exit(0);
 			} else if (e.getSource() == downloadBatchMenuItem) {
 				downloadBatch();
@@ -229,7 +205,7 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 	@Override
 	public void stateChanged() {
 		
-		if (this.batchState.getHasDownloadedBatch() == true) {
+		if (this.batchState.getHasDownloadedBatch() && downloadBatchMenuItem != null) {
 			this.downloadBatchMenuItem.setEnabled(false);
 		}
 		

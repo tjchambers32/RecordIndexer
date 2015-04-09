@@ -63,7 +63,7 @@ public class BatchState implements BatchStateListener{
 	private int firstYCoord;
 	private int recordHeight;
 	
-	boolean loggingIn;
+	private boolean loggingIn;
 	
 	public BatchState(String hostname, int port) {
 		
@@ -93,7 +93,7 @@ public class BatchState implements BatchStateListener{
 		horizontalDivider = 400;
 		verticalDivider = 400;
 		
-		boolean loggingIn = false;
+		loggingIn = false;
 	}
 	
 	public void addListener(BatchStateListener l) {
@@ -465,4 +465,44 @@ public class BatchState implements BatchStateListener{
 		this.loggingIn = loggingIn;
 	}
 
+	/**
+	 * @param savedState
+	 */
+	public void update(BatchState savedState) {
+		this.comm = savedState.comm;
+		this.hostname = savedState.hostname;
+		this.port = savedState.port;
+
+		this.values = savedState.values;
+		this.selectedCell = savedState.selectedCell;
+		
+		this.zoomLevel = savedState.zoomLevel;
+		
+		this.scrollPosition = savedState.scrollPosition;
+		this.highlightsVisible = savedState.highlightsVisible;
+		this.imageInverted = savedState.imageInverted;
+		this.windowPositionX = savedState.windowPositionX;
+		this.windowPositionY = savedState.windowPositionY;
+		this.windowSizeX = savedState.windowSizeX;
+		this.windowSizeY = savedState.windowSizeY;
+		this.horizontalDivider = savedState.horizontalDivider;
+		this.verticalDivider = savedState.verticalDivider;
+		this.numberOfRows = savedState.numberOfRows;
+		this.numberOfColumns = savedState.numberOfColumns;
+		
+		this.imageURL = savedState.imageURL;
+		this.imageX = savedState.imageX;
+		this.imageY = savedState.imageY;
+		this.imageWidth = savedState.imageWidth;
+		this.imageHeight = savedState.imageHeight;
+		this.projectID = savedState.projectID;
+		this.fields = savedState.fields;
+		this.hasDownloadedBatch = savedState.hasDownloadedBatch;
+		this.firstYCoord = savedState.firstYCoord;
+		this.recordHeight = savedState.recordHeight;
+		
+		this.loggingIn = savedState.loggingIn;
+		
+		this.setUser(savedState.user); //will run through all the listeners
+	}
 }

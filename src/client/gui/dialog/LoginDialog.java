@@ -197,13 +197,11 @@ public class LoginDialog extends JDialog {
 			BatchState savedState = (BatchState) xstream.fromXML(savedBatch);
 			savedState.setListeners(new ArrayList<BatchStateListener>());
 			savedState.setUser(result.getResult());
-			frame.setBatchState(savedState);
-			frame.getBatchState().setUser(result.getResult());
+			batchState.update(savedState);
 		} else {
 			BatchState emptyState = new BatchState(batchState.getHostname(), batchState.getPort());
 			emptyState.setUser(result.getResult());
-			frame.setBatchState(emptyState);
-			frame.getBatchState().setUser(result.getResult());
+			batchState.update(emptyState);
 		}
 		
 		this.setVisible(false);
