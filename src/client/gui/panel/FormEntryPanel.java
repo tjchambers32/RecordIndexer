@@ -123,7 +123,7 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 			for (int i = 0; i < textFields.size(); i++) {
 				JTextField jText = textFields.get(i);
 				if (e.getSource() == jText) {
-					batchState.setValue(new Cell(recordList.getSelectedIndex(), i), jText.getText());
+					batchState.setValue(new Cell(recordList.getSelectedIndex(), i+1), jText.getText());
 				}
 			}
 			//TODO add logic for quality checker
@@ -144,19 +144,17 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		column = batchState.getSelectedCell().getField();
 		row = batchState.getSelectedCell().getRecord();
 		
-		if (batchState.getHasDownloadedBatch() && recordList == null) {
+		if (batchState.isLoggingIn()) {
 			createComponents();
 		} else if (recordList.getSelectedIndex() != row) {
 			recordList.setSelectedIndex(row);
 		}
 		
-//			
-//			if (textFields.size() != 0) {
-//				textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
-//				//TODO add logic to check for mispelled and show red/white
-//			}
-//		}
-		repaint();
+			
+			if (textFields.size() != 0) {
+				textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
+				//TODO add logic to check for mispelled and show red/white
+			}
 	}
 	private ListSelectionListener lsListener = new ListSelectionListener() {
 

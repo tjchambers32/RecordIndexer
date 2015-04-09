@@ -193,10 +193,9 @@ public class LoginDialog extends JDialog {
 		if (savedBatch.exists()) {
 			BatchState savedState = (BatchState) xstream.fromXML(savedBatch);
 			batchState = savedState; //double check this actually works
-			batchState.setUser(result.getResult());
-		} else {
-			
 		}
+		
+		batchState.setUser(result.getResult());
 		
 		this.setVisible(false);
 		frame.setVisible(true);

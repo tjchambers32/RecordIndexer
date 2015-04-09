@@ -24,6 +24,12 @@ public class TableEntryModel extends AbstractTableModel {
 	}
 
 	@Override
+	public String getColumnName(int column) {
+		
+		return batchState.getFields().get(column).getTitle();
+	}
+	
+	@Override
 	public int getRowCount() {
 		return rows;
 	}
@@ -33,7 +39,7 @@ public class TableEntryModel extends AbstractTableModel {
 		if (columnIndex == 0)
 			return rowIndex + 1;
 		
-		return batchState.getFields().get(columnIndex-1).getTitle();
+		return batchState.getValue(new Cell(rowIndex, columnIndex));
 	}
 	
 	@Override

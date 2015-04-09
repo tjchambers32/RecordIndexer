@@ -63,7 +63,7 @@ public class BatchState implements BatchStateListener{
 	private int firstYCoord;
 	private int recordHeight;
 	
-	
+	boolean loggingIn;
 	
 	public BatchState(String hostname, int port) {
 		
@@ -92,6 +92,8 @@ public class BatchState implements BatchStateListener{
 		
 		horizontalDivider = 400;
 		verticalDivider = 400;
+		
+		boolean loggingIn = false;
 	}
 	
 	public void addListener(BatchStateListener l) {
@@ -99,6 +101,7 @@ public class BatchState implements BatchStateListener{
 	}
 	
 	public void setValue(Cell cell, String value) {
+		
 		values[cell.getRecord()][cell.getField()] = value;
 		
 		for (BatchStateListener l : listeners) {
@@ -208,10 +211,12 @@ public class BatchState implements BatchStateListener{
 
 	public void setUser(User user) {
 		this.user = user;
+		this.loggingIn = true;
 		
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
+		this.loggingIn = false;
 	}
 
 	public String getImageURL() {
@@ -450,6 +455,14 @@ public class BatchState implements BatchStateListener{
 	public boolean checkMisspelled(Cell cell) {
 		
 		return false;
+	}
+
+	public boolean isLoggingIn() {
+		return loggingIn;
+	}
+
+	public void setLoggingIn(boolean loggingIn) {
+		this.loggingIn = loggingIn;
 	}
 
 }

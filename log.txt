@@ -1,22 +1,54 @@
-Apr 09, 2015 12:04:29 AM server.Server run
+Apr 09, 2015 8:37:59 AM server.Server run
 INFO: Initializing Database
-Apr 09, 2015 12:04:29 AM server.Server run
+Apr 09, 2015 8:37:59 AM server.Server run
 INFO: Initializing HTTP Server
-Apr 09, 2015 12:04:29 AM server.Server run
+Apr 09, 2015 8:37:59 AM server.Server run
 INFO: Starting HTTP Server
-Apr 09, 2015 12:23:30 AM server.DownloadBatchHandler handle
+Apr 09, 2015 9:09:34 AM server.DownloadBatchHandler handle
 SEVERE: User can only have one batch checked out at a time
 server.facade.ServerFacadeException: User can only have one batch checked out at a time
 	at server.facade.ServerFacade.downloadBatch(ServerFacade.java:204)
 	at server.DownloadBatchHandler.handle(DownloadBatchHandler.java:40)
-	at com.sun.net.httpserver.Filter$Chain.doFilter(Unknown Source)
-	at sun.net.httpserver.AuthFilter.doFilter(Unknown Source)
-	at com.sun.net.httpserver.Filter$Chain.doFilter(Unknown Source)
-	at sun.net.httpserver.ServerImpl$Exchange$LinkHandler.handle(Unknown Source)
-	at com.sun.net.httpserver.Filter$Chain.doFilter(Unknown Source)
-	at sun.net.httpserver.ServerImpl$Exchange.run(Unknown Source)
-	at sun.net.httpserver.ServerImpl$DefaultExecutor.execute(Unknown Source)
-	at sun.net.httpserver.ServerImpl$Dispatcher.handle(Unknown Source)
-	at sun.net.httpserver.ServerImpl$Dispatcher.run(Unknown Source)
-	at java.lang.Thread.run(Unknown Source)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.AuthFilter.doFilter(AuthFilter.java:83)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:80)
+	at sun.net.httpserver.ServerImpl$Exchange$LinkHandler.handle(ServerImpl.java:677)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.ServerImpl$Exchange.run(ServerImpl.java:649)
+	at sun.net.httpserver.ServerImpl$DefaultExecutor.execute(ServerImpl.java:158)
+	at sun.net.httpserver.ServerImpl$Dispatcher.handle(ServerImpl.java:433)
+	at sun.net.httpserver.ServerImpl$Dispatcher.run(ServerImpl.java:398)
+	at java.lang.Thread.run(Thread.java:745)
+
+Apr 09, 2015 9:09:52 AM server.DownloadBatchHandler handle
+SEVERE: User can only have one batch checked out at a time
+server.facade.ServerFacadeException: User can only have one batch checked out at a time
+	at server.facade.ServerFacade.downloadBatch(ServerFacade.java:204)
+	at server.DownloadBatchHandler.handle(DownloadBatchHandler.java:40)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.AuthFilter.doFilter(AuthFilter.java:83)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:80)
+	at sun.net.httpserver.ServerImpl$Exchange$LinkHandler.handle(ServerImpl.java:677)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.ServerImpl$Exchange.run(ServerImpl.java:649)
+	at sun.net.httpserver.ServerImpl$DefaultExecutor.execute(ServerImpl.java:158)
+	at sun.net.httpserver.ServerImpl$Dispatcher.handle(ServerImpl.java:433)
+	at sun.net.httpserver.ServerImpl$Dispatcher.run(ServerImpl.java:398)
+	at java.lang.Thread.run(Thread.java:745)
+
+Apr 09, 2015 9:43:53 AM server.DownloadBatchHandler handle
+SEVERE: User can only have one batch checked out at a time
+server.facade.ServerFacadeException: User can only have one batch checked out at a time
+	at server.facade.ServerFacade.downloadBatch(ServerFacade.java:204)
+	at server.DownloadBatchHandler.handle(DownloadBatchHandler.java:40)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.AuthFilter.doFilter(AuthFilter.java:83)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:80)
+	at sun.net.httpserver.ServerImpl$Exchange$LinkHandler.handle(ServerImpl.java:677)
+	at com.sun.net.httpserver.Filter$Chain.doFilter(Filter.java:77)
+	at sun.net.httpserver.ServerImpl$Exchange.run(ServerImpl.java:649)
+	at sun.net.httpserver.ServerImpl$DefaultExecutor.execute(ServerImpl.java:158)
+	at sun.net.httpserver.ServerImpl$Dispatcher.handle(ServerImpl.java:433)
+	at sun.net.httpserver.ServerImpl$Dispatcher.run(ServerImpl.java:398)
+	at java.lang.Thread.run(Thread.java:745)
 
