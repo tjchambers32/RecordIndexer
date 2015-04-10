@@ -26,9 +26,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import shared.model.Field;
 import client.gui.ImageComponent;
 import client.gui.batchstate.BatchState;
 import client.gui.batchstate.BatchStateListener;
+import client.gui.batchstate.Cell;
 
 @SuppressWarnings("serial")
 public class ImagePanel extends JPanel implements BatchStateListener {
@@ -53,11 +55,13 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 	
 	BatchState batchState;
 
+	private boolean isCellSelected;
+	private int selectedRow;
+	private int selectedColumn;
+	
 	public ImagePanel(BatchState batchState, String URL) {
-		super();
+//		super();
 
-		
-		
 		this.batchState = batchState;
 		batchState.addListener(this);
 
@@ -66,15 +70,16 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 		scale = .5;
 		imageInverted = false;
 		
-		initDrag();
-
-		this.setPreferredSize(new Dimension(700, 700));
-		this.setMinimumSize(new Dimension(100, 100));
-		this.setMaximumSize(new Dimension(1000, 1000));
+		isCellSelected = false;
+		selectedRow = -1;
+		selectedColumn = -1;
 
 		this.addMouseListener(mouseAdapter);
 		this.addMouseMotionListener(mouseAdapter);
 		this.addMouseWheelListener(mouseAdapter);
+		
+		initDrag();
+
 		
 	}
 
@@ -126,12 +131,97 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 		this.repaint();
 	}
 
-	private void drawBackground(Graphics2D g2) {
-		g2.setColor(getBackground());
-		g2.fillRect(0, 0, getWidth(), getHeight());
+	private int getWorldWidth() {
+		AffineTransform transform = new AffineTransform();
+		
+		transform.scale(scale, scale);
+		
+		int deviceWidth = getWidth();
+		int deviceHeight = getHeight();
+		
+		Point2D d_Pt = new Point2D.Double(deviceWidth, deviceHeight);
+		Point2D w_Pt = new Point2D.Double();
+		try {
+			transform.inverseTransform(d_Pt, w_Pt);
+		} catch (NoninvertibleTransformException e) {
+			return -1;
+		}
+		int worldWidth = (int)w_Pt.getX();
+		
+		return worldWidth;
+	}
+	
+	private int getWorldHeight() {
+		
+		AffineTransform transform = new AffineTransform();
+
+		transform.scale(scale, scale);
+		
+		int deviceWidth = getWidth();
+		int deviceHeight = getHeight();
+		
+		Point2D d_Pt = new Point2D.Double(deviceWidth, deviceHeight);
+		Point2D w_Pt = new Point2D.Double();
+		try
+		{
+			transform.inverseTransform(d_Pt, w_Pt);
+		}
+		catch (NoninvertibleTransformException ex) {
+			return -1;
+		}
+		int worldHeight = (int)w_Pt.getY();
+		
+		return worldHeight;
+		
+	}
+	
+	private int getWorldX() {
+		AffineTransform transform = new AffineTransform();
+		transform.translate(getWidth()/2, getHeight()/2);
+		transform.scale(scale, scale);
+		transform.translate(-w_originX, -w_originY);
+		
+		int deviceX = getX();
+		int deviceY = getY();
+		
+		Point2D d_Pt = new Point2D.Double(deviceX, deviceY);
+		Point2D w_Pt = new Point2D.Double();
+		try
+		{
+			transform.inverseTransform(d_Pt, w_Pt);
+		}
+		catch (NoninvertibleTransformException ex) {
+			return -1;
+		}
+		int worldX = (int)w_Pt.getX();
+		
+		return worldX;
+	
 	}
 
-
+	private int getWorldY() {
+		AffineTransform transform = new AffineTransform();
+		transform.translate(getWidth()/2, getHeight()/2);
+		transform.scale(scale, scale);
+		transform.translate(-w_originX, -w_originY);
+		
+		int deviceX = getX();
+		int deviceY = getY();
+		
+		Point2D d_Pt = new Point2D.Double(deviceX, deviceY);
+		Point2D w_Pt = new Point2D.Double();
+		try
+		{
+			transform.inverseTransform(d_Pt, w_Pt);
+		}
+		catch (NoninvertibleTransformException ex) {
+			return -1;
+		}
+		int worldY = (int)w_Pt.getY();
+		
+		return worldY;
+		
+	}
 	private MouseAdapter mouseAdapter = new MouseAdapter() {
 
 		//try this
@@ -145,6 +235,7 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 			System.out.print("d_X: " + d_X + "  d_Y: " + d_Y + "      ");
 			
 			AffineTransform transform = new AffineTransform();
+			transform.translate(getWidth()/2, getHeight()/2);
 			transform.scale(scale, scale);
 			transform.translate(-w_originX, -w_originY);
 			
@@ -162,7 +253,6 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 			
 			System.out.print("w_X: " + w_X + "  w_Y: " + w_Y + "\n");
 			
-			
 			boolean hitShape = false;
 			
 			if (downloadedImage != null) {
@@ -171,6 +261,24 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 					hitShape = true;
 					
 					//figure out which cell was clicked on.
+					
+					int y = batchState.getFirstYCoord() + batchState.getRecordHeight()*batchState.getNumberOfRows();
+					//check to make sure click is between max row height and firstYCoord
+					if (w_Y >= batchState.getFirstYCoord() && w_Y < y) {
+						selectedRow = (w_Y - batchState.getFirstYCoord())/batchState.getRecordHeight();
+						if (selectedRow >= batchState.getNumberOfRows()) {
+							selectedRow = -1; 
+						}
+					}
+					for (int i = 1; i < batchState.getFields().size(); i++) {
+						Field clickedColumn = batchState.getFields().get(i);
+						if (w_X >= clickedColumn.getxCoord() && w_X < (clickedColumn.getxCoord() + clickedColumn.getWidth())) {
+							selectedColumn = i;
+						}					
+					}
+					if (selectedRow != -1 && selectedColumn != -1) {
+						isCellSelected = true;
+					}
 				}
 			}
 			
@@ -191,7 +299,12 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 				int d_X = e.getX();
 				int d_Y = e.getY();
 				
+				isCellSelected = false;
+				selectedColumn = -1;
+				selectedRow = -1;
+				
 				AffineTransform transform = new AffineTransform();
+				transform.translate(getWidth()/2, getHeight()/2);
 				transform.scale(scale, scale);
 				transform.translate(-w_dragStartOriginX, -w_dragStartOriginY);
 				
@@ -223,12 +336,20 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			initDrag();
+			//find the clicked cell
+			if (isCellSelected) {
+				Cell clickedCell = new Cell(selectedRow, selectedColumn);
+				batchState.setSelectedCell(clickedCell);
+				selectedColumn = -1;
+				selectedRow = -1;
+				isCellSelected = false;
+			}
 		}
 
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
 			
-			if (e.getWheelRotation() < 0) {
+			if (e.getWheelRotation() > 0) {
 				if (batchState.getZoomLevel() > 0.3)
 					batchState.setZoomLevel(batchState.getZoomLevel() - 0.05);
 			} else {
@@ -237,114 +358,6 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 			}
 		}
 	};
-
-	private int worldToDeviceX(int w_X) {
-		double d_X = w_X;
-		d_X -= w_originX;
-		d_X *= scale;
-		return (int) d_X;
-	}
-
-	private int worldToDeviceY(int w_Y) {
-		double d_Y = w_Y;
-		d_Y -= w_originY;
-		d_Y *= scale;
-		return (int) d_Y;
-	}
-
-	private int deviceToWorldX(int d_X) {
-		double w_X = d_X;
-		w_X *= 1.0 / scale;
-		w_X += w_originX;
-		return (int) w_X;
-	}
-
-	private int deviceToWorldY(int d_Y) {
-		double w_Y = d_Y;
-		w_Y *= 1.0 / scale;
-		w_Y += w_originY;
-		return (int) w_Y;
-	}
-
-	// //////////////
-	// Drawing Shape
-	// //////////////
-
-//	interface DrawingShape {
-//		boolean contains(Graphics2D g2, double x, double y);
-//
-//		void draw(Graphics2D g2);
-//
-//		Rectangle2D getBounds(Graphics2D g2);
-//	}
-
-//	class DrawingRect implements DrawingShape {
-//
-//		private Rectangle2D rect;
-//		private Color color;
-//
-//		public DrawingRect(Rectangle2D rect, Color color) {
-//			this.rect = rect;
-//			this.color = color;
-//		}
-//
-//		@Override
-//		public boolean contains(Graphics2D g2, double x, double y) {
-//			return rect.contains(x, y);
-//		}
-//
-////		@Override
-////		public void draw(Graphics2D g2) {
-////			Rectangle2D transformedRect = new Rectangle2D.Double(
-////					worldToDeviceX((int) rect.getX()),
-////					worldToDeviceY((int) rect.getY()),
-////					(int) (rect.getWidth() * scale),
-////					(int) (rect.getHeight() * scale));
-////			g2.setColor(color);
-////			g2.fill(transformedRect);
-////		}
-//
-//		@Override
-//		public Rectangle2D getBounds(Graphics2D g2) {
-//			return rect.getBounds2D();
-//		}
-//	}
-//
-//	class DrawingImage implements DrawingShape {
-//
-//		private Image image;
-//		private Rectangle2D rect;
-//
-//		public DrawingImage(Image image, Rectangle2D rect) {
-//			this.image = image;
-//			this.rect = rect;
-//		}
-//
-//		@Override
-//		public boolean contains(Graphics2D g2, double x, double y) {
-//			return rect.contains(x, y);
-//		}
-//
-//		@Override
-//		public void draw(Graphics2D g2) {
-//			Rectangle2D transformedRect = new Rectangle2D.Double(
-//					worldToDeviceX((int) rect.getX()),
-//					worldToDeviceY((int) rect.getY()),
-//					(int) (rect.getWidth() * scale),
-//					(int) (rect.getHeight() * scale));
-//
-//			g2.drawImage(image, (int) transformedRect.getMinX(),
-//					(int) transformedRect.getMinY(),
-//					(int) transformedRect.getMaxX(),
-//					(int) transformedRect.getMaxY(), 0, 0,
-//					image.getWidth(null), image.getHeight(null), null);
-//		}
-//
-//		@Override
-//		public Rectangle2D getBounds(Graphics2D g2) {
-//			return rect.getBounds2D();
-//		}
-//	}
 
 	public String getImageURL() {
 		return imageURL;
