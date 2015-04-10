@@ -151,13 +151,14 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 			
 		} else if (recordList.getSelectedIndex() != row) {
 			recordList.setSelectedIndex(row);
-			textFields.get(row).requestFocus();
 		}
-
-//		if (textFields.size() != 0) {
-//			textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
+		
+//		textFields.get(column-1).grabFocus();
+		
+		if (textFields.size() != 0) {
+			textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
 			//TODO add logic to check for mispelled and show red/white
-//		}
+		}
 	}
 	private ListSelectionListener lsListener = new ListSelectionListener() {
 

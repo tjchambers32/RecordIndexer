@@ -84,7 +84,7 @@ public class IndexerFrame extends JFrame implements BatchStateListener{
 		
 		tableEntryPanel = new TableEntryPanel(batchState);
 		formEntryPanel = new FormEntryPanel(batchState);
-		fieldHelpPanel = new FieldHelpPanel();
+		fieldHelpPanel = new FieldHelpPanel(batchState);
 		imageNavigatorPanel = new ImageNavigatorPanel();
 		
 		BLentryPanel = new JTabbedPane();
