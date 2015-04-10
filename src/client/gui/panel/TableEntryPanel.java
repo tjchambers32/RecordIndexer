@@ -132,7 +132,6 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 			SuggestionsDialog suggestions = new SuggestionsDialog(batchState);
 			suggestions.setVisible(true);
 		}
-		
 	};
 }
 
