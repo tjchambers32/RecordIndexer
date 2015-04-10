@@ -10,6 +10,9 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
@@ -43,8 +46,8 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 	private double scale;
 
 	private boolean dragging;
-	private int d_dragStartX;
-	private int d_dragStartY;
+	private int w_dragStartX;
+	private int w_dragStartY;
 	private int w_dragStartOriginX;
 	private int w_dragStartOriginY;
 	
@@ -77,8 +80,8 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 
 	private void initDrag() {
 		dragging = false;
-		d_dragStartX = 0;
-		d_dragStartY = 0;
+		w_dragStartX = 0;
+		w_dragStartY = 0;
 		w_dragStartOriginX = 0;
 		w_dragStartOriginY = 0;
 	}
@@ -101,10 +104,15 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 		if (downloadedImage != null) {
 			Graphics2D graphics = (Graphics2D)g.create();
 			graphics.setBackground(Color.DARK_GRAY);
+			
 			graphics.translate(getWidth()/2, getHeight()/2);
+			
 			graphics.scale(scale, scale);
+			
 			graphics.translate(-w_originX, -w_originY);
+			
 			graphics.drawImage(downloadedImage, 0, 0, null);
+			
 			if (batchState.isHighlightsVisible()) {
 				graphics.setColor(Color.blue);
 				AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f);
@@ -126,46 +134,85 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 
 	private MouseAdapter mouseAdapter = new MouseAdapter() {
 
+		//try this
+		//https://students.cs.byu.edu/~cs240ta/winter2015/rodham_files/23-image-navigator/code/DoubleSpongeBob_3_Scaling_Translation/src/DrawingComponent.java
+		
 		@Override
 		public void mousePressed(MouseEvent e) {
 			int d_X = e.getX();
 			int d_Y = e.getY();
-			int w_X = deviceToWorldX(d_X);
-			int w_Y = deviceToWorldY(d_Y);
-
+			
+			System.out.print("d_X: " + d_X + "  d_Y: " + d_Y + "      ");
+			
+			AffineTransform transform = new AffineTransform();
+			transform.scale(scale, scale);
+			transform.translate(-w_originX, -w_originY);
+			
+			Point2D d_Pt = new Point2D.Double(d_X, d_Y);
+			Point2D w_Pt = new Point2D.Double();
+			try
+			{
+				transform.inverseTransform(d_Pt, w_Pt);
+			}
+			catch (NoninvertibleTransformException ex) {
+				return;
+			}
+			int w_X = (int)w_Pt.getX();
+			int w_Y = (int)w_Pt.getY();
+			
+			System.out.print("w_X: " + w_X + "  w_Y: " + w_Y + "\n");
+			
+			
 			boolean hitShape = false;
-
-			Graphics2D g2 = (Graphics2D) getGraphics();
+			
 			if (downloadedImage != null) {
-				Rectangle2D tempRect = new Rectangle2D.Double(0, 0, downloadedImage.getWidth(null), downloadedImage.getHeight(null));
-				if (tempRect.contains(w_X, w_Y)) {
+				Rectangle2D rect = new Rectangle2D.Double(0, 0, downloadedImage.getWidth(null), downloadedImage.getHeight(null));
+				if (rect.contains(w_X, w_Y)) {
 					hitShape = true;
 					
-					//TODO figure out how to highlight cells when user clicks image
+					//figure out which cell was clicked on.
 				}
 			}
-
+			
+			
+			
 			if (hitShape) {
-				dragging = true;
-				d_dragStartX = e.getX();
-				d_dragStartY = e.getY();
+				dragging = true;		
+				w_dragStartX = w_X;
+				w_dragStartY = w_Y;		
 				w_dragStartOriginX = w_originX;
 				w_dragStartOriginY = w_originY;
 			}
 		}
 
 		@Override
-		public void mouseDragged(MouseEvent e) {
+		public void mouseDragged(MouseEvent e) {		
 			if (dragging) {
-				int d_deltaX = (e.getX() - d_dragStartX);
-				int d_deltaY = (e.getY() - d_dragStartY);
-
-				int w_deltaX = (int) (d_deltaX / scale);
-				int w_deltaY = (int) (d_deltaY / scale);
-
+				int d_X = e.getX();
+				int d_Y = e.getY();
+				
+				AffineTransform transform = new AffineTransform();
+				transform.scale(scale, scale);
+				transform.translate(-w_dragStartOriginX, -w_dragStartOriginY);
+				
+				Point2D d_Pt = new Point2D.Double(d_X, d_Y);
+				Point2D w_Pt = new Point2D.Double();
+				try
+				{
+					transform.inverseTransform(d_Pt, w_Pt);
+				}
+				catch (NoninvertibleTransformException ex) {
+					return;
+				}
+				int w_X = (int)w_Pt.getX();
+				int w_Y = (int)w_Pt.getY();
+				
+				int w_deltaX = w_X - w_dragStartX;
+				int w_deltaY = w_Y - w_dragStartY;
+				
 				w_originX = w_dragStartOriginX - w_deltaX;
 				w_originY = w_dragStartOriginY - w_deltaY;
-
+				
 				batchState.setImageX(w_originX);
 				batchState.setImageY(w_originY);
 				
@@ -188,8 +235,6 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 				if (batchState.getZoomLevel() < 3.0)
 					batchState.setZoomLevel(batchState.getZoomLevel() + 0.05);
 			}
-			
-			return;
 		}
 	};
 
@@ -225,81 +270,81 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 	// Drawing Shape
 	// //////////////
 
-	interface DrawingShape {
-		boolean contains(Graphics2D g2, double x, double y);
+//	interface DrawingShape {
+//		boolean contains(Graphics2D g2, double x, double y);
+//
+//		void draw(Graphics2D g2);
+//
+//		Rectangle2D getBounds(Graphics2D g2);
+//	}
 
-		void draw(Graphics2D g2);
-
-		Rectangle2D getBounds(Graphics2D g2);
-	}
-
-	class DrawingRect implements DrawingShape {
-
-		private Rectangle2D rect;
-		private Color color;
-
-		public DrawingRect(Rectangle2D rect, Color color) {
-			this.rect = rect;
-			this.color = color;
-		}
-
-		@Override
-		public boolean contains(Graphics2D g2, double x, double y) {
-			return rect.contains(x, y);
-		}
-
-		@Override
-		public void draw(Graphics2D g2) {
-			Rectangle2D transformedRect = new Rectangle2D.Double(
-					worldToDeviceX((int) rect.getX()),
-					worldToDeviceY((int) rect.getY()),
-					(int) (rect.getWidth() * scale),
-					(int) (rect.getHeight() * scale));
-			g2.setColor(color);
-			g2.fill(transformedRect);
-		}
-
-		@Override
-		public Rectangle2D getBounds(Graphics2D g2) {
-			return rect.getBounds2D();
-		}
-	}
-
-	class DrawingImage implements DrawingShape {
-
-		private Image image;
-		private Rectangle2D rect;
-
-		public DrawingImage(Image image, Rectangle2D rect) {
-			this.image = image;
-			this.rect = rect;
-		}
-
-		@Override
-		public boolean contains(Graphics2D g2, double x, double y) {
-			return rect.contains(x, y);
-		}
-
-		@Override
-		public void draw(Graphics2D g2) {
-			Rectangle2D transformedRect = new Rectangle2D.Double(
-					worldToDeviceX((int) rect.getX()),
-					worldToDeviceY((int) rect.getY()),
-					(int) (rect.getWidth() * scale),
-					(int) (rect.getHeight() * scale));
-
-			g2.drawImage(image, (int) transformedRect.getMinX(),
-					(int) transformedRect.getMinY(),
-					(int) transformedRect.getMaxX(),
-					(int) transformedRect.getMaxY(), 0, 0,
-					image.getWidth(null), image.getHeight(null), null);
-		}
-
-		@Override
-		public Rectangle2D getBounds(Graphics2D g2) {
-			return rect.getBounds2D();
-		}
-	}
+//	class DrawingRect implements DrawingShape {
+//
+//		private Rectangle2D rect;
+//		private Color color;
+//
+//		public DrawingRect(Rectangle2D rect, Color color) {
+//			this.rect = rect;
+//			this.color = color;
+//		}
+//
+//		@Override
+//		public boolean contains(Graphics2D g2, double x, double y) {
+//			return rect.contains(x, y);
+//		}
+//
+////		@Override
+////		public void draw(Graphics2D g2) {
+////			Rectangle2D transformedRect = new Rectangle2D.Double(
+////					worldToDeviceX((int) rect.getX()),
+////					worldToDeviceY((int) rect.getY()),
+////					(int) (rect.getWidth() * scale),
+////					(int) (rect.getHeight() * scale));
+////			g2.setColor(color);
+////			g2.fill(transformedRect);
+////		}
+//
+//		@Override
+//		public Rectangle2D getBounds(Graphics2D g2) {
+//			return rect.getBounds2D();
+//		}
+//	}
+//
+//	class DrawingImage implements DrawingShape {
+//
+//		private Image image;
+//		private Rectangle2D rect;
+//
+//		public DrawingImage(Image image, Rectangle2D rect) {
+//			this.image = image;
+//			this.rect = rect;
+//		}
+//
+//		@Override
+//		public boolean contains(Graphics2D g2, double x, double y) {
+//			return rect.contains(x, y);
+//		}
+//
+//		@Override
+//		public void draw(Graphics2D g2) {
+//			Rectangle2D transformedRect = new Rectangle2D.Double(
+//					worldToDeviceX((int) rect.getX()),
+//					worldToDeviceY((int) rect.getY()),
+//					(int) (rect.getWidth() * scale),
+//					(int) (rect.getHeight() * scale));
+//
+//			g2.drawImage(image, (int) transformedRect.getMinX(),
+//					(int) transformedRect.getMinY(),
+//					(int) transformedRect.getMaxX(),
+//					(int) transformedRect.getMaxY(), 0, 0,
+//					image.getWidth(null), image.getHeight(null), null);
+//		}
+//
+//		@Override
+//		public Rectangle2D getBounds(Graphics2D g2) {
+//			return rect.getBounds2D();
+//		}
+//	}
 
 	public String getImageURL() {
 		return imageURL;
