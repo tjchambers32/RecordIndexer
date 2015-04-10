@@ -10,6 +10,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import shared.model.User;
 import client.gui.IndexerFrame;
 import client.gui.batchstate.*;
 
@@ -17,46 +18,46 @@ import client.gui.batchstate.*;
 public class ButtonPanel extends JPanel implements BatchStateListener {
 
 	BatchState batchState;
-	
+
 	JButton zoomInButton;
 	JButton zoomOutButton;
 	JButton invertImageButton;
 	JButton toggleHighlightsButton;
 	JButton saveButton;
 	JButton submitButton;
-	
+
 	public ButtonPanel(IndexerFrame frame) {
 		super();
 
 		batchState = frame.getBatchState();
 		batchState.addListener(this);
 
-		createComponents();	
+		createComponents();
 
 	}
 
 	private void createComponents() {
-		
+
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		
+
 		zoomInButton = new JButton("Zoom In");
 		zoomInButton.addActionListener(actionListener);
-		
+
 		zoomOutButton = new JButton("Zoom Out");
 		zoomOutButton.addActionListener(actionListener);
-		
+
 		invertImageButton = new JButton("Invert Image");
 		invertImageButton.addActionListener(actionListener);
-		
+
 		toggleHighlightsButton = new JButton("Toggle Highlights");
 		toggleHighlightsButton.addActionListener(actionListener);
-		
+
 		saveButton = new JButton("Save");
 		saveButton.addActionListener(actionListener);
 
 		submitButton = new JButton("Submit");
 		submitButton.addActionListener(actionListener);
-		
+
 		if (batchState.getHasDownloadedBatch() == true) {
 			zoomInButton.setEnabled(true);
 			zoomOutButton.setEnabled(true);
@@ -72,18 +73,18 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 			saveButton.setEnabled(false);
 			submitButton.setEnabled(false);
 		}
-		
+
 		this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		this.add(zoomInButton);
-		this.add(Box.createRigidArea(new Dimension(10,0)));
+		this.add(Box.createRigidArea(new Dimension(10, 0)));
 		this.add(zoomOutButton);
-		this.add(Box.createRigidArea(new Dimension(10,0)));
+		this.add(Box.createRigidArea(new Dimension(10, 0)));
 		this.add(invertImageButton);
-		this.add(Box.createRigidArea(new Dimension(10,0)));
+		this.add(Box.createRigidArea(new Dimension(10, 0)));
 		this.add(toggleHighlightsButton);
-		this.add(Box.createRigidArea(new Dimension(10,0)));
+		this.add(Box.createRigidArea(new Dimension(10, 0)));
 		this.add(saveButton);
-		this.add(Box.createRigidArea(new Dimension(10,0)));
+		this.add(Box.createRigidArea(new Dimension(10, 0)));
 		this.add(submitButton);
 		this.add(Box.createHorizontalGlue());
 	}
@@ -105,7 +106,12 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 			} else if (e.getSource() == saveButton) {
 				batchState.save();
 			} else if (e.getSource() == submitButton) {
-				//submit batch has different handling
+				if (batchState.submitBatch()) {
+					User tempUser = batchState.getUser();
+					BatchState emptyState = new BatchState(batchState.getHostname(), batchState.getPort());
+					emptyState.setUser(tempUser);
+					batchState.update(emptyState);
+				}
 			}
 		}
 
@@ -113,7 +119,7 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 
 	@Override
 	public void stateChanged() {
-		
+
 		if (batchState.getHasDownloadedBatch() == true) {
 			zoomInButton.setEnabled(true);
 			zoomOutButton.setEnabled(true);
@@ -129,6 +135,6 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 			saveButton.setEnabled(false);
 			submitButton.setEnabled(false);
 		}
-		
+
 	}
 }

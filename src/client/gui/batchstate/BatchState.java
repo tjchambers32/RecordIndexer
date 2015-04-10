@@ -12,34 +12,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import shared.communication.DownloadBatch_Result;
+import shared.communication.SubmitBatch_Params;
+import shared.communication.SubmitBatch_Result;
 import shared.model.Field;
+import shared.model.Record;
 import shared.model.User;
+import shared.model.Value;
+import client.ClientException;
 import client.communication.ClientCommunicator;
 
 /**
  * @author tchambs
  *
  */
-public class BatchState implements BatchStateListener{
+public class BatchState implements BatchStateListener {
 
-	//utility variables
+	// utility variables
 	transient private List<BatchStateListener> listeners;
 	private ClientCommunicator comm;
 	private String hostname;
 	private int port;
 	private User user;
 
-	//persistent user state variables
+	// persistent user state variables
 	private String[][] values;
 	private Cell selectedCell;
-	
+
 	private double zoomLevel;
-	
+
 	private int scrollPosition;
 	private boolean highlightsVisible;
 	private boolean imageInverted;
@@ -51,8 +57,8 @@ public class BatchState implements BatchStateListener{
 	private int verticalDivider;
 	private int numberOfRows;
 	private int numberOfColumns;
-	
-	private String imageURL; //relative filepath to an image
+
+	private String imageURL; // relative filepath to an image
 	private int imageX;
 	private int imageY;
 	private int imageWidth;
@@ -62,81 +68,99 @@ public class BatchState implements BatchStateListener{
 	private boolean hasDownloadedBatch;
 	private int firstYCoord;
 	private int recordHeight;
-	
+
 	private boolean loggingIn;
 	private boolean downloadingBatch;
-	
+
 	public BatchState(String hostname, int port) {
-		
+
 		this.hostname = hostname;
 		this.port = port;
-		
+
 		comm = new ClientCommunicator(hostname, port);
 		listeners = new ArrayList<BatchStateListener>();
-		
+
 		numberOfRows = 0;
 		numberOfColumns = 0;
 		values = new String[numberOfRows][numberOfColumns];
-		selectedCell = new Cell(1,1);
+		selectedCell = new Cell(1, 1);
 		imageURL = "";
 		user = null;
-		
+
 		fields = new ArrayList<Field>();
+
+		
+		values = new String[numberOfRows][numberOfColumns];
+
+		for (int i = 0; i < numberOfRows; i++) {
+			for (int j = 0; j < numberOfColumns; j++) {
+				values[i][j] = "";
+			}
+		}
+
+		// Initialize RecordNumber Values
+		for (int i = 0; i < numberOfRows; i++) {
+			values[i][0] = "" + (i + 1);
+		}
 		
 		hasDownloadedBatch = false;
-		
+
 		imageX = 0;
 		imageY = 0;
 		zoomLevel = .6;
 		highlightsVisible = true;
 		imageInverted = false;
-		
+
 		horizontalDivider = 400;
 		verticalDivider = 400;
-		
+
 		loggingIn = false;
 		downloadingBatch = false;
 	}
-	
+
 	public void addListener(BatchStateListener l) {
 		listeners.add(l);
 	}
-	
+
 	public void setValue(Cell cell, String value) {
-		
+
 		values[cell.getRecord()][cell.getField()] = value;
-		
+
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
 	}
-	
+
 	public String getValue(Cell cell) {
-		return values[cell.record][cell.field];
+		
+		if (cell.record < numberOfRows && cell.field < numberOfColumns)
+			return values[cell.record][cell.field];
+		else
+			return "";
 	}
-	
+
 	public void setSelectedCell(Cell selCell) {
-		
+
 		selectedCell = selCell;
-		
+
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
 	}
-	
+
 	public Cell getSelectedCell() {
 		return selectedCell;
 	}
 
 	@Override
 	public void stateChanged() {
-		//do nothing
+		// do nothing
 	}
 
 	public void save() {
-		
+
 		XStream xstream = new XStream(new DomDriver());
-		
+
 		File savedBatchState = new File("savedBatches/" + user.getUsername() + ".xml");
 		try {
 			xstream.toXML(this, new FileWriter(savedBatchState));
@@ -144,47 +168,72 @@ public class BatchState implements BatchStateListener{
 			e.printStackTrace();
 		}
 	}
-	
-	public void submitBatch() {
-		//TODO IMPLEMENT submitBatch in batchState
+
+	public boolean submitBatch() {
+		
+		ArrayList<Record> records = new ArrayList<Record>();
+		ArrayList<Value> valueList = new ArrayList<Value>();
+		
+		String valueString = "";
+		for (int i = 0; i < numberOfRows; i++) {
+			records.add(new Record(user.getImageID(), i+1));
+			for (int j = 0; j < numberOfColumns; j++) {
+				valueString = values[i][j];
+				valueList.add(new Value(i+1, valueString, j+1));
+			}
+		}
+		
+		SubmitBatch_Params params = new SubmitBatch_Params(this.getUser(), records, valueList);
+		SubmitBatch_Result result = null;
+		
+		try {
+			result = comm.submitBatch(params);
+		} catch (ClientException e) {
+			JOptionPane.showMessageDialog(null, "Could not submit batch.",
+					"Submit Batch Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		
+		return result.getResult();
 	}
-	
+
 	public void setDownloadedBatch(DownloadBatch_Result result) {
 
 		this.setImageURL("http://" + hostname + ":" + port + "/" + result.getImage().getFilepath());
 		this.setNumberOfRows(result.getProject().getRecordsPerImage());
 		this.setFields(result.getFields());
-		
+
 		Field recordNumber = new Field();
 		recordNumber.setTitle("Record Number");
 		fields.add(0, recordNumber);
-		
+
 		this.setNumberOfColumns(result.getFields().size());
 		this.values = new String[numberOfRows][numberOfColumns];
-		
+
 		for (int i = 0; i < numberOfRows; i++) {
 			for (int j = 0; j < numberOfColumns; j++) {
 				values[i][j] = "";
 			}
 		}
-		
-		//Initialize RecordNumber Values
+
+		// Initialize RecordNumber Values
 		for (int i = 0; i < numberOfRows; i++) {
-			values[i][0] = "" + (i+1);
+			values[i][0] = "" + (i + 1);
 		}
-		
+
 		this.setHasDownloadedBatch(true);
 		this.firstYCoord = result.getProject().getFirstYCoord();
 		this.recordHeight = result.getProject().getRecordHeight();
-		
-		this.selectedCell = new Cell(1,1);
-		
+
+		this.selectedCell = new Cell(1, 1);
+
 		downloadingBatch = true;
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
 		downloadingBatch = false;
-		
+
 	}
 
 	public ClientCommunicator getComm() {
@@ -218,7 +267,7 @@ public class BatchState implements BatchStateListener{
 	public void setUser(User user) {
 		this.user = user;
 		this.loggingIn = true;
-		
+
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
@@ -231,14 +280,14 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageURL(String imageURL) {
 		this.imageURL = imageURL;
-		
+
 		try {
 			Image testImage = ImageIO.read(new URL(imageURL));
-			imageX = testImage.getWidth(null)/2;
-			imageY = testImage.getHeight(null)/2;
+			imageX = testImage.getWidth(null) / 2;
+			imageY = testImage.getHeight(null) / 2;
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
 	}
 
 	public int getProjectID() {
@@ -247,9 +296,9 @@ public class BatchState implements BatchStateListener{
 
 	public void setProjectID(int projectID) {
 		this.projectID = projectID;
-		
+
 	}
-	
+
 	public ArrayList<Field> getFields() {
 		return fields;
 	}
@@ -269,7 +318,7 @@ public class BatchState implements BatchStateListener{
 	public void setHasDownloadedBatch(boolean hasDownloadedBatch) {
 		this.hasDownloadedBatch = hasDownloadedBatch;
 	}
-	
+
 	public List<BatchStateListener> getListeners() {
 		return listeners;
 	}
@@ -284,7 +333,7 @@ public class BatchState implements BatchStateListener{
 
 	public void setHighlightsVisible(boolean highlightsVisible) {
 		this.highlightsVisible = highlightsVisible;
-		
+
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
@@ -296,7 +345,7 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageInverted(boolean imageInverted) {
 		this.imageInverted = imageInverted;
-		
+
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
@@ -344,7 +393,7 @@ public class BatchState implements BatchStateListener{
 
 	public void setZoomLevel(double zoomLevel) {
 		this.zoomLevel = zoomLevel;
-		
+
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
@@ -356,7 +405,7 @@ public class BatchState implements BatchStateListener{
 
 	public void setValues(String[][] values) {
 		this.values = values;
-		
+
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
@@ -416,7 +465,7 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageX(int imageX) {
 		this.imageX = imageX;
-		
+
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
@@ -428,7 +477,7 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageY(int imageY) {
 		this.imageY = imageY;
-		
+
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
@@ -440,7 +489,7 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageWidth(int imageWidth) {
 		this.imageWidth = imageWidth;
-		
+
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
@@ -452,14 +501,14 @@ public class BatchState implements BatchStateListener{
 
 	public void setImageHeight(int imageHeight) {
 		this.imageHeight = imageHeight;
-		
+
 		for (BatchStateListener l : listeners) {
 			l.stateChanged();
 		}
 	}
 
 	public boolean checkMisspelled(Cell cell) {
-		
+
 		return false;
 	}
 
@@ -489,7 +538,7 @@ public class BatchState implements BatchStateListener{
 
 		this.values = savedState.values;
 		this.selectedCell = savedState.selectedCell;
-		
+
 		this.scrollPosition = savedState.scrollPosition;
 		this.highlightsVisible = savedState.highlightsVisible;
 		this.imageInverted = savedState.imageInverted;
@@ -501,6 +550,19 @@ public class BatchState implements BatchStateListener{
 		this.verticalDivider = savedState.verticalDivider;
 		this.numberOfRows = savedState.numberOfRows;
 		this.numberOfColumns = savedState.numberOfColumns;
+
+		values = new String[numberOfRows][numberOfColumns];
+
+		for (int i = 0; i < numberOfRows; i++) {
+			for (int j = 0; j < numberOfColumns; j++) {
+				values[i][j] = "";
+			}
+		}
+
+		// Initialize RecordNumber Values
+		for (int i = 0; i < numberOfRows; i++) {
+			values[i][0] = "" + (i + 1);
+		}
 		
 		this.imageURL = savedState.imageURL;
 		this.imageX = savedState.imageX;
@@ -512,10 +574,10 @@ public class BatchState implements BatchStateListener{
 		this.hasDownloadedBatch = savedState.hasDownloadedBatch;
 		this.firstYCoord = savedState.firstYCoord;
 		this.recordHeight = savedState.recordHeight;
-		
+
 		this.loggingIn = savedState.loggingIn;
-		
-		this.setUser(savedState.user); //will run through all the listeners
-		setZoomLevel(savedState.zoomLevel); //runs through listeners again
+
+		this.setUser(savedState.user); // will run through all the listeners
+		setZoomLevel(savedState.zoomLevel); // runs through listeners again
 	}
 }
