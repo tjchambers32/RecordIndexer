@@ -115,7 +115,7 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 			JPopupMenu popup = null;
 			JMenuItem seeSuggestions = null;
 			if (e.getButton() == MouseEvent.BUTTON3) {
-				if (batchState.checkMisspelled(new Cell(row, column))) {
+				if (batchState.qualityCheck(new Cell(row, column))) {
 					popup = new JPopupMenu();
 					seeSuggestions = new JMenuItem("See Suggestions.");
 					seeSuggestions.addActionListener(actionListener);
@@ -132,7 +132,6 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 		public void actionPerformed(ActionEvent e) {
 			SuggestionsDialog suggestions = new SuggestionsDialog(batchState);
 			suggestions.setVisible(true);
-			
 		}
 		
 	};

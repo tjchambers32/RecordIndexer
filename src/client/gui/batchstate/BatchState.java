@@ -509,8 +509,15 @@ public class BatchState implements BatchStateListener {
 		}
 	}
 
-	public boolean checkMisspelled(Cell cell) {
-
+	//returns true if word IS misspelled. false if spelled correctly
+	public boolean qualityCheck(Cell cell) {
+		String word = this.getValue(cell);
+		
+		//empty cells should be WHITE
+		if (word == "") {
+			return false;
+		}
+		
 		return false;
 	}
 

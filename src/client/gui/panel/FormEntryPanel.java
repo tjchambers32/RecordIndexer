@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
@@ -21,6 +23,7 @@ import shared.model.Field;
 import client.gui.batchstate.BatchState;
 import client.gui.batchstate.BatchStateListener;
 import client.gui.batchstate.Cell;
+import client.gui.dialog.SuggestionsDialog;
 
 @SuppressWarnings("serial")
 public class FormEntryPanel extends JPanel implements BatchStateListener{
@@ -133,9 +136,35 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 	};
 	
 	private MouseAdapter mouseAdapter = new MouseAdapter() {
-		
-		public void mouseRelease(MouseEvent e) {
-			//TODO add logic for right click to show JPopupMenu
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			
+			JPopupMenu popup = null;
+			JMenuItem seeSuggestions = null;
+			if (e.getButton() == MouseEvent.BUTTON3) {
+				for (int i = 0; i < textFields.size(); i++) {
+					JTextField tempField = textFields.get(i);
+					if (e.getSource() == tempField) {
+						if (tempField.getBackground() == Color.red) {
+							popup = new JPopupMenu();
+							seeSuggestions = new JMenuItem("See Suggestions.");
+							seeSuggestions.addActionListener(actionListener);
+							popup.add(seeSuggestions);
+							popup.show(e.getComponent(), e.getX(), e.getY());
+						}
+					}
+				}
+			}
+		}
+	};
+	
+	private ActionListener actionListener = new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			SuggestionsDialog suggestions = new SuggestionsDialog(batchState);
+			suggestions.setVisible(true);
 		}
 	};
 	
@@ -174,9 +203,9 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 			if (row < 0)
 				return;
 			
-			//Initialize the proper data
+			//run through each cell and check for misspellings
 			for (int i = 0; i < textFields.size(); i++) {
-				if (batchState.checkMisspelled(new Cell(row, i+1))) {
+				if (batchState.qualityCheck(new Cell(row, i+1))) {
 					textFields.get(i).setBackground(Color.red);
 				}
 				else {
