@@ -52,15 +52,25 @@ public class FieldHelpPanel extends JPanel implements BatchStateListener{
 		}
 	}
 	
+	private void hideHelpInfo() {
+		helpPane.setText("");
+	}
+	
 	@Override
 	public void stateChanged() {
+		
+		if (batchState.getHasDownloadedBatch() == false) {
+			hideHelpInfo();
+			return;
+		}
+		
 		int selectedField = batchState.getSelectedCell().getField();
 		
 		Cell tempCell = selectedCell;
 		Cell batchCell = batchState.getSelectedCell();
 		
 		if (tempCell == null) {
-			
+			hideHelpInfo();
 			tempCell = batchCell;
 			selectedCell = batchCell;
 		
@@ -75,6 +85,7 @@ public class FieldHelpPanel extends JPanel implements BatchStateListener{
 				showHelpInfo();
 			}
 		}
+		
 	}
 
 	private String buildFullURL(String shortURL) {

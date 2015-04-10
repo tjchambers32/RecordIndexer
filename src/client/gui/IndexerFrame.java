@@ -35,6 +35,8 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 	FieldHelpPanel fieldHelpPanel;
 	ImageNavigatorPanel imageNavigatorPanel;
 
+	JPanel rootPanel;
+	
 	JSplitPane horizontalSplit;
 	JSplitPane verticalSplit;
 
@@ -105,7 +107,7 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 
 		verticalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, imagePanel, horizontalSplit);
 
-		JPanel rootPanel = new JPanel();
+		rootPanel = new JPanel();
 		rootPanel.setLayout(new BorderLayout());
 
 		rootPanel.add(buttonPanel, BorderLayout.NORTH);
@@ -116,6 +118,23 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 
 		// batchState.setZoomLevel(batchState.getZoomLevel());
 
+	}
+	
+	public void clearEntryPanels() {
+		
+		BLentryPanel.removeAll();
+		
+		tableEntryPanel = new TableEntryPanel(batchState);
+		JScrollPane tableScroll = new JScrollPane(tableEntryPanel);
+		tableScroll.getVerticalScrollBar().setUnitIncrement(10);
+		
+		formEntryPanel = new FormEntryPanel(batchState);
+		
+		BLentryPanel.addTab("Table Entry", tableScroll);
+		BLentryPanel.addTab("Form Entry", formEntryPanel);
+		
+		repaint();
+		
 	}
 
 	private ActionListener actionListener = new ActionListener() {

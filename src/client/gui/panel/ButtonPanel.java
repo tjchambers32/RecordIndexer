@@ -18,7 +18,9 @@ import client.gui.batchstate.*;
 public class ButtonPanel extends JPanel implements BatchStateListener {
 
 	BatchState batchState;
-
+	
+	IndexerFrame frame;
+	
 	JButton zoomInButton;
 	JButton zoomOutButton;
 	JButton invertImageButton;
@@ -32,6 +34,8 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 		batchState = frame.getBatchState();
 		batchState.addListener(this);
 
+		this.frame = frame;		
+		
 		createComponents();
 
 	}
@@ -111,7 +115,10 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 					BatchState emptyState = new BatchState(batchState.getHostname(), batchState.getPort());
 					emptyState.setUser(tempUser);
 					batchState.update(emptyState);
+					frame.clearEntryPanels();
+					batchState.stateChanged();
 				}
+				
 			}
 		}
 

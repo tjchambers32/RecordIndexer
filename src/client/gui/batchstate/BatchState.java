@@ -154,7 +154,9 @@ public class BatchState implements BatchStateListener {
 
 	@Override
 	public void stateChanged() {
-		// do nothing
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 	}
 
 	public void save() {
@@ -577,7 +579,7 @@ public class BatchState implements BatchStateListener {
 
 		this.loggingIn = savedState.loggingIn;
 
-		this.setUser(savedState.user); // will run through all the listeners
-		setZoomLevel(savedState.zoomLevel); // runs through listeners again
+		this.user = savedState.user;
+		this.zoomLevel = savedState.zoomLevel; // runs through listeners again
 	}
 }

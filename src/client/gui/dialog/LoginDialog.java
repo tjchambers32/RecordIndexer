@@ -204,6 +204,8 @@ public class LoginDialog extends JDialog {
 			batchState.update(emptyState);
 		}
 		
+		batchState.stateChanged();
+		
 		this.setVisible(false);
 		frame.setVisible(true);
 
