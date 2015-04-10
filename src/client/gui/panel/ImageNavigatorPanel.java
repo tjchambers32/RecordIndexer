@@ -3,7 +3,6 @@ package client.gui.panel;
 import javax.swing.JPanel;
 
 import client.gui.batchstate.BatchStateListener;
-import client.gui.batchstate.Cell;
 
 @SuppressWarnings("serial")
 public class ImageNavigatorPanel extends JPanel implements BatchStateListener{

@@ -7,9 +7,15 @@ import java.awt.Image;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -72,6 +78,9 @@ public class BatchState implements BatchStateListener {
 	private boolean loggingIn;
 	private boolean downloadingBatch;
 
+	//dictionary is a set of words (knownData) for EACH field
+	private Map<String, Set<String> > dictionary;
+	
 	public BatchState(String hostname, int port) {
 
 		this.hostname = hostname;
@@ -116,6 +125,8 @@ public class BatchState implements BatchStateListener {
 
 		loggingIn = false;
 		downloadingBatch = false;
+		
+		dictionary = new HashMap<String, Set<String> >();
 	}
 
 	public void addListener(BatchStateListener l) {
@@ -223,6 +234,38 @@ public class BatchState implements BatchStateListener {
 		for (int i = 0; i < numberOfRows; i++) {
 			values[i][0] = "" + (i + 1);
 		}
+		
+		//read in knownData for quality checker
+		for (int i = 1; i < fields.size(); i++) {
+			Set<String> tempSet = new TreeSet<String>();
+			String tempData = fields.get(i).getKnownData();
+			if (tempData == null || tempData == "")
+				return;
+			
+			URL url = null;
+			Scanner scanner;
+			try {
+				
+				url = new URL("http://" + hostname + ":" + port + "/" + tempData);
+								
+				
+				scanner = new Scanner(url.openStream());
+				scanner.useDelimiter(",");
+				
+				while (scanner.hasNext()) {
+					tempSet.add(scanner.next().toLowerCase());
+				}
+				
+			} catch (MalformedURLException e) {
+				continue;
+			} catch (IOException e) {
+				continue;
+			}
+			
+			scanner.close();
+			
+			dictionary.put(fields.get(i).getTitle(), tempSet);
+		}
 
 		this.setHasDownloadedBatch(true);
 		this.firstYCoord = result.getProject().getFirstYCoord();
@@ -238,6 +281,8 @@ public class BatchState implements BatchStateListener {
 
 	}
 
+	
+	
 	public ClientCommunicator getComm() {
 		return comm;
 	}
@@ -511,16 +556,47 @@ public class BatchState implements BatchStateListener {
 
 	//returns true if word IS misspelled. false if spelled correctly
 	public boolean qualityCheck(Cell cell) {
-		String word = this.getValue(cell);
+		String inputWord = this.getValue(cell);
 		
 		//empty cells should be WHITE
-		if (word == "") {
-			return false;
+		if (inputWord == "") {
+			return true;
 		}
+		String word = inputWord.toLowerCase();
 		
-		return false;
+		//if there isn't a dictionary for the field, we can't mark it as incorrect
+		if (dictionary.get(fields.get(cell.getField()).getTitle()) == null) {
+			return true;
+		} else {
+			//if the word is in the dictionary, its correct
+			Set<String> tempSet = dictionary.get(fields.get(cell.getField()).getTitle());
+			if (tempSet.contains(word.toLowerCase())) {
+				return true; //true = correct
+			}
+		}
+		return false; //incorrect - mark cell RED
 	}
 
+//	boolean suggestWord(String word) {
+//				
+//		if (suggestedWord.equals("")) { // nothing is edit distance 1 away
+//			String possibleSuggestion = "";
+//			int highestFreq = 0;
+//			for (Map.Entry<String, Integer> treeMap2 : suggestions2.entrySet()) {
+//				FirstPass = false;
+//				possibleSuggestion = suggestedWord(treeMap2.getKey());
+//				if (!possibleSuggestion.equals("")) {
+//					foundNode = this.find(possibleSuggestion);
+//					if (foundNode.getValue() > highestFreq) {
+//						highestFreq = foundNode.getValue();
+//						suggestedWord = possibleSuggestion;
+//					}
+//				}
+//			}
+//		}
+//		return suggestedWord;
+//	}
+	
 	public boolean isLoggingIn() {
 		return loggingIn;
 	}
@@ -587,6 +663,8 @@ public class BatchState implements BatchStateListener {
 		this.loggingIn = savedState.loggingIn;
 
 		this.user = savedState.user;
-		this.zoomLevel = savedState.zoomLevel; // runs through listeners again
+		this.zoomLevel = savedState.zoomLevel;
+
+		this.dictionary = savedState.dictionary;
 	}
 }

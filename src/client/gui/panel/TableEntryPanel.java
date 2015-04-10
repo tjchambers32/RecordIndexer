@@ -9,7 +9,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -115,7 +114,7 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 			JPopupMenu popup = null;
 			JMenuItem seeSuggestions = null;
 			if (e.getButton() == MouseEvent.BUTTON3) {
-				if (batchState.qualityCheck(new Cell(row, column))) {
+				if (batchState.qualityCheck(new Cell(row, column)) == false) {
 					popup = new JPopupMenu();
 					seeSuggestions = new JMenuItem("See Suggestions.");
 					seeSuggestions.addActionListener(actionListener);
@@ -164,6 +163,11 @@ class EntryCellRenderer extends JLabel implements TableCellRenderer {
 		}
 		
 		//TODO add logic for quality checker here
+		if (batchState.qualityCheck(new Cell(row, column))) {
+			this.setBackground(Color.white);
+		} else {
+			this.setBackground(Color.red);
+		}
 		
 		this.setText((String)value);
 		return this;
