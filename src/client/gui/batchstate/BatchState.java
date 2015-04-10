@@ -177,7 +177,7 @@ public class BatchState implements BatchStateListener {
 		String valueString = "";
 		for (int i = 0; i < numberOfRows; i++) {
 			records.add(new Record(user.getImageID(), i+1));
-			for (int j = 0; j < numberOfColumns; j++) {
+			for (int j = 1; j < numberOfColumns; j++) {
 				valueString = values[i][j];
 				valueList.add(new Value(i+1, valueString, j+1));
 			}

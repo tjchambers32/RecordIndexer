@@ -155,7 +155,8 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		
 		if (textFields.size() != 0) {
 			textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
-			//TODO add logic to check for mispelled and show red/white
+			textFields.get(column - 1).requestFocusInWindow();
+			//TODO add logic to check for misspelled and show red/white
 		}
 	}
 	private ListSelectionListener lsListener = new ListSelectionListener() {

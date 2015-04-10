@@ -16,13 +16,14 @@ public class FieldHelpPanel extends JPanel implements BatchStateListener{
 	BatchState batchState;
 	JEditorPane helpPane;
 	String helpURL;
+	Cell selectedCell;
 	
 	public FieldHelpPanel(BatchState batchState) {
 		super();
 		
 		this.batchState = batchState;
 		batchState.addListener(this);
-		
+		selectedCell = new Cell(50,50); //random value that batchState.selectedCell won't have
 		createComponents();
 	}
 
@@ -54,11 +55,25 @@ public class FieldHelpPanel extends JPanel implements BatchStateListener{
 	@Override
 	public void stateChanged() {
 		int selectedField = batchState.getSelectedCell().getField();
-		if (!batchState.getFields().isEmpty()) {
-			String shortFieldURL = batchState.getFields().get(selectedField).getHelpHTML();
-			String fullURL = buildFullURL(shortFieldURL);
-			helpURL = fullURL;
-			showHelpInfo();
+		
+		Cell tempCell = selectedCell;
+		Cell batchCell = batchState.getSelectedCell();
+		
+		if (tempCell == null) {
+			
+			tempCell = batchCell;
+			selectedCell = batchCell;
+		
+		}
+		
+		if ((tempCell.getField() != batchCell.getField()) || (tempCell.getRecord() != batchCell.getRecord())) {
+			selectedCell = batchCell;
+			if (!batchState.getFields().isEmpty()) {
+				String shortFieldURL = batchState.getFields().get(selectedField).getHelpHTML();
+				String fullURL = buildFullURL(shortFieldURL);
+				helpURL = fullURL;
+				showHelpInfo();
+			}
 		}
 	}
 

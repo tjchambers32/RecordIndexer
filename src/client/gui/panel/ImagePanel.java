@@ -1,36 +1,15 @@
 package client.gui.panel;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
-import java.io.File;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.*;
+import java.awt.image.*;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-
+import java.net.*;
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import shared.model.Field;
-import client.gui.ImageComponent;
-import client.gui.batchstate.BatchState;
-import client.gui.batchstate.BatchStateListener;
-import client.gui.batchstate.Cell;
+import client.gui.batchstate.*;
 
 @SuppressWarnings("serial")
 public class ImagePanel extends JPanel implements BatchStateListener {
