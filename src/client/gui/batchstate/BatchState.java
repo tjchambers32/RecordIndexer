@@ -281,7 +281,48 @@ public class BatchState implements BatchStateListener {
 
 	}
 
-	
+	//returns true if word IS misspelled. false if spelled correctly
+	public boolean qualityCheck(Cell cell) {
+		String inputWord = this.getValue(cell);
+		
+		//empty cells should be WHITE
+		if (inputWord == "") {
+			return true;
+		}
+		String word = inputWord.toLowerCase();
+		
+		//if there isn't a dictionary for the field, we can't mark it as incorrect
+		if (dictionary.get(fields.get(cell.getField()).getTitle()) == null) {
+			return true;
+		} else {
+			//if the word is in the dictionary, its correct
+			Set<String> tempSet = dictionary.get(fields.get(cell.getField()).getTitle());
+			if (tempSet.contains(word.toLowerCase())) {
+				return true; //true = correct
+			}
+		}
+		return false; //incorrect - mark cell RED
+	}
+
+//	boolean suggestWord(String word) {
+//				
+//		if (suggestedWord.equals("")) { // nothing is edit distance 1 away
+//			String possibleSuggestion = "";
+//			int highestFreq = 0;
+//			for (Map.Entry<String, Integer> treeMap2 : suggestions2.entrySet()) {
+//				FirstPass = false;
+//				possibleSuggestion = suggestedWord(treeMap2.getKey());
+//				if (!possibleSuggestion.equals("")) {
+//					foundNode = this.find(possibleSuggestion);
+//					if (foundNode.getValue() > highestFreq) {
+//						highestFreq = foundNode.getValue();
+//						suggestedWord = possibleSuggestion;
+//					}
+//				}
+//			}
+//		}
+//		return suggestedWord;
+//	}
 	
 	public ClientCommunicator getComm() {
 		return comm;
@@ -553,49 +594,6 @@ public class BatchState implements BatchStateListener {
 			l.stateChanged();
 		}
 	}
-
-	//returns true if word IS misspelled. false if spelled correctly
-	public boolean qualityCheck(Cell cell) {
-		String inputWord = this.getValue(cell);
-		
-		//empty cells should be WHITE
-		if (inputWord == "") {
-			return true;
-		}
-		String word = inputWord.toLowerCase();
-		
-		//if there isn't a dictionary for the field, we can't mark it as incorrect
-		if (dictionary.get(fields.get(cell.getField()).getTitle()) == null) {
-			return true;
-		} else {
-			//if the word is in the dictionary, its correct
-			Set<String> tempSet = dictionary.get(fields.get(cell.getField()).getTitle());
-			if (tempSet.contains(word.toLowerCase())) {
-				return true; //true = correct
-			}
-		}
-		return false; //incorrect - mark cell RED
-	}
-
-//	boolean suggestWord(String word) {
-//				
-//		if (suggestedWord.equals("")) { // nothing is edit distance 1 away
-//			String possibleSuggestion = "";
-//			int highestFreq = 0;
-//			for (Map.Entry<String, Integer> treeMap2 : suggestions2.entrySet()) {
-//				FirstPass = false;
-//				possibleSuggestion = suggestedWord(treeMap2.getKey());
-//				if (!possibleSuggestion.equals("")) {
-//					foundNode = this.find(possibleSuggestion);
-//					if (foundNode.getValue() > highestFreq) {
-//						highestFreq = foundNode.getValue();
-//						suggestedWord = possibleSuggestion;
-//					}
-//				}
-//			}
-//		}
-//		return suggestedWord;
-//	}
 	
 	public boolean isLoggingIn() {
 		return loggingIn;
