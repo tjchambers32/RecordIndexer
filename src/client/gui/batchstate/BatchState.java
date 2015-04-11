@@ -287,6 +287,8 @@ public class BatchState implements BatchStateListener {
 	public boolean qualityCheck(Cell cell) {
 		String inputWord = this.getValue(cell);
 		
+		inputWord = inputWord.trim();
+		
 		//empty cells should be WHITE
 		if (inputWord == "") {
 			return true;
@@ -321,7 +323,7 @@ public class BatchState implements BatchStateListener {
 		TreeSet<String> refined = new TreeSet<String>();
 		
 		Set<String> tempSet = dictionary.get(fields.get(cell.getField()).getTitle());
-		for (String s : refined) {
+		for (String s : allSuggested) {
 			if (tempSet.contains(s.toLowerCase())) {
 				refined.add(s);
 			}

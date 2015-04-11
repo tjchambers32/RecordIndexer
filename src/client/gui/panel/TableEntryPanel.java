@@ -141,28 +141,32 @@ class EntryCellRenderer extends JLabel implements TableCellRenderer {
 	private Border unselectedBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
 	private Border selectedBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
 	private BatchState batchState;
+	private boolean wasSelected;
 	
 	public EntryCellRenderer(BatchState batchState) {
 		this.batchState = batchState;
 		setOpaque(true);
 		setFont(getFont().deriveFont(16.0f));
+		wasSelected = false;
 	}
 
 	public Component getTableCellRendererComponent(JTable table,
 			Object value, boolean isSelected, boolean hasFocus, int row,
 			int column) {
 		
-		if (isSelected) {
+		if (isSelected && !wasSelected) {
 			this.setBorder(selectedBorder);
 			Cell selectedCell = new Cell(row, column);
 			batchState.setSelectedCell(selectedCell);
+			wasSelected = true;
 		}
 		else {
 			this.setBorder(unselectedBorder);
+			wasSelected = false;
 		}
 		
 		//TODO add logic for quality checker here
-		if (batchState.qualityCheck(new Cell(row, column))) {
+		if (batchState.qualityCheck(new Cell(row, column)) == true) {
 			this.setBackground(Color.white);
 		} else {
 			this.setBackground(Color.red);

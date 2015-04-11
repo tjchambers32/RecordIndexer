@@ -45,13 +45,6 @@ public class SuggestionsDialog extends JDialog{
 		suggestionsList = new JList<String>(suggestionsListModel);
 		suggestionsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
-		if (suggestionsList.getModel().getSize() == 0) {
-			useSuggestionButton.setEnabled(false);
-		} else {
-			suggestionsList.setSelectedIndex(0);
-			useSuggestionButton.setEnabled(true);
-		}
-		
 		JPanel suggestionPanel = new JPanel();
 		JScrollPane suggestionScroll = new JScrollPane(suggestionsList);
 
@@ -67,6 +60,13 @@ public class SuggestionsDialog extends JDialog{
 		
 		useSuggestionButton = new JButton("Use Suggestion");
 		useSuggestionButton.addActionListener(actionListener);
+		
+		if (suggestionsList.getModel().getSize() == 0) {
+			useSuggestionButton.setEnabled(false);
+		} else {
+			suggestionsList.setSelectedIndex(0);
+			useSuggestionButton.setEnabled(true);
+		}
 		
 		buttonPanel.add(Box.createRigidArea(new Dimension(3, 0)));
 		buttonPanel.add(cancelButton);
@@ -90,11 +90,9 @@ public class SuggestionsDialog extends JDialog{
 			if (e.getSource() == cancelButton){
 				SuggestionsDialog.this.dispose();
 			} else if (e.getSource() == useSuggestionButton) {
-				
+				batchState.setValue(batchState.getSelectedCell(), suggestionsList.getSelectedValue());
+				SuggestionsDialog.this.dispose();
 			}
-			
 		}
-		
 	};
-
 }

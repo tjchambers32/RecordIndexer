@@ -124,12 +124,9 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 
 		@Override
 		public void focusLost(FocusEvent e) {
-			for (int i = 0; i < textFields.size(); i++) {
-				JTextField jText = textFields.get(i);
-				if (e.getSource() == jText) {
-					batchState.setValue(new Cell(recordList.getSelectedIndex(), i+1), jText.getText());
-				}
-			}
+			
+			batchState.setValue(new Cell(recordList.getSelectedIndex(), column+1), textFields.get(column+1).getText());
+
 			//TODO add logic for quality checker
 		}
 		
@@ -183,6 +180,7 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		}
 		
 		if (textFields.size() != 0) {
+			int tempColumn = column;
 			textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
 			textFields.get(column - 1).requestFocusInWindow();
 			//TODO add logic to check for misspelled and show red/white
@@ -206,10 +204,10 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 			//run through each cell and check for misspellings
 			for (int i = 0; i < textFields.size(); i++) {
 				if (batchState.qualityCheck(new Cell(row, i+1))) {
-					textFields.get(i).setBackground(Color.red);
+					textFields.get(i).setBackground(Color.white);					
 				}
 				else {
-					textFields.get(i).setBackground(Color.white);
+					textFields.get(i).setBackground(Color.red);
 				}
 				
 				textFields.get(i).setText(batchState.getValue(new Cell(row, i+1)));
