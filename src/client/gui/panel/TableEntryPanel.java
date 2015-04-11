@@ -94,12 +94,7 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 			}
 		} else if (!batchState.isLoggingIn() && entryTable != null) {
 			if (batchState.getHasDownloadedBatch()){
-			
 				entryTable.changeSelection(batchState.getSelectedCell().getRecord(), batchState.getSelectedCell().getField(), false, false);
-			
-//				if (batchState.getValue(new Cell(row, column)) != tableEntryModel.getValueAt(row, column)) {
-//					tableEntryModel.fireTableDataChanged();
-//				}
 			}
 		}
 	}
@@ -138,7 +133,7 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 @SuppressWarnings("serial")
 class EntryCellRenderer extends JLabel implements TableCellRenderer {
 
-	private Border unselectedBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
+	private Border unselectedBorder = BorderFactory.createLineBorder(Color.GRAY, 1);
 	private Border selectedBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
 	private BatchState batchState;
 	private boolean wasSelected;
@@ -165,7 +160,6 @@ class EntryCellRenderer extends JLabel implements TableCellRenderer {
 			wasSelected = false;
 		}
 		
-		//TODO add logic for quality checker here
 		if (batchState.qualityCheck(new Cell(row, column)) == true) {
 			this.setBackground(Color.white);
 		} else {

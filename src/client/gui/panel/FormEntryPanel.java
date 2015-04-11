@@ -125,9 +125,18 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		@Override
 		public void focusLost(FocusEvent e) {
 			
-			batchState.setValue(new Cell(recordList.getSelectedIndex(), column+1), textFields.get(column+1).getText());
+			int tempRow = recordList.getSelectedIndex();
+			int tempCol = column;
+			
+			batchState.setValue(new Cell(recordList.getSelectedIndex(), column), textFields.get(column-1).getText());
 
 			//TODO add logic for quality checker
+			if (batchState.qualityCheck(new Cell(recordList.getSelectedIndex(), column)) == true) {
+				textFields.get(column -1).setBackground(Color.white);
+			} else {
+				textFields.get(column - 1).setBackground(Color.red);
+			}
+				
 		}
 		
 	};
@@ -139,18 +148,28 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 			
 			JPopupMenu popup = null;
 			JMenuItem seeSuggestions = null;
+			int tempColumn = 0;
 			if (e.getButton() == MouseEvent.BUTTON3) {
 				for (int i = 0; i < textFields.size(); i++) {
-					JTextField tempField = textFields.get(i);
-					if (e.getSource() == tempField) {
-						if (tempField.getBackground() == Color.red) {
-							popup = new JPopupMenu();
-							seeSuggestions = new JMenuItem("See Suggestions.");
-							seeSuggestions.addActionListener(actionListener);
-							popup.add(seeSuggestions);
-							popup.show(e.getComponent(), e.getX(), e.getY());
-						}
+					
+					String fieldName = ((JTextField)e.getSource()).getName();
+					String batchFieldName = batchState.getFields().get(i+1).getTitle();
+					
+					if (fieldName.equals(batchFieldName)) {
+						tempColumn = i;
+						break;
 					}
+					
+				}
+
+				textFields.get(tempColumn).requestFocusInWindow();
+				
+				if (textFields.get(tempColumn).getBackground() == Color.red) {
+					popup = new JPopupMenu();
+					seeSuggestions = new JMenuItem("See Suggestions.");
+					seeSuggestions.addActionListener(actionListener);
+					popup.add(seeSuggestions);
+					popup.show(e.getComponent(), e.getX(), e.getY());
 				}
 			}
 		}
@@ -180,10 +199,13 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		}
 		
 		if (textFields.size() != 0) {
-			int tempColumn = column;
+			int tempColumn = column - 1;
 			textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
-			textFields.get(column - 1).requestFocusInWindow();
-			//TODO add logic to check for misspelled and show red/white
+			if (batchState.qualityCheck(new Cell(row, column)) == true) {
+				textFields.get(column-1).setBackground(Color.white);
+			} else {
+				textFields.get(column-1).setBackground(Color.red);
+			}
 		}
 	}
 	private ListSelectionListener lsListener = new ListSelectionListener() {
@@ -195,24 +217,22 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 				return;
 			if (textFields == null)
 				return;
-			
-			row = recordList.getSelectedIndex();
 
 			if (row < 0)
 				return;
-			
+						
+			row = recordList.getSelectedIndex();
+			batchState.setSelectedCell(new Cell(row, column));
+
 			//run through each cell and check for misspellings
 			for (int i = 0; i < textFields.size(); i++) {
-				if (batchState.qualityCheck(new Cell(row, i+1))) {
+				if (batchState.qualityCheck(new Cell(row, i+1)) == true) {
 					textFields.get(i).setBackground(Color.white);					
-				}
-				else {
+				} else {
 					textFields.get(i).setBackground(Color.red);
 				}
-				
 				textFields.get(i).setText(batchState.getValue(new Cell(row, i+1)));
 			}
-			batchState.setSelectedCell(new Cell(row, column));
 		}
 		
 	};

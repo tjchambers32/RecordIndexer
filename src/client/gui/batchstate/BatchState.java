@@ -290,7 +290,7 @@ public class BatchState implements BatchStateListener {
 		inputWord = inputWord.trim();
 		
 		//empty cells should be WHITE
-		if (inputWord == "") {
+		if (inputWord.equals("")) {
 			return true;
 		}
 		String word = inputWord.toLowerCase();
