@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Set;
 
 import javax.swing.*;
 
@@ -15,6 +16,7 @@ public class SuggestionsDialog extends JDialog{
 	BatchState batchState;
 	JButton cancelButton;
 	JButton useSuggestionButton;
+	JList<String> suggestionsList;
 	
 	public SuggestionsDialog(BatchState batchState) {
 		super();
@@ -32,10 +34,30 @@ public class SuggestionsDialog extends JDialog{
 		
 		JPanel rootPanel = new JPanel();
 		rootPanel.setLayout(new BorderLayout());
-	
+					
+		Set<String> results = batchState.makeSuggestions(batchState.getSelectedCell());
+
 		DefaultListModel<String> suggestionsListModel = new DefaultListModel<String>();
-	
+		for (String s : results) {
+			suggestionsListModel.addElement(s);
+		}
+		
+		suggestionsList = new JList<String>(suggestionsListModel);
+		suggestionsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		if (suggestionsList.getModel().getSize() == 0) {
+			useSuggestionButton.setEnabled(false);
+		} else {
+			suggestionsList.setSelectedIndex(0);
+			useSuggestionButton.setEnabled(true);
+		}
+		
 		JPanel suggestionPanel = new JPanel();
+		JScrollPane suggestionScroll = new JScrollPane(suggestionsList);
+
+		suggestionPanel.setLayout(new BorderLayout());
+		suggestionPanel.setBorder(BorderFactory.createEmptyBorder(10,20,20,10));
+		suggestionPanel.add(suggestionScroll, BorderLayout.CENTER);
 		
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));

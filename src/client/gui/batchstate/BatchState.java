@@ -15,7 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -304,25 +306,94 @@ public class BatchState implements BatchStateListener {
 		return false; //incorrect - mark cell RED
 	}
 
-//	boolean suggestWord(String word) {
-//				
-//		if (suggestedWord.equals("")) { // nothing is edit distance 1 away
-//			String possibleSuggestion = "";
-//			int highestFreq = 0;
-//			for (Map.Entry<String, Integer> treeMap2 : suggestions2.entrySet()) {
-//				FirstPass = false;
-//				possibleSuggestion = suggestedWord(treeMap2.getKey());
-//				if (!possibleSuggestion.equals("")) {
-//					foundNode = this.find(possibleSuggestion);
-//					if (foundNode.getValue() > highestFreq) {
-//						highestFreq = foundNode.getValue();
-//						suggestedWord = possibleSuggestion;
-//					}
-//				}
-//			}
-//		}
-//		return suggestedWord;
-//	}
+	public Set<String> makeSuggestions(Cell cell) {
+		
+		Set<String> allSuggested = findAllSuggestions(cell);
+		
+		Set<String> knownSuggestions = refineSuggestions(allSuggested, cell);
+		
+		return knownSuggestions;
+		
+	}
+	
+	private Set<String> refineSuggestions(Set<String> allSuggested, Cell cell) {
+		
+		TreeSet<String> refined = new TreeSet<String>();
+		
+		Set<String> tempSet = dictionary.get(fields.get(cell.getField()).getTitle());
+		for (String s : refined) {
+			if (tempSet.contains(s.toLowerCase())) {
+				refined.add(s);
+			}
+		}
+		
+		return refined;
+	}
+
+	private Set<String> findAllSuggestions(Cell cell) {
+		
+		String word = this.getValue(cell);
+		
+		word = word.toLowerCase();
+		Set<String> suggestions;
+		Set<String> finalSuggestions = new TreeSet<String>();
+		suggestions = findNearbyWords(word);
+		
+		for (String suggestion : suggestions) {
+			finalSuggestions.addAll(findNearbyWords(suggestion));
+		}
+	
+		return finalSuggestions;
+	}
+	
+	private Set<String> findNearbyWords(String word) {
+		
+		TreeSet<String> suggestions = new TreeSet<String>();
+		String editedWord = "";
+		StringBuilder sb = new StringBuilder();
+		
+		//deletion distance
+		for (int i = 0; i < word.length(); i++) {
+			sb = new StringBuilder(word);
+			editedWord = sb.deleteCharAt(i).toString();
+			suggestions.add(editedWord);
+		}
+		
+		//transposition distance
+		char L = ' ';
+		char R = ' ';
+		for (int i = 0; i < word.length() - 1; i++) {
+			sb = new StringBuilder(word);
+			L = sb.charAt(i);
+			R = sb.charAt(i + 1);
+			sb.setCharAt(i, R);
+			sb.setCharAt(i+1, L);
+			suggestions.add(sb.toString());
+		}
+		
+		//Alteration Distance
+		for (int i = 0; i < word.length(); i++) {
+			for (int j = 0; j < 26; j++) {
+				sb = new StringBuilder(word);
+				char inputChar = (char) (j + 'a'); //inputChar matching original char doesn't matter because that would mean our original word is in the Trie, which we already checked for
+				sb.setCharAt(i, inputChar);
+				suggestions.add(sb.toString());
+			}
+		}
+		
+		//Insertion Distance
+		for (int i = 0; i <= word.length(); i++) {
+			for (int j = 0; j < 26; j++) {
+				sb = new StringBuilder(word);
+				char inputChar = (char) (j + 'a');
+				sb.insert(i, inputChar);
+				suggestions.add(sb.toString());
+			}
+		}	
+		
+		return suggestions;
+	}
+
 	
 	public ClientCommunicator getComm() {
 		return comm;
