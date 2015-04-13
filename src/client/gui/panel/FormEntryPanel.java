@@ -125,9 +125,6 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		@Override
 		public void focusLost(FocusEvent e) {
 			
-			int tempRow = recordList.getSelectedIndex();
-			int tempCol = column;
-			
 			batchState.setValue(new Cell(recordList.getSelectedIndex(), column), textFields.get(column-1).getText());
 
 			//TODO add logic for quality checker
@@ -199,7 +196,6 @@ public class FormEntryPanel extends JPanel implements BatchStateListener{
 		}
 		
 		if (textFields.size() != 0) {
-			int tempColumn = column - 1;
 			textFields.get(column - 1).setText(batchState.getValue(batchState.getSelectedCell()));
 			if (batchState.qualityCheck(new Cell(row, column)) == true) {
 				textFields.get(column-1).setBackground(Color.white);

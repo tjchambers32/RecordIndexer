@@ -105,7 +105,6 @@ public class DownloadBatchDialog extends JDialog {
 		this.add(rootPanel);
 
 		this.setSize(330, 100);
-		this.setVisible(true);
 	}
 
 	private ActionListener actionListener = new ActionListener() {
