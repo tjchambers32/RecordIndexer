@@ -79,6 +79,11 @@ public class BatchState implements BatchStateListener {
 
 	private boolean loggingIn;
 	private boolean downloadingBatch;
+	
+	private int navImageX;
+	private int navImageY;
+	private int navImageWidth;
+	private int navImageHeight;
 
 	//dictionary is a set of words (knownData) for EACH field
 	private Map<String, Set<String> > dictionary;
@@ -125,6 +130,11 @@ public class BatchState implements BatchStateListener {
 		horizontalDivider = 400;
 		verticalDivider = 400;
 
+		navImageX = 0;
+		navImageY = 0;
+		navImageWidth = 0;
+		navImageHeight = 0;
+		
 		loggingIn = false;
 		downloadingBatch = false;
 		
@@ -737,5 +747,42 @@ public class BatchState implements BatchStateListener {
 		this.zoomLevel = savedState.zoomLevel;
 
 		this.dictionary = savedState.dictionary;
+		
+		this.navImageX = savedState.navImageX;
+		this.navImageY = savedState.navImageY;
+		this.navImageWidth = savedState.navImageWidth;
+		this.navImageHeight = savedState.navImageHeight;
+	}
+
+	public int getNavImageX() {
+		return navImageX;
+	}
+
+	public void setNavImageX(int navImageX) {
+		this.navImageX = navImageX;
+	}
+
+	public int getNavImageY() {
+		return navImageY;
+	}
+
+	public void setNavImageY(int navImageY) {
+		this.navImageY = navImageY;
+	}
+
+	public int getNavImageWidth() {
+		return navImageWidth;
+	}
+
+	public void setNavImageWidth(int navImageWidth) {
+		this.navImageWidth = navImageWidth;
+	}
+
+	public int getNavImageHeight() {
+		return navImageHeight;
+	}
+
+	public void setNavImageHeight(int navImageHeight) {
+		this.navImageHeight = navImageHeight;
 	}
 }

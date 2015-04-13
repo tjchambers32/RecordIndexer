@@ -101,7 +101,7 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 				if (batchState.getZoomLevel() < 2.5)
 					batchState.setZoomLevel(batchState.getZoomLevel() + .15);
 			} else if (e.getSource() == zoomOutButton) {
-				if (batchState.getZoomLevel() > .1)
+				if (batchState.getZoomLevel() > .3)
 					batchState.setZoomLevel(batchState.getZoomLevel() - .15);
 			} else if (e.getSource() == invertImageButton) {
 				batchState.setImageInverted(!batchState.isImageInverted());
@@ -142,6 +142,17 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 			saveButton.setEnabled(false);
 			submitButton.setEnabled(false);
 		}
-
+		
+		if (batchState.getZoomLevel() <= .3) {
+			zoomOutButton.setEnabled(false);
+		} else {
+			zoomOutButton.setEnabled(true);
+		}
+		
+		if (batchState.getZoomLevel() >= 2.5) {
+			zoomInButton.setEnabled(false);
+		} else {
+			zoomInButton.setEnabled(true);
+		}
 	}
 }
