@@ -90,8 +90,42 @@ public class QualityCheckerTest {
 		assertTrue(suggestions.contains("kidd")); // edit distance 1
 		assertTrue(suggestions.contains("riddle")); // edit distance 2
 		assertEquals(2, suggestions.size());
-		
-		
+
+		// first names
+		batchState.setValue(new Cell(1, 2), "abe");
+		trueTest = batchState.qualityCheck(new Cell(1, 2));
+		assertTrue(trueTest);
+
+		batchState.setValue(new Cell(1, 2), "aba");
+		falseTest = batchState.qualityCheck(new Cell(1, 2));
+		assertFalse(falseTest);
+
+		suggestions = batchState.makeSuggestions(new Cell(1, 2));
+		assertTrue(suggestions.contains("abe")); // edit distance 1
+		assertTrue(suggestions.contains("abel")); // edit distance 2
+		assertEquals(16, suggestions.size());
+
+		// gender
+		batchState.setValue(new Cell(1, 3), "f");
+		trueTest = batchState.qualityCheck(new Cell(1, 3));
+		assertTrue(trueTest);
+
+		batchState.setValue(new Cell(1, 3), "fe");
+		falseTest = batchState.qualityCheck(new Cell(1, 3));
+		assertFalse(falseTest);
+
+		suggestions = batchState.makeSuggestions(new Cell(1, 3));
+		assertTrue(suggestions.contains("f")); // edit distance 1
+		assertTrue(suggestions.contains("m")); // edit distance 2
+		assertEquals(2, suggestions.size());
+
+		// age
+		for (int i = 0; i < 100; i++) {
+			batchState.setValue(new Cell(1, 4), Integer.toString(i));
+			trueTest = batchState.qualityCheck(new Cell(1, 4));
+			assertTrue(trueTest); // quality check should ALWAYS return true for
+									// any age
+		}
 	}
 
 }
