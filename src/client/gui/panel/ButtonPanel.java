@@ -117,11 +117,9 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 					batchState.update(emptyState);
 					frame.clearEntryPanels();
 					batchState.stateChanged();
-				}
-				
+				}		
 			}
 		}
-
 	};
 
 	@Override
