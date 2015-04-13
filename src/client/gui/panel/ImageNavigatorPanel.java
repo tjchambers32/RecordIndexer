@@ -89,10 +89,12 @@ public class ImageNavigatorPanel extends JPanel implements BatchStateListener{
 	@Override
 	public void paintComponent(Graphics g) {
 		
+		
 		if (downloadedImage != null) {
-
+		
 			Graphics2D graphics = (Graphics2D)g.create();
-			graphics.setBackground(Color.DARK_GRAY);
+			graphics.setColor(Color.WHITE);
+			drawBackground(graphics);
 			
 			double height = (double)this.getHeight() / (double) downloadedImage.getHeight(null);
 			double width = (double) this.getWidth() / (double) downloadedImage.getWidth(null);
@@ -107,14 +109,23 @@ public class ImageNavigatorPanel extends JPanel implements BatchStateListener{
 			
 			graphics.drawImage(downloadedImage, 0, 0, null);
 			
-			if (imageInverted)
+			if (imageInverted) {
 				graphics.setColor(Color.LIGHT_GRAY);
-			else
+			}
+			else {
 				graphics.setColor(Color.DARK_GRAY);
+			}
+						
 			AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f);
 			graphics.setComposite(ac);
 			graphics.fill(highlightedCell);
 		}
+	}
+	
+	private void drawBackground(Graphics2D g2) {
+		
+		g2.setColor(getBackground());
+		g2.fillRect(0,  0, getWidth(), getHeight());
 	}
 	
 	private MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -194,11 +205,11 @@ public class ImageNavigatorPanel extends JPanel implements BatchStateListener{
 				int w_deltaX = w_X - w_dragStartX;
 				int w_deltaY = w_Y - w_dragStartY;
 				
-				w_originX = w_dragStartOriginX + w_deltaX;
-				w_originY = w_dragStartOriginY + w_deltaY;
+				w_originX = w_dragStartOriginX - (-w_deltaX);
+				w_originY = w_dragStartOriginY - (-w_deltaY);
 				
-				batchState.setImageX(w_originX);
-				batchState.setImageY(w_originY);
+				batchState.setNavImageX(w_originX);
+				batchState.setNavImageY(w_originY);
 				
 				repaint();
 			}

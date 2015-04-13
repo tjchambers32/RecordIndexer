@@ -87,7 +87,8 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 		formEntryPanel = new FormEntryPanel(batchState);
 		fieldHelpPanel = new FieldHelpPanel(batchState);
 		imageNavigatorPanel = new ImageNavigatorPanel(batchState);
-
+		imageNavigatorPanel.setBackground(Color.DARK_GRAY);
+		
 		BLentryPanel = new JTabbedPane();
 		BLentryPanel.setMinimumSize(new Dimension(300, 100));
 		BLentryPanel.setPreferredSize(new Dimension(400, 200));
@@ -101,7 +102,7 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 		BRentryPanel.setPreferredSize(new Dimension(400, 200));
 		BRentryPanel.addTab("Field Help", fieldHelpPanel);
 		BRentryPanel.addTab("Image Navigator", imageNavigatorPanel);
-
+		
 		horizontalSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, BLentryPanel, BRentryPanel);
 		horizontalSplit.setPreferredSize(new Dimension(100, 100));
 

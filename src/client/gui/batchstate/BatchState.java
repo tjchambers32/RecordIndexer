@@ -637,9 +637,6 @@ public class BatchState implements BatchStateListener {
 	public void setImageX(int imageX) {
 		this.imageX = imageX;
 
-		for (BatchStateListener l : listeners) {
-			l.stateChanged();
-		}
 	}
 
 	public int getImageY() {
@@ -649,9 +646,6 @@ public class BatchState implements BatchStateListener {
 	public void setImageY(int imageY) {
 		this.imageY = imageY;
 
-		for (BatchStateListener l : listeners) {
-			l.stateChanged();
-		}
 	}
 
 	public int getImageWidth() {
@@ -661,9 +655,6 @@ public class BatchState implements BatchStateListener {
 	public void setImageWidth(int imageWidth) {
 		this.imageWidth = imageWidth;
 
-		for (BatchStateListener l : listeners) {
-			l.stateChanged();
-		}
 	}
 
 	public int getImageHeight() {
@@ -673,9 +664,6 @@ public class BatchState implements BatchStateListener {
 	public void setImageHeight(int imageHeight) {
 		this.imageHeight = imageHeight;
 
-		for (BatchStateListener l : listeners) {
-			l.stateChanged();
-		}
 	}
 	
 	public boolean isLoggingIn() {

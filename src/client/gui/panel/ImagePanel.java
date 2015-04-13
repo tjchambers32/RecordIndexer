@@ -57,7 +57,6 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 		this.addMouseListener(mouseAdapter);
 		this.addMouseMotionListener(mouseAdapter);
 		this.addMouseWheelListener(mouseAdapter);
-		this.addComponentListener(componentListener);
 		
 		initDrag();
 
@@ -392,17 +391,14 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 					batchState.setNavImageY(getWorldY());
 					batchState.setNavImageX(getWorldX());
 				} else {
-					//check if imageNav has moved
 					int w_deltaX = getWorldX() - batchState.getNavImageX();
 					int w_deltaY = getWorldY() - batchState.getNavImageY();
 					
-					if (w_deltaX != 0 || w_deltaY != 0) {
 						w_originX = w_originX - w_deltaX;
 						w_originY = w_originY - w_deltaY;
 						
 						batchState.setImageX(w_originX);
 						batchState.setImageY(w_originY);
-					}
 				}
 			}
 			
@@ -417,38 +413,6 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 			downloadedImage = null;
 			highlightedCell = null;
 		}
-		
 		repaint();
 	}
-	
-	private ComponentListener componentListener = new ComponentListener() {
-
-		@Override
-		public void componentResized(ComponentEvent e) {
-			batchState.setNavImageHeight(getWorldHeight());
-			batchState.setNavImageWidth(getWorldWidth());
-			batchState.setNavImageX(getWorldX());
-			batchState.setNavImageY(getWorldY());
-			
-		}
-
-		@Override
-		public void componentMoved(ComponentEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void componentShown(ComponentEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void componentHidden(ComponentEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	};
 }
