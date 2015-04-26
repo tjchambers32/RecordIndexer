@@ -18,9 +18,8 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 	public String hostname = "localhost";
 
 	BatchState batchState;
-
-	private LoginDialog loginDialog;
-	private DownloadBatchDialog downloadBatchDialog;
+	// private LoginDialog loginDialog;
+	// private DownloadBatchDialog downloadBatchDialog;
 
 	JMenuItem exitMenuItem;
 	JMenuItem downloadBatchMenuItem;
@@ -34,6 +33,8 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 	FormEntryPanel formEntryPanel;
 	FieldHelpPanel fieldHelpPanel;
 	ImageNavigatorPanel imageNavigatorPanel;
+
+	JPanel rootPanel;
 
 	JSplitPane horizontalSplit;
 	JSplitPane verticalSplit;
@@ -49,8 +50,8 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 		batchState = new BatchState(hostname, port);
 		batchState.addListener(this);
 
-		loginDialog = new LoginDialog(batchState, this);
-
+		LoginDialog loginDialog = new LoginDialog(batchState, this);
+		
 		createComponents();
 	}
 
@@ -84,7 +85,8 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 		tableEntryPanel = new TableEntryPanel(batchState);
 		formEntryPanel = new FormEntryPanel(batchState);
 		fieldHelpPanel = new FieldHelpPanel(batchState);
-		imageNavigatorPanel = new ImageNavigatorPanel();
+		imageNavigatorPanel = new ImageNavigatorPanel(batchState);
+		imageNavigatorPanel.setBackground(Color.DARK_GRAY);
 
 		BLentryPanel = new JTabbedPane();
 		BLentryPanel.setMinimumSize(new Dimension(300, 100));
@@ -100,12 +102,14 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 		BRentryPanel.addTab("Field Help", fieldHelpPanel);
 		BRentryPanel.addTab("Image Navigator", imageNavigatorPanel);
 
-		horizontalSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, BLentryPanel, BRentryPanel);
+		horizontalSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				BLentryPanel, BRentryPanel);
 		horizontalSplit.setPreferredSize(new Dimension(100, 100));
 
-		verticalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, imagePanel, horizontalSplit);
+		verticalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, imagePanel,
+				horizontalSplit);
 
-		JPanel rootPanel = new JPanel();
+		rootPanel = new JPanel();
 		rootPanel.setLayout(new BorderLayout());
 
 		rootPanel.add(buttonPanel, BorderLayout.NORTH);
@@ -115,6 +119,23 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 		this.add(rootPanel);
 
 		// batchState.setZoomLevel(batchState.getZoomLevel());
+
+	}
+
+	public void clearEntryPanels() {
+
+		BLentryPanel.removeAll();
+
+		tableEntryPanel = new TableEntryPanel(batchState);
+		JScrollPane tableScroll = new JScrollPane(tableEntryPanel);
+		tableScroll.getVerticalScrollBar().setUnitIncrement(10);
+
+		formEntryPanel = new FormEntryPanel(batchState);
+
+		BLentryPanel.addTab("Table Entry", tableScroll);
+		BLentryPanel.addTab("Form Entry", formEntryPanel);
+
+		repaint();
 
 	}
 
@@ -154,11 +175,13 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 		this.setVisible(false);
 
 		// show login dialog
-		loginDialog = new LoginDialog(batchState, this);
+		LoginDialog loginDialog = new LoginDialog(batchState, this);
 	}
 
 	private void downloadBatch() {
-		downloadBatchDialog = new DownloadBatchDialog(batchState);
+		DownloadBatchDialog downloadBatchDialog = new DownloadBatchDialog(
+				batchState);
+		downloadBatchDialog.setVisible(true);
 	}
 
 	private void saveWindowLocation() {
@@ -181,7 +204,8 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 				if (args.length == 2) {
 					frame = new IndexerFrame("Record Indexer", args);
 				} else {
-					String[] defaultArgs = { "localhost", Integer.toString(39640) };
+					String[] defaultArgs = { "localhost",
+							Integer.toString(39640) };
 					frame = new IndexerFrame("Record Indexer", defaultArgs);
 				}
 
@@ -207,11 +231,12 @@ public class IndexerFrame extends JFrame implements BatchStateListener {
 	@Override
 	public void stateChanged() {
 
-		if (this.batchState.getHasDownloadedBatch() && downloadBatchMenuItem != null) {
+		if (this.batchState.getHasDownloadedBatch()
+				&& downloadBatchMenuItem != null) {
 			this.downloadBatchMenuItem.setEnabled(false);
 		} else if (downloadBatchMenuItem != null)
 			this.downloadBatchMenuItem.setEnabled(true);
-		
+
 		repaint();
 
 	}

@@ -13,12 +13,10 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -31,7 +29,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import client.ClientException;
 import client.communication.*;
 import shared.communication.*;
 import shared.model.*;
@@ -166,7 +163,7 @@ public class ProjectPanel extends JPanel {
 
 		public void valueChanged(ListSelectionEvent e) {
 
-			String selectedProject = projects.getSelectedValue();
+//			String selectedProject = projects.getSelectedValue();
 		}
 
 	};

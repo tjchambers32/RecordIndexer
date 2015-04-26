@@ -1,36 +1,17 @@
 package client.gui.panel;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
-import java.io.File;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.*;
+import java.awt.image.*;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
+import java.net.*;
 
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import shared.model.Field;
-import client.gui.ImageComponent;
-import client.gui.batchstate.BatchState;
-import client.gui.batchstate.BatchStateListener;
-import client.gui.batchstate.Cell;
+import client.gui.batchstate.*;
 
 @SuppressWarnings("serial")
 public class ImagePanel extends JPanel implements BatchStateListener {
@@ -60,7 +41,6 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 	private int selectedColumn;
 	
 	public ImagePanel(BatchState batchState, String URL) {
-//		super();
 
 		this.batchState = batchState;
 		batchState.addListener(this);
@@ -94,7 +74,14 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 	private void loadImage(String imageFile) {
 		
 		try {
+			
 			downloadedImage = ImageIO.read(new URL(imageFile));
+			
+			batchState.setNavImageHeight(getWorldHeight());
+			batchState.setNavImageWidth(getWorldWidth());
+			batchState.setNavImageY(getWorldY());
+			batchState.setNavImageX(getWorldX());
+			
 		} catch (IOException | NullPointerException e) {
 			downloadedImage = NULL_IMAGE;
 			System.out.println("ERROR DOWNLOADING IMAGE");
@@ -126,6 +113,7 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 			}
 		}
 	}
+	
 	public void setScale(double newScale) {
 		scale = newScale;
 		this.repaint();
@@ -222,11 +210,9 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 		return worldY;
 		
 	}
-	private MouseAdapter mouseAdapter = new MouseAdapter() {
 
-		//try this
-		//https://students.cs.byu.edu/~cs240ta/winter2015/rodham_files/23-image-navigator/code/DoubleSpongeBob_3_Scaling_Translation/src/DrawingComponent.java
-		
+	private MouseAdapter mouseAdapter = new MouseAdapter() {
+	
 		@Override
 		public void mousePressed(MouseEvent e) {
 			int d_X = e.getX();
@@ -281,15 +267,19 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 					}
 				}
 			}
-			
-			
-			
+						
 			if (hitShape) {
 				dragging = true;		
 				w_dragStartX = w_X;
 				w_dragStartY = w_Y;		
 				w_dragStartOriginX = w_originX;
 				w_dragStartOriginY = w_originY;
+				
+				batchState.setNavImageWidth(getWorldWidth());
+				batchState.setNavImageHeight(getWorldHeight());
+				batchState.setNavImageX(getWorldX());
+				batchState.setNavImageY(getWorldY());
+				
 			}
 		}
 
@@ -328,6 +318,11 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 				
 				batchState.setImageX(w_originX);
 				batchState.setImageY(w_originY);
+				
+				batchState.setNavImageHeight(getWorldHeight());
+				batchState.setNavImageWidth(getWorldWidth());
+				batchState.setNavImageY(getWorldY());
+				batchState.setNavImageX(getWorldX());
 				
 				repaint();
 			}
@@ -381,9 +376,6 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 					* batchState.getSelectedCell().getRecord();
 			highlightedCell = new Rectangle(xCoord, yCoord, width, height);
 
-			// TODO finish imagepanel stateChanged stuff
-			// check for inverted
-
 			if (downloadedImage == null) {
 				w_originX = batchState.getImageX();
 				w_originY = batchState.getImageY();
@@ -393,6 +385,20 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 			} else {
 				if (scale != batchState.getZoomLevel()) {
 					scale = batchState.getZoomLevel();
+					
+					batchState.setNavImageHeight(getWorldHeight());
+					batchState.setNavImageWidth(getWorldWidth());
+					batchState.setNavImageY(getWorldY());
+					batchState.setNavImageX(getWorldX());
+				} else {
+					int w_deltaX = getWorldX() - batchState.getNavImageX();
+					int w_deltaY = getWorldY() - batchState.getNavImageY();
+					
+						w_originX = w_originX - w_deltaX;
+						w_originY = w_originY - w_deltaY;
+						
+						batchState.setImageX(w_originX);
+						batchState.setImageY(w_originY);
 				}
 			}
 			
@@ -407,7 +413,6 @@ public class ImagePanel extends JPanel implements BatchStateListener {
 			downloadedImage = null;
 			highlightedCell = null;
 		}
-		
 		repaint();
 	}
 }

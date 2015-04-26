@@ -10,10 +10,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import client.gui.ImageComponent;
+import client.gui.dialog.ImageComponent;
 
 @SuppressWarnings("serial")
 public class SampleImageDialog extends JDialog{

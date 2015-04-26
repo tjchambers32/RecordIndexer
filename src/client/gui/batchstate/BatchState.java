@@ -7,9 +7,15 @@ import java.awt.Image;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -71,7 +77,15 @@ public class BatchState implements BatchStateListener {
 
 	private boolean loggingIn;
 	private boolean downloadingBatch;
+	
+	private int navImageX;
+	private int navImageY;
+	private int navImageWidth;
+	private int navImageHeight;
 
+	//dictionary is a set of words (knownData) for EACH field
+	private Map<String, Set<String> > dictionary;
+	
 	public BatchState(String hostname, int port) {
 
 		this.hostname = hostname;
@@ -114,8 +128,15 @@ public class BatchState implements BatchStateListener {
 		horizontalDivider = 400;
 		verticalDivider = 400;
 
+		navImageX = 0;
+		navImageY = 0;
+		navImageWidth = 0;
+		navImageHeight = 0;
+		
 		loggingIn = false;
 		downloadingBatch = false;
+		
+		dictionary = new HashMap<String, Set<String> >();
 	}
 
 	public void addListener(BatchStateListener l) {
@@ -154,7 +175,9 @@ public class BatchState implements BatchStateListener {
 
 	@Override
 	public void stateChanged() {
-		// do nothing
+		for (BatchStateListener l : listeners) {
+			l.stateChanged();
+		}
 	}
 
 	public void save() {
@@ -177,7 +200,7 @@ public class BatchState implements BatchStateListener {
 		String valueString = "";
 		for (int i = 0; i < numberOfRows; i++) {
 			records.add(new Record(user.getImageID(), i+1));
-			for (int j = 0; j < numberOfColumns; j++) {
+			for (int j = 1; j < numberOfColumns; j++) {
 				valueString = values[i][j];
 				valueList.add(new Value(i+1, valueString, j+1));
 			}
@@ -221,6 +244,38 @@ public class BatchState implements BatchStateListener {
 		for (int i = 0; i < numberOfRows; i++) {
 			values[i][0] = "" + (i + 1);
 		}
+		
+		//read in knownData for quality checker
+		for (int i = 1; i < fields.size(); i++) {
+			Set<String> tempSet = new TreeSet<String>();
+			String tempData = fields.get(i).getKnownData();
+			if (tempData == null || tempData == "")
+				return;
+			
+			URL url = null;
+			Scanner scanner;
+			try {
+				
+				url = new URL("http://" + hostname + ":" + port + "/" + tempData);
+								
+				
+				scanner = new Scanner(url.openStream());
+				scanner.useDelimiter(",");
+				
+				while (scanner.hasNext()) {
+					tempSet.add(scanner.next().toLowerCase());
+				}
+				
+			} catch (MalformedURLException e) {
+				continue;
+			} catch (IOException e) {
+				continue;
+			}
+			
+			scanner.close();
+			
+			dictionary.put(fields.get(i).getTitle(), tempSet);
+		}
 
 		this.setHasDownloadedBatch(true);
 		this.firstYCoord = result.getProject().getFirstYCoord();
@@ -236,6 +291,120 @@ public class BatchState implements BatchStateListener {
 
 	}
 
+	//returns true if word IS misspelled. false if spelled correctly
+	public boolean qualityCheck(Cell cell) {
+		String inputWord = this.getValue(cell);
+		
+		inputWord = inputWord.trim();
+		
+		//empty cells should be WHITE
+		if (inputWord.equals("")) {
+			return true;
+		}
+		String word = inputWord.toLowerCase();
+		
+		//if there isn't a dictionary for the field, we can't mark it as incorrect
+		if (dictionary.get(fields.get(cell.getField()).getTitle()) == null) {
+			return true;
+		} else {
+			//if the word is in the dictionary, its correct
+			Set<String> tempSet = dictionary.get(fields.get(cell.getField()).getTitle());
+			if (tempSet.contains(word.toLowerCase())) {
+				return true; //true = correct
+			}
+		}
+		return false; //incorrect - mark cell RED
+	}
+
+	public Set<String> makeSuggestions(Cell cell) {
+		
+		Set<String> allSuggested = findAllSuggestions(cell);
+		
+		Set<String> knownSuggestions = refineSuggestions(allSuggested, cell);
+		
+		return knownSuggestions;
+		
+	}
+	
+	private Set<String> refineSuggestions(Set<String> allSuggested, Cell cell) {
+		
+		TreeSet<String> refined = new TreeSet<String>();
+		
+		Set<String> tempSet = dictionary.get(fields.get(cell.getField()).getTitle());
+		for (String s : allSuggested) {
+			if (tempSet.contains(s.toLowerCase())) {
+				refined.add(s);
+			}
+		}
+		
+		return refined;
+	}
+
+	private Set<String> findAllSuggestions(Cell cell) {
+		
+		String word = this.getValue(cell);
+		
+		word = word.toLowerCase();
+		Set<String> suggestions;
+		Set<String> finalSuggestions = new TreeSet<String>();
+		suggestions = findNearbyWords(word);
+		
+		for (String suggestion : suggestions) {
+			finalSuggestions.addAll(findNearbyWords(suggestion));
+		}
+	
+		return finalSuggestions;
+	}
+	
+	private Set<String> findNearbyWords(String word) {
+		
+		TreeSet<String> suggestions = new TreeSet<String>();
+		String editedWord = "";
+		StringBuilder sb = new StringBuilder();
+		
+		//deletion distance
+		for (int i = 0; i < word.length(); i++) {
+			sb = new StringBuilder(word);
+			editedWord = sb.deleteCharAt(i).toString();
+			suggestions.add(editedWord);
+		}
+		
+		//transposition distance
+		char L = ' ';
+		char R = ' ';
+		for (int i = 0; i < word.length() - 1; i++) {
+			sb = new StringBuilder(word);
+			L = sb.charAt(i);
+			R = sb.charAt(i + 1);
+			sb.setCharAt(i, R);
+			sb.setCharAt(i+1, L);
+			suggestions.add(sb.toString());
+		}
+		
+		//Alteration Distance
+		for (int i = 0; i < word.length(); i++) {
+			for (int j = 0; j < 26; j++) {
+				sb = new StringBuilder(word);
+				char inputChar = (char) (j + 'a'); //inputChar matching original char doesn't matter because that would mean our original word is in the Trie, which we already checked for
+				sb.setCharAt(i, inputChar);
+				suggestions.add(sb.toString());
+			}
+		}
+		
+		//Insertion Distance
+		for (int i = 0; i <= word.length(); i++) {
+			for (int j = 0; j < 26; j++) {
+				sb = new StringBuilder(word);
+				char inputChar = (char) (j + 'a');
+				sb.insert(i, inputChar);
+				suggestions.add(sb.toString());
+			}
+		}	
+		
+		return suggestions;
+	}
+
+	
 	public ClientCommunicator getComm() {
 		return comm;
 	}
@@ -466,9 +635,6 @@ public class BatchState implements BatchStateListener {
 	public void setImageX(int imageX) {
 		this.imageX = imageX;
 
-		for (BatchStateListener l : listeners) {
-			l.stateChanged();
-		}
 	}
 
 	public int getImageY() {
@@ -478,9 +644,6 @@ public class BatchState implements BatchStateListener {
 	public void setImageY(int imageY) {
 		this.imageY = imageY;
 
-		for (BatchStateListener l : listeners) {
-			l.stateChanged();
-		}
 	}
 
 	public int getImageWidth() {
@@ -490,9 +653,6 @@ public class BatchState implements BatchStateListener {
 	public void setImageWidth(int imageWidth) {
 		this.imageWidth = imageWidth;
 
-		for (BatchStateListener l : listeners) {
-			l.stateChanged();
-		}
 	}
 
 	public int getImageHeight() {
@@ -502,16 +662,8 @@ public class BatchState implements BatchStateListener {
 	public void setImageHeight(int imageHeight) {
 		this.imageHeight = imageHeight;
 
-		for (BatchStateListener l : listeners) {
-			l.stateChanged();
-		}
 	}
-
-	public boolean checkMisspelled(Cell cell) {
-
-		return false;
-	}
-
+	
 	public boolean isLoggingIn() {
 		return loggingIn;
 	}
@@ -577,7 +729,46 @@ public class BatchState implements BatchStateListener {
 
 		this.loggingIn = savedState.loggingIn;
 
-		this.setUser(savedState.user); // will run through all the listeners
-		setZoomLevel(savedState.zoomLevel); // runs through listeners again
+		this.user = savedState.user;
+		this.zoomLevel = savedState.zoomLevel;
+
+		this.dictionary = savedState.dictionary;
+		
+		this.navImageX = savedState.navImageX;
+		this.navImageY = savedState.navImageY;
+		this.navImageWidth = savedState.navImageWidth;
+		this.navImageHeight = savedState.navImageHeight;
+	}
+
+	public int getNavImageX() {
+		return navImageX;
+	}
+
+	public void setNavImageX(int navImageX) {
+		this.navImageX = navImageX;
+	}
+
+	public int getNavImageY() {
+		return navImageY;
+	}
+
+	public void setNavImageY(int navImageY) {
+		this.navImageY = navImageY;
+	}
+
+	public int getNavImageWidth() {
+		return navImageWidth;
+	}
+
+	public void setNavImageWidth(int navImageWidth) {
+		this.navImageWidth = navImageWidth;
+	}
+
+	public int getNavImageHeight() {
+		return navImageHeight;
+	}
+
+	public void setNavImageHeight(int navImageHeight) {
+		this.navImageHeight = navImageHeight;
 	}
 }

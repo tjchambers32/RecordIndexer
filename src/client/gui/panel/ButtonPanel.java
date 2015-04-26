@@ -18,7 +18,9 @@ import client.gui.batchstate.*;
 public class ButtonPanel extends JPanel implements BatchStateListener {
 
 	BatchState batchState;
-
+	
+	IndexerFrame frame;
+	
 	JButton zoomInButton;
 	JButton zoomOutButton;
 	JButton invertImageButton;
@@ -32,6 +34,8 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 		batchState = frame.getBatchState();
 		batchState.addListener(this);
 
+		this.frame = frame;		
+		
 		createComponents();
 
 	}
@@ -97,7 +101,7 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 				if (batchState.getZoomLevel() < 2.5)
 					batchState.setZoomLevel(batchState.getZoomLevel() + .15);
 			} else if (e.getSource() == zoomOutButton) {
-				if (batchState.getZoomLevel() > .1)
+				if (batchState.getZoomLevel() > .3)
 					batchState.setZoomLevel(batchState.getZoomLevel() - .15);
 			} else if (e.getSource() == invertImageButton) {
 				batchState.setImageInverted(!batchState.isImageInverted());
@@ -111,22 +115,32 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 					BatchState emptyState = new BatchState(batchState.getHostname(), batchState.getPort());
 					emptyState.setUser(tempUser);
 					batchState.update(emptyState);
-				}
+					frame.clearEntryPanels();
+					batchState.stateChanged();
+				}		
 			}
 		}
-
 	};
 
 	@Override
 	public void stateChanged() {
 
 		if (batchState.getHasDownloadedBatch() == true) {
-			zoomInButton.setEnabled(true);
-			zoomOutButton.setEnabled(true);
 			invertImageButton.setEnabled(true);
 			toggleHighlightsButton.setEnabled(true);
 			saveButton.setEnabled(true);
 			submitButton.setEnabled(true);
+			if (batchState.getZoomLevel() <= .3) {
+				zoomOutButton.setEnabled(false);
+			} else {
+				zoomOutButton.setEnabled(true);
+			}
+			
+			if (batchState.getZoomLevel() >= 2.5) {
+				zoomInButton.setEnabled(false);
+			} else {
+				zoomInButton.setEnabled(true);
+			}
 		} else {
 			zoomInButton.setEnabled(false);
 			zoomOutButton.setEnabled(false);
@@ -135,6 +149,5 @@ public class ButtonPanel extends JPanel implements BatchStateListener {
 			saveButton.setEnabled(false);
 			submitButton.setEnabled(false);
 		}
-
 	}
 }

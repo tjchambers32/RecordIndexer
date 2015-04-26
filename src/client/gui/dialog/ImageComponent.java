@@ -1,18 +1,14 @@
-package client.gui;
+package client.gui.dialog;
 
 import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
-import java.awt.font.*;
-import java.awt.event.*;
 
 import javax.imageio.*;
 import javax.swing.*;
 
-import java.util.*;
 import java.io.*;
 import java.net.URL;
 
+@SuppressWarnings("serial")
 public class ImageComponent extends JComponent {
 
 	private Image image;

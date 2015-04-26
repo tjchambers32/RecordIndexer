@@ -16,13 +16,14 @@ public class FieldHelpPanel extends JPanel implements BatchStateListener{
 	BatchState batchState;
 	JEditorPane helpPane;
 	String helpURL;
+	Cell selectedCell;
 	
 	public FieldHelpPanel(BatchState batchState) {
 		super();
 		
 		this.batchState = batchState;
 		batchState.addListener(this);
-		
+		selectedCell = new Cell(50,50); //random value that batchState.selectedCell won't have
 		createComponents();
 	}
 
@@ -51,15 +52,40 @@ public class FieldHelpPanel extends JPanel implements BatchStateListener{
 		}
 	}
 	
+	private void hideHelpInfo() {
+		helpPane.setText("");
+	}
+	
 	@Override
 	public void stateChanged() {
-		int selectedField = batchState.getSelectedCell().getField();
-		if (!batchState.getFields().isEmpty()) {
-			String shortFieldURL = batchState.getFields().get(selectedField).getHelpHTML();
-			String fullURL = buildFullURL(shortFieldURL);
-			helpURL = fullURL;
-			showHelpInfo();
+		
+		if (batchState.getHasDownloadedBatch() == false) {
+			hideHelpInfo();
+			return;
 		}
+		
+		int selectedField = batchState.getSelectedCell().getField();
+		
+		Cell tempCell = selectedCell;
+		Cell batchCell = batchState.getSelectedCell();
+		
+		if (tempCell == null) {
+			hideHelpInfo();
+			tempCell = batchCell;
+			selectedCell = batchCell;
+		
+		}
+		
+		if ((tempCell.getField() != batchCell.getField()) || (tempCell.getRecord() != batchCell.getRecord())) {
+			selectedCell = batchCell;
+			if (!batchState.getFields().isEmpty()) {
+				String shortFieldURL = batchState.getFields().get(selectedField).getHelpHTML();
+				String fullURL = buildFullURL(shortFieldURL);
+				helpURL = fullURL;
+				showHelpInfo();
+			}
+		}
+		
 	}
 
 	private String buildFullURL(String shortURL) {

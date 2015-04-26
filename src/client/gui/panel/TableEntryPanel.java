@@ -9,7 +9,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -95,12 +94,7 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 			}
 		} else if (!batchState.isLoggingIn() && entryTable != null) {
 			if (batchState.getHasDownloadedBatch()){
-			
 				entryTable.changeSelection(batchState.getSelectedCell().getRecord(), batchState.getSelectedCell().getField(), false, false);
-			
-//				if (batchState.getValue(new Cell(row, column)) != tableEntryModel.getValueAt(row, column)) {
-//					tableEntryModel.fireTableDataChanged();
-//				}
 			}
 		}
 	}
@@ -115,7 +109,7 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 			JPopupMenu popup = null;
 			JMenuItem seeSuggestions = null;
 			if (e.getButton() == MouseEvent.BUTTON3) {
-				if (batchState.checkMisspelled(new Cell(row, column))) {
+				if (batchState.qualityCheck(new Cell(row, column)) == false) {
 					popup = new JPopupMenu();
 					seeSuggestions = new JMenuItem("See Suggestions.");
 					seeSuggestions.addActionListener(actionListener);
@@ -132,39 +126,45 @@ public class TableEntryPanel extends JPanel implements BatchStateListener{
 		public void actionPerformed(ActionEvent e) {
 			SuggestionsDialog suggestions = new SuggestionsDialog(batchState);
 			suggestions.setVisible(true);
-			
 		}
-		
 	};
 }
 
 @SuppressWarnings("serial")
 class EntryCellRenderer extends JLabel implements TableCellRenderer {
 
-	private Border unselectedBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
+	private Border unselectedBorder = BorderFactory.createLineBorder(Color.GRAY, 1);
 	private Border selectedBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
 	private BatchState batchState;
+	private boolean wasSelected;
 	
 	public EntryCellRenderer(BatchState batchState) {
 		this.batchState = batchState;
 		setOpaque(true);
 		setFont(getFont().deriveFont(16.0f));
+		wasSelected = false;
 	}
 
 	public Component getTableCellRendererComponent(JTable table,
 			Object value, boolean isSelected, boolean hasFocus, int row,
 			int column) {
 		
-		if (isSelected) {
+		if (isSelected && !wasSelected) {
 			this.setBorder(selectedBorder);
 			Cell selectedCell = new Cell(row, column);
 			batchState.setSelectedCell(selectedCell);
+			wasSelected = true;
 		}
 		else {
 			this.setBorder(unselectedBorder);
+			wasSelected = false;
 		}
 		
-		//TODO add logic for quality checker here
+		if (batchState.qualityCheck(new Cell(row, column)) == true) {
+			this.setBackground(Color.white);
+		} else {
+			this.setBackground(Color.red);
+		}
 		
 		this.setText((String)value);
 		return this;
