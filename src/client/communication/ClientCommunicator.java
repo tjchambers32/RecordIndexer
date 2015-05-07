@@ -183,7 +183,7 @@ public class ClientCommunicator {
 	 * @return If the operation succeeds returns TRUE, if it fails for any
 	 *         reason (e.g., invalid batch ID, invalid user name or password,
 	 *         user doesnt own the submitted batch, wrong number of values,
-	 *         can’t connect to the server, internal server error,etc.) returns
+	 *         cant connect to the server, internal server error,etc.) returns
 	 *         FAILED
 	 * @throws ClientException 
 	 * 
@@ -217,7 +217,7 @@ public class ClientCommunicator {
 	 * 
 	 * @return If the operation succeeds returns the above specified string, if
 	 *         it fails for any reason (e.g., invalid batch ID, invalid user
-	 *         name or password, user doesn’t own the submitted batch, wrong
+	 *         name or password, user doesnt own the submitted batch, wrong
 	 *         number of values, can’t connect to the server, internal server
 	 *         error,etc.) returns FAILED
 	 * @throws ClientException 
@@ -264,8 +264,8 @@ public class ClientCommunicator {
 	 * 
 	 * @return If the operation succeeds returns the above specified string, if
 	 *         it fails for any reason (e.g., invalid batch ID, invalid user
-	 *         name or password, user doesn’t own the submitted batch, wrong
-	 *         number of values, can’t connect to the server, internal server
+	 *         name or password, user doesnt own the submitted batch, wrong
+	 *         number of values, cant connect to the server, internal server
 	 *         error,etc.) returns FAILED
 	 * @throws ClientException 
 	 * 
