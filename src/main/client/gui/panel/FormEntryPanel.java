@@ -23,7 +23,7 @@ import main.client.gui.batchstate.BatchState;
 import main.client.gui.batchstate.BatchStateListener;
 import main.client.gui.batchstate.Cell;
 import main.client.gui.dialog.SuggestionsDialog;
-import shared.model.Field;
+import main.shared.model.Field;
 
 @SuppressWarnings("serial")
 public class FormEntryPanel extends JPanel implements BatchStateListener{

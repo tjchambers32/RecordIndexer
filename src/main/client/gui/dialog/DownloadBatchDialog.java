@@ -8,10 +8,10 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import main.client.gui.batchstate.BatchState;
-import shared.communication.*;
-import shared.model.Project;
-import shared.model.User;
 import main.client.ClientException;
+import main.shared.communication.*;
+import main.shared.model.Project;
+import main.shared.model.User;
 
 /**
  * @author tchambs
@@ -63,7 +63,7 @@ public class DownloadBatchDialog extends JDialog {
 		try {
 			result = batchState.getComm().getProjects(params);
 		} catch (ClientException e) {
-			JOptionPane.showMessageDialog(null, "Check server",
+			JOptionPane.showMessageDialog(null, "Check main.server",
 					"Connection Error", JOptionPane.ERROR_MESSAGE);
 		}
 		

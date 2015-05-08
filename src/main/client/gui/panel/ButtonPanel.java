@@ -11,8 +11,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import main.client.gui.batchstate.*;
-import shared.model.User;
 import main.client.gui.IndexerFrame;
+import main.shared.model.User;
 
 @SuppressWarnings("serial")
 public class ButtonPanel extends JPanel implements BatchStateListener {

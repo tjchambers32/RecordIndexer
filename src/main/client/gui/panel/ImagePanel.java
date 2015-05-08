@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import main.client.gui.batchstate.*;
-import shared.model.Field;
+import main.shared.model.Field;
 
 @SuppressWarnings("serial")
 public class ImagePanel extends JPanel implements BatchStateListener {

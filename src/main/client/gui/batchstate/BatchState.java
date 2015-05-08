@@ -23,15 +23,15 @@ import javax.swing.JOptionPane;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import shared.communication.DownloadBatch_Result;
-import shared.communication.SubmitBatch_Params;
-import shared.communication.SubmitBatch_Result;
-import shared.model.Field;
-import shared.model.Record;
-import shared.model.User;
-import shared.model.Value;
 import main.client.ClientException;
 import main.client.communication.ClientCommunicator;
+import main.shared.communication.DownloadBatch_Result;
+import main.shared.communication.SubmitBatch_Params;
+import main.shared.communication.SubmitBatch_Result;
+import main.shared.model.Field;
+import main.shared.model.Record;
+import main.shared.model.User;
+import main.shared.model.Value;
 
 /**
  * @author tchambs

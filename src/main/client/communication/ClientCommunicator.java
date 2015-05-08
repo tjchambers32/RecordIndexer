@@ -10,8 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import shared.communication.*;
 import main.client.ClientException;
+import main.shared.communication.*;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -63,7 +63,7 @@ public class ClientCommunicator {
 	 * @return If successful, the multi-line string described above, beginning
 	 *         with "TRUE". Returns "FALSE" if the user credentials are invalid.
 	 *         Returns "FAILED" if the operation failed for any reason (e.g.,
-	 *         can't connect to the server, internal server error).
+	 *         can't connect to the main.server, internal main.server error).
 	 * @throws ClientException
 	 */
 	public ValidateUser_Result ValidateUser(ValidateUser_Params params)
@@ -94,7 +94,7 @@ public class ClientCommunicator {
 	 * @return If successful, information about all of the available projects as
 	 *         shown above. Returns "FALSE" if the user credentials are invalid.
 	 *         Returns "FAILED" if the operation failed for any reason (e.g.,
-	 *         can't connect to the server, internal server error).
+	 *         can't connect to the main.server, internal main.server error).
 	 * @throws ClientException
 	 */
 	public GetProjects_Result getProjects(GetProjects_Params params)
@@ -148,7 +148,7 @@ public class ClientCommunicator {
 	 * @return If successful, the multi-line string described above, Returns
 	 *         "FALSE" if the user credentials are invalid. Returns "FAILED" if
 	 *         the operation failed for any reason (e.g., can't connect to the
-	 *         server, internal server error).
+	 *         main.server, internal main.server error).
 	 * @throws ClientException 
 	 * 
 	 */
@@ -183,7 +183,7 @@ public class ClientCommunicator {
 	 * @return If the operation succeeds returns TRUE, if it fails for any
 	 *         reason (e.g., invalid batch ID, invalid user name or password,
 	 *         user doesnt own the submitted batch, wrong number of values,
-	 *         cant connect to the server, internal server error,etc.) returns
+	 *         cant connect to the main.server, internal main.server error,etc.) returns
 	 *         FAILED
 	 * @throws ClientException 
 	 * 
@@ -218,7 +218,7 @@ public class ClientCommunicator {
 	 * @return If the operation succeeds returns the above specified string, if
 	 *         it fails for any reason (e.g., invalid batch ID, invalid user
 	 *         name or password, user doesnt own the submitted batch, wrong
-	 *         number of values, cant connect to the server, internal server
+	 *         number of values, cant connect to the main.server, internal main.server
 	 *         error,etc.) returns FAILED
 	 * @throws ClientException 
 	 * 
@@ -265,7 +265,7 @@ public class ClientCommunicator {
 	 * @return If the operation succeeds returns the above specified string, if
 	 *         it fails for any reason (e.g., invalid batch ID, invalid user
 	 *         name or password, user doesnt own the submitted batch, wrong
-	 *         number of values, cant connect to the server, internal server
+	 *         number of values, cant connect to the main.server, internal main.server
 	 *         error,etc.) returns FAILED
 	 * @throws ClientException 
 	 * 

@@ -27,9 +27,9 @@ import main.client.gui.batchstate.BatchStateListener;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import shared.communication.*;
-import shared.model.*;
 import main.client.gui.IndexerFrame;
+import main.shared.communication.*;
+import main.shared.model.*;
 
 /**
  * @author tchambs
@@ -162,7 +162,7 @@ public class LoginDialog extends JDialog {
 			result = batchState.getComm().ValidateUser(params);
 		} catch (Exception e) {
 			if (e.getCause().toString().contains("Connect")) {
-				JOptionPane.showMessageDialog(null, "Check server",
+				JOptionPane.showMessageDialog(null, "Check main.server",
 						"Connection Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			} else {

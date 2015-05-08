@@ -30,8 +30,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import main.client.communication.*;
-import shared.communication.*;
-import shared.model.*;
+import main.shared.communication.*;
+import main.shared.model.*;
 
 /**
  * @author tchambs

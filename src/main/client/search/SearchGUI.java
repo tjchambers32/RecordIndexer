@@ -14,6 +14,8 @@ import java.util.ArrayList;
 
 import main.client.ClientException;
 import main.client.communication.ClientCommunicator;
+import main.shared.communication.*;
+import main.shared.model.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -27,9 +29,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
-
-import shared.communication.*;
-import shared.model.*;
 
 /**
  * @author tchambs
@@ -195,7 +194,7 @@ public class SearchGUI extends JFrame {
 			result = comm.ValidateUser(params);
 		} catch (Exception e) {
 			if (e.getCause().toString().contains("Connect")) {
-				JOptionPane.showMessageDialog(null, "Check server",
+				JOptionPane.showMessageDialog(null, "Check main.server",
 						"Connection Error", JOptionPane.ERROR_MESSAGE);
 			} else {
 				JOptionPane.showMessageDialog(null, "Invalid User Credentials",
