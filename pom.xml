@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>RecordIndexer</groupId>
   <artifactId>RecordIndexer</artifactId>
-  <version>test-1</version>
+  <version>1.0</version>
   <build>
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>test</sourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
