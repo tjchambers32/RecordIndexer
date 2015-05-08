@@ -1,0 +1,59 @@
+package main.java.client.gui.panel;
+
+import javax.swing.table.AbstractTableModel;
+
+import main.java.client.gui.batchstate.BatchState;
+import main.java.client.gui.batchstate.Cell;
+
+@SuppressWarnings("serial")
+public class TableEntryModel extends AbstractTableModel {
+
+	private int rows;
+	private int columns;
+	private BatchState batchState;
+	
+	public TableEntryModel(BatchState batchState) {
+		this.batchState = batchState;
+		this.columns = batchState.getNumberOfColumns();
+		this.rows = batchState.getNumberOfRows();
+	}
+
+	@Override
+	public int getColumnCount() {
+		return columns;
+	}
+
+	@Override
+	public String getColumnName(int column) {
+		
+		return batchState.getFields().get(column).getTitle();
+	}
+	
+	@Override
+	public int getRowCount() {
+		return rows;
+	}
+
+	@Override
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		if (columnIndex == 0)
+			return rowIndex + 1;
+		
+		return batchState.getValue(new Cell(rowIndex, columnIndex));
+	}
+	
+	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		if (columnIndex < 1)
+			return false;
+		else
+			return true;
+	}
+	
+	@Override
+	public void setValueAt(Object inputValue, int inputRow, int inputColumn) {
+		Cell selectedCell = new Cell(inputRow, inputColumn);
+		batchState.setValue(selectedCell,  (String) inputValue);
+	}
+
+}
